@@ -1,0 +1,17 @@
+GET {{url}}/api/admin_panel/cache_clear/all
+Accept: application/json
+Authorization: {{auth_token}}
+
+###
+
+GET {{url}}/api/cache_clear/routes
+Accept: application/json
+Authorization: {{auth_token}}
+
+###
+
+GET {{url}}/api/cache_clear/translations
+Accept: application/json
+Authorization: {{auth_token}}
+
+###

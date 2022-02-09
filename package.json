@@ -1,0 +1,49 @@
+{
+  "authors": [
+    {
+      "name": "Dmytro Dyvulskyi",
+      "role": "CEO & Founder and Lead Developer of Nations Original",
+      "email": "eklerk397@gmail.com"
+    }
+  ],
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
+  "bugs": {
+    "url": "https://github.com/Ondottr/PHP_SF_template/issues"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.10.2",
+    "async": "^3.2.0",
+    "axios": "^0.21.1",
+    "bootstrap": "^5.1.3",
+    "jquery": "^3.6.0",
+    "moments": "0.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@types/bootstrap": "^5.1.6",
+    "@types/jquery": "^3.5.9",
+    "babel-loader": "^8.2.3",
+    "dotenv-webpack": "^7.0.2",
+    "prettier": "2.4.1",
+    "react-bootstrap": "^2.0.3",
+    "webpack": "^5.32.0",
+    "webpack-cli": "^4.6.0"
+  },
+  "homepage": "https://github.com/Ondottr/PHP_SF_template/blob/master/README.md",
+  "main": "index.js",
+  "name": "@nations-original/php-sf-template",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ondottr/PHP_SF_template.git"
+  },
+  "scripts": {
+    "dev": "webpack --mode development",
+    "build": "webpack --mode production"
+  },
+  "version": "v1.0.1-dev"
+}
