@@ -9,7 +9,11 @@
   "autoload": {
     "psr-4": {
       "App\\": "App/",
-      "App\\View\\": "templates/"
+      "App\\View\\": "templates/",
+      "ApiPlatform\\Core\\": "Platform/CustomRepositories/CustomApiPlatformCore/",
+      "Symfony\\Bundle\\MakerBundle\\": "Platform/CustomRepositories/CustomMakerBundle/",
+      "Doctrine\\Bundle\\": "Platform/CustomRepositories/CustomDoctrineBundle/",
+      "Symfony\\Component\\": "Platform/CustomRepositories/CustomSymfonyComponent/"
     }
   },
   "autoload-dev": {
