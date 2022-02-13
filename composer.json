@@ -13,7 +13,8 @@
       "ApiPlatform\\Core\\": "Platform/CustomRepositories/CustomApiPlatformCore/",
       "Symfony\\Bundle\\MakerBundle\\": "Platform/CustomRepositories/CustomMakerBundle/",
       "Doctrine\\Bundle\\": "Platform/CustomRepositories/CustomDoctrineBundle/",
-      "Symfony\\Component\\": "Platform/CustomRepositories/CustomSymfonyComponent/"
+      "Symfony\\Component\\": "Platform/CustomRepositories/CustomSymfonyComponent/",
+      "Doctrine\\ORM\\": "Platform/CustomRepositories/CustomDoctrineORM"
     }
   },
   "autoload-dev": {
