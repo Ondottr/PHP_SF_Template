@@ -16,10 +16,10 @@
 namespace App\DataFixtures;
 
 use App\Entity\UserGroup;
-use PHP_SF\System\Kernel;
-use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Persistence\ObjectManager;
+use PHP_SF\System\Kernel;
 
 
 class UserFixtures extends Fixture implements DependentFixtureInterface
@@ -33,8 +33,9 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         $user->setPassword( env( 'ADMIN_PASSWORD' ) );
         $user->setEmail( env( 'ADMIN_EMAIL' ) );
         $user->setUserGroup(
-            em( false )->getRepository( UserGroup::class )
-                       ->find( 1 )
+            em( false )
+                ->getRepository( UserGroup::class )
+                ->find( 1 )
         );
 
         em()->persist( $user );

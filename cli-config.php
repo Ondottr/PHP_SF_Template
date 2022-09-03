@@ -16,17 +16,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-use App\Kernel;
 use App\Entity\User;
-use App\View\Layout\footer;
-use App\View\Layout\header;
+use App\Kernel;
+use PHP_SF\Framework\Http\Middleware\auth;
 use PHP_SF\System as PHP_SF;
-use Symfony\Component\Dotenv\Dotenv;
 use PHP_SF\System\Core\DoctrineConsoleRunner;
 use PHP_SF\System\Database\DoctrineEntityManager;
+use Symfony\Component\Dotenv\Dotenv;
 
 
-define('start_time', microtime(true));
+define( 'start_time', microtime( true ) );
 
 require_once __DIR__ . '/Platform/vendor/autoload.php';
 require_once __DIR__ . '/vendor/autoload.php';
@@ -34,25 +33,18 @@ require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/functions/functions.php';
 require_once __DIR__ . '/config/constants.php';
 
-(new Dotenv)
-    ->bootEnv(__DIR__ . '/.env');
+( new Dotenv )->bootEnv( __DIR__ . '/.env' );
 
-(new PHP_SF\Kernel)
+$kernel = ( new PHP_SF\Kernel() )
     ->addTranslationFiles(__DIR__ . '/lang')
     ->addControllers(__DIR__ . '/App/Http/Controller')
-    ->setHeaderTemplateClassName(header::class)
-    ->setFooterTemplateClassName(footer::class)
     ->setApplicationUserClassName(User::class)
     ->addTemplatesDirectory('templates', 'App\View');
 
+
+auth::logInUser();
+
 DoctrineEntityManager::disableCache();
+Kernel::getInstance()->boot();
 
-Kernel::getInstance()
-    ->boot();
-
-return DoctrineConsoleRunner::createHelperSet(
-    Kernel::getInstance()
-        ->getContainer()
-        ->get('doctrine')
-        ->getManager()
-);
+return DoctrineConsoleRunner::createHelperSet(Kernel::getInstance()->getContainer()->get('doctrine')->getManager());
