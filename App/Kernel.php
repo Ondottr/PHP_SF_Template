@@ -15,27 +15,21 @@
 
 namespace App;
 
-use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
-use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use function dirname;
+use Symfony\Component\HttpKernel\Kernel as BaseKernel;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+
 use function array_key_exists;
+use function dirname;
 
-
-class Kernel extends BaseKernel
+final class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
     private static bool $isEditorActivated = false;
 
     private static self $instance;
-
-
-    private function __construct( string $environment, bool $debug )
-    {
-        parent::__construct( $environment, $debug );
-    }
 
 
     public static function getInstance(): self

@@ -16,9 +16,9 @@
 use PHP_SF\System\Classes\Helpers\Locale;
 use PHP_SF\System\Classes\Helpers\TimeZone;
 
-const DEV_MODE = true;
-const TEMPLATES_CACHE_ENABLED = false;
-define('DEFAULT_LOCALE', Locale::getLocaleKey(Locale::en));
+const DEV_MODE                = true;
+const TEMPLATES_CACHE_ENABLED = true;
+
 const DEFAULT_TIMEZONE = TimeZone::PL;
 
 const SERVER_IP = '127.0.0.1';

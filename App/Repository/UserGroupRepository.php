@@ -16,6 +16,7 @@
 namespace App\Repository;
 
 use App\Entity\UserGroup;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use PHP_SF\System\Classes\Abstracts\AbstractEntityRepository;
 
 /**
@@ -26,7 +27,14 @@ use PHP_SF\System\Classes\Abstracts\AbstractEntityRepository;
  */
 final class UserGroupRepository extends AbstractEntityRepository
 {
+    public function __construct()
+    {
+        parent::__construct( em(), new ClassMetadata( UserGroup::class ) );
+    }
 
+    /**
+     * @deprecated
+     */
     protected static function getEntityClass(): string
     {
         return UserGroup::class;

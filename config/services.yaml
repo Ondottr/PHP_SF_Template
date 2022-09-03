@@ -14,9 +14,8 @@ services:
   Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader:
     alias: 'doctrine.fixtures.loader'
 
-  #  Doctrine\ORM\Mapping\ClassMetadata:
-  #    autowire: true
-  #    autoconfigure: true
+  Symfony\Component\Form\FormFactory:
+    public: true
 
   # make classes in App/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name
@@ -27,13 +26,14 @@ services:
       - '../App/DoctrineLifecycleCallbacks/'
       - '../App/DependencyInjection/'
       - '../App/Entity/'
+      - '../App/Router.php'
       - '../App/Kernel.php'
       - '../App/Tests/'
       - '../App/DataFixtures/Purgers/'
+      - '../App/Helpers/Exceptions/'
       - '../App/EventListeners/'
-      - '../App/Repository/'
+      - '../App/Enums/'
       - '../tests/'
-
 
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones

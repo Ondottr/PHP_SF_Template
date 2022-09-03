@@ -13,30 +13,17 @@
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-namespace App\Repository;
 
-use App\Entity\User;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use PHP_SF\System\Classes\Abstracts\AbstractEntityRepository;
+use JetBrains\PhpStorm\Pure;
 
-/**
- * @method User|null find( $id, $lockMode = null, $lockVersion = null )
- * @method User|null findOneBy( array $criteria, array $orderBy = null )
- * @method array|User[] findAll()
- * @method array|User[] findBy( array $criteria, array $orderBy = null, $limit = null, $offset = null )
- */
-final class UserRepository extends AbstractEntityRepository
+#[Pure]
+function numFormat( int|float|null $number ): string
 {
-    public function __construct()
-    {
-        parent::__construct( em(), new ClassMetadata( User::class ) );
-    }
+    if ( $number === null )
+        return '0';
 
-    /**
-     * @deprecated
-     */
-    protected static function getEntityClass(): string
-    {
-        return User::class;
-    }
+    if ( is_float( $number ) )
+        return number_format( $number, 2, ',', ' ' );
+
+    return number_format( $number, thousands_separator: ' ' );
 }

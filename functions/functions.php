@@ -13,4 +13,15 @@
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+use PHP_SF\System\Classes\Helpers\Curl;
 
+require_once __DIR__ . '/view_functions.php';
+
+
+/**
+ * @deprecated
+ */
+function crl(): Curl
+{
+    return Curl::getInstance();
+}

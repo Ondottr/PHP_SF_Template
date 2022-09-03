@@ -13,30 +13,22 @@
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-namespace App\Repository;
+namespace App\Http\SymfonyControllers;
 
-use App\Entity\User;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use PHP_SF\System\Classes\Abstracts\AbstractEntityRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @method User|null find( $id, $lockMode = null, $lockVersion = null )
- * @method User|null findOneBy( array $criteria, array $orderBy = null )
- * @method array|User[] findAll()
- * @method array|User[] findBy( array $criteria, array $orderBy = null, $limit = null, $offset = null )
- */
-final class UserRepository extends AbstractEntityRepository
+final class ExampleSymfonyController
 {
-    public function __construct()
+
+    #[Route( '/example/symfony', name: 'example_symfony' )]
+    public function index(): JsonResponse
     {
-        parent::__construct( em(), new ClassMetadata( User::class ) );
+        return new JsonResponse(
+            [
+                'key' => 'value',
+            ], JsonResponse::HTTP_OK
+        );
     }
 
-    /**
-     * @deprecated
-     */
-    protected static function getEntityClass(): string
-    {
-        return User::class;
-    }
 }

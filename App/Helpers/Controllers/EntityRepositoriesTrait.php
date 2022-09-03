@@ -25,7 +25,7 @@ trait EntityRepositoriesTrait
     private UserRepository $userCachedRepository;
 
 
-    public function userRepository( bool $cacheEnabled = true ): UserRepository
+    final public function userRepository( bool $cacheEnabled = true ): UserRepository
     {
         if ( $cacheEnabled )
             return $this->getUserCachedRepository();

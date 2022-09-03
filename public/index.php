@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 
 /*
  * Copyright © 2018-2022, Nations Original Sp. z o.o. <contact@nations-original.com>
@@ -14,16 +14,16 @@
  */
 
 use App\Entity\User;
-use PHP_SF\System\Router;
 use App\View\Layout\footer;
 use App\View\Layout\header;
+use PHP_SF\Framework\Http\Middleware\auth;
 use PHP_SF\System as PHP_SF;
+use PHP_SF\System\Router;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\ErrorHandler\Debug;
-use PHP_SF\Framework\Http\Middleware\auth;
 
 
-define('start_time', microtime(true));
+define( 'start_time', microtime( true ) );
 
 require_once __DIR__ . '/../Platform/vendor/autoload.php';
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -32,16 +32,15 @@ require_once __DIR__ . '/../functions/functions.php';
 require_once __DIR__ . '/../config/constants.php';
 require_once __DIR__ . '/../config/eventListeners.php';
 
-$dotenv = new Dotenv();
-$dotenv->bootEnv(__DIR__ . '/../.env');
+( new Dotenv )->bootEnv( __DIR__ . '/../.env' );
 
-$kernel = (new PHP_SF\Kernel())
-    ->addTranslationFiles(__DIR__ . '/../lang')
-    ->addControllers(__DIR__ . '/../App/Http/Controller')
-    ->setHeaderTemplateClassName(header::class)
-    ->setFooterTemplateClassName(footer::class)
-    ->setApplicationUserClassName(User::class)
-    ->addTemplatesDirectory('templates', 'App\View');
+$kernel = ( new PHP_SF\Kernel )
+    ->addTranslationFiles( __DIR__ . '/../lang' )
+    ->addControllers( __DIR__ . '/../App/Http/Controller' )
+    ->setHeaderTemplateClassName( header::class )
+    ->setFooterTemplateClassName( footer::class )
+    ->setApplicationUserClassName( User::class )
+    ->addTemplatesDirectory( 'templates', 'App\View' );
 
 
 require_once __DIR__ . '/testing.php';

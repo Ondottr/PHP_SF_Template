@@ -14,38 +14,40 @@
 
 namespace App\Http\Controller;
 
-use PHP_SF\System\Core\Response;
-use PHP_SF\System\Attributes\Route;
-use PHP_SF\Templates\Auth\login_page;
-use PHP_SF\System\Core\RedirectResponse;
-use PHP_SF\Framework\Http\Middleware\api;
-use PHP_SF\Framework\Http\Middleware\auth;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Helpers\Controllers\EntityRepositoriesTrait;
+use App\Http\Middleware\example_middleware;
+use PHP_SF\Framework\Http\Middleware\cron;
+use PHP_SF\System\Attributes\Route;
 use PHP_SF\System\Classes\Abstracts\AbstractController;
+use PHP_SF\System\Core\RedirectResponse;
+use PHP_SF\System\Core\Response;
+use PHP_SF\Templates\Auth\login_page;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
-class ExampleController extends AbstractController
+final class ExampleController extends AbstractController
 {
     use EntityRepositoriesTrait;
 
-    #[Route(url: 'example/page/{$userId}', httpMethod: 'GET', middleware: [auth::class, api::class])]
-    public function example_route(int $userId): Response|RedirectResponse|JsonResponse
-    {
 
+    #[Route( url: 'example/page/{$response_type}', httpMethod: 'GET', middleware: [ cron::class, example_middleware::class ] )]
+    public function example_route( string $response_type ): Response|RedirectResponse|JsonResponse
+    {
         // Return Response
-        return $this->render(login_page::class, [
-            'user' => $this->getUserCachedRepository()->find($userId),
-        ]);
+        if ( $response_type === 'response' )
+            return $this->render( login_page::class, [
+                'user' => $this->userRepository( true )->find( 1 ),
+            ] );
 
         // Returns RedirectResponse
-        //        return $this->redirectTo(routeLink('login_page'), get: [
-        //            'userId' => $userId,
-        //        ]);
+        if ( $response_type === 'redirect_response' )
+            return $this->redirectTo('example_route', withParams: [
+                'response_type' => 'response',
+            ]);
 
-
-        //        return new JsonResponse([
-        //            'userObj' => $user,
-        //        ], JsonResponse::HTTP_OK);
+       // if ( $responseType === 'json_response' )
+            return new JsonResponse(
+                status: JsonResponse::HTTP_NO_CONTENT
+            );
     }
 
 }
