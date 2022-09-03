@@ -14,7 +14,6 @@
  */
 
 export default (countDownDate, element) => {
-    console.log(countDownDate, element);
     // Update the countdown every 1 second
     const x = setInterval(() => {
         // Get today's date and time
@@ -55,6 +54,6 @@ export default (countDownDate, element) => {
 
         // Display the result in the element with id="demo"
         element.html(timeStr);
-
     }, 1000);
 };
+

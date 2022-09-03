@@ -14,7 +14,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 exports.default = (function (countDownDate, element) {
-    console.log(countDownDate, element);
     // Update the countdown every 1 second
     var x = setInterval(function () {
         // Get today's date and time

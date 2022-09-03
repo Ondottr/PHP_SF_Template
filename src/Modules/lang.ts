@@ -13,7 +13,10 @@
 
 import Http from '../Providers/HttpProvider';
 
+// import $ from "jquery"
+
 export async function changeLanguage(e): Promise<void> {
+    // $('#language_change_button').hide()
 
     const lang = e.target.value;
 
@@ -24,3 +27,7 @@ export async function changeLanguage(e): Promise<void> {
     if (response)
         window.location.reload();
 }
+
+// export function showLangChangeButton() {
+//     $('#language_change_button').show()
+// }

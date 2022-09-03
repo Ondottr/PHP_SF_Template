@@ -50,6 +50,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.changeLanguage = void 0;
 var HttpProvider_1 = require("../Providers/HttpProvider");
+// import $ from "jquery"
 function changeLanguage(e) {
     return __awaiter(this, void 0, void 0, function () {
         var lang, response;
@@ -70,3 +71,6 @@ function changeLanguage(e) {
     });
 }
 exports.changeLanguage = changeLanguage;
+// export function showLangChangeButton() {
+//     $('#language_change_button').show()
+// }
