@@ -1,7 +1,7 @@
-<?php declare( strict_types=1 );
-
+<?php /** @noinspection MethodShouldBeFinalInspection */
+declare( strict_types=1 );
 /*
- * Copyright © 2018-2022, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -15,106 +15,99 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Events;
+use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use PHP_SF\System\Interface\UserInterface;
 use PHP_SF\Framework\Http\Middleware\auth;
-use ApiPlatform\Core\Annotation\ApiResource;
-use PHP_SF\System\Classes\Abstracts\AbstractEntity;
-use App\DoctrineLifecycleCallbacks\UserPreRemoveCallback;
 use PHP_SF\System\Attributes\Validator\Constraints as Validate;
 use PHP_SF\System\Attributes\Validator\TranslatablePropertyName;
+use PHP_SF\System\Classes\Abstracts\AbstractEntity;
+use PHP_SF\System\Interface\UserInterface;
 use PHP_SF\System\Traits\ModelProperty\ModelPropertyCreatedAtTrait;
+
 use function is_int;
 
-
-/**
- * @ORM\HasLifecycleCallbacks
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @ORM\Table(name="users", indexes={
- *     @ORM\Index(
- *          name="user_search_idx",
- *          columns={
- *              "id", "login", "password", "email", "user_group_id"
- *          }
- *     )
- * })
- */
-#[ApiResource]
+#[ORM\Entity( repositoryClass: UserRepository::class )]
+#[ORM\Table( name: 'users' )]
+#[ORM\Index( columns: [ 'email' ] )]
 class User extends AbstractEntity implements UserInterface
 {
-
     use ModelPropertyCreatedAtTrait;
 
 
-    /**
-     * @ORM\Column(type="string", unique=true)
-     */
-    #[Validate\Length( min: 2, max: 35 )]
-    #[TranslatablePropertyName( 'user_login_property' )]
-    protected ?string $login;
-
-    /**
-     * @ORM\Column(type="string", unique=true)
-     */
+    # region Basic properties
     #[Validate\Email]
     #[Validate\Length( min: 6, max: 50 )]
-    #[TranslatablePropertyName( 'user_email_property' )]
-    protected ?string $email;
+    #[TranslatablePropertyName( 'E-mail' )]
+    #[ORM\Column( type: 'string', unique: true )]
+    protected string $email;
 
-    /**
-     * @ORM\Column(type="string")
-     */
-    #[TranslatablePropertyName( 'user_password_property' )]
-    protected ?string $password;
+    #[TranslatablePropertyName( 'Password' )]
+    #[ORM\Column( type: 'string' )]
+    protected string $password;
+    # endregion
 
 
-    /**
-     * @ORM\ManyToOne(targetEntity=UserGroup::class, fetch="EAGER")
-     * @ORM\JoinColumn(name="user_group_id", nullable=false, columnDefinition="INT NOT NULL DEFAULT 6")
-     */
-    #[TranslatablePropertyName( 'user_user_group_property' )]
+    # region ManyToOne properties
+    #[TranslatablePropertyName( 'User Group' )]
+    #[ORM\ManyToOne( targetEntity: UserGroup::class )]
+    #[ORM\JoinColumn( name: 'user_group_id', nullable: false, columnDefinition: 'INT NOT NULL DEFAULT 6' )]
     protected int|UserGroup $userGroup;
 
+    # endregion
 
-    public static function isAdmin( ?int $id = null ): bool
+
+    public static function isAdmin( int|null $id = null ): bool
     {
         return self::userGroupCheck( UserGroup::ADMINISTRATOR, $id );
     }
 
-    private static function userGroupCheck( int $userGroup, ?int $id = null ): bool
+    private static function userGroupCheck( int $userGroup, int|null $id = null ): bool
     {
         if ( $id !== null ) {
 
             if ( auth::isAuthenticated() && user()->getId() === $id )
-                return user()
-                           ->getUserGroup()
-                           ->getId() === $userGroup;
+                return user()->getUserGroup()->getId() === $userGroup;
 
-            elseif ( ( $user = em()
-                    ->getRepository( self::class )
-                    ->find( $id ) ) instanceof self )
-                return $user->getUserGroup()
-                            ->getId() === $userGroup;
+            if ( ( $user = self::find( $id ) ) instanceof self )
+                return $user->getUserGroup()->getId() === $userGroup;
 
         }
-        else
-            return auth::isAuthenticated() &&
-                   user()
-                       ->getUserGroup()
-                       ->getId() === $userGroup;
 
-        return false;
+        return auth::isAuthenticated() && user()->getUserGroup()->getId() === $userGroup;
     }
 
+    # region Getters and Setters for Basic properties
+    public function getEmail(): string|null
+    {
+        return $this->email;
+    }
+
+    public function setEmail( string|null $email ): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getPassword(): string|null
+    {
+        return $this->password;
+    }
+
+    public function setPassword( string|null $password ): self
+    {
+        $this->password = password_hash( $password, PASSWORD_DEFAULT );
+
+        return $this;
+    }
+    # endregion
+
+
+    # region Getters and Setters for ManyToOne properties
     public function getUserGroup(): UserGroup
     {
         if ( is_int( $this->userGroup ) )
-            $this->setUserGroup(
-                em()
-                    ->getRepository( UserGroup::class )
-                    ->find( $this->userGroup )
-            );
+            $this->setUserGroup( UserGroup::find( $this->userGroup ) );
 
         return $this->userGroup;
     }
@@ -123,56 +116,11 @@ class User extends AbstractEntity implements UserInterface
     {
         $this->userGroup = $userGroup;
     }
-
-    public static function isModerator( ?int $id = null ): bool
-    {
-        if ( self::userGroupCheck( UserGroup::ADMINISTRATOR, $id ) )
-            return true;
-
-        return self::userGroupCheck( UserGroup::MODERATOR, $id );
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword( ?string $password ): self
-    {
-        $this->password = password_hash( $password, PASSWORD_DEFAULT );
-
-        return $this;
-    }
-
-    public function getLogin(): ?string
-    {
-        return $this->login;
-    }
-
-    public function setLogin( ?string $login ): self
-    {
-        $this->login = $login;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail( ?string $email ): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
+    # endregion
 
 
     public function getLifecycleCallbacks(): array
     {
-        return [
-            Events::preRemove => UserPreRemoveCallback::class,
-        ];
+        return [];
     }
 }

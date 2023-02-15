@@ -17,6 +17,11 @@ services:
   Symfony\Component\Form\FormFactory:
     public: true
 
+  app.cache.adapter.redis:
+    parent: 'cache.adapter.redis'
+    tags:
+      - { name: 'cache.pool', namespace: '%env(resolve:SERVER_PREFIX)%' }
+
   # make classes in App/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name
   App\:
@@ -30,7 +35,7 @@ services:
       - '../App/Kernel.php'
       - '../App/Tests/'
       - '../App/DataFixtures/Purgers/'
-      - '../App/Helpers/Exceptions/'
+      - '../App/Helpers/'
       - '../App/EventListeners/'
       - '../App/Enums/'
       - '../tests/'

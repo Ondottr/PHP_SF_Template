@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /*
- * Copyright © 2018-2022, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -14,28 +14,30 @@
 
 namespace App\Http\Controller;
 
-use App\Helpers\Controllers\EntityRepositoriesTrait;
-use App\Http\Middleware\example_middleware;
-use PHP_SF\Framework\Http\Middleware\cron;
+use App\Entity\User;
+use PHP_SF\Framework\Http\Middleware\admin;
+use PHP_SF\Framework\Http\Middleware\api;
+use PHP_SF\Framework\Http\Middleware\auth;
 use PHP_SF\System\Attributes\Route;
 use PHP_SF\System\Classes\Abstracts\AbstractController;
 use PHP_SF\System\Core\RedirectResponse;
 use PHP_SF\System\Core\Response;
 use PHP_SF\Templates\Auth\login_page;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use PHP_SF\System\Classes\MiddlewareChecks\MiddlewareAny as any;
+use PHP_SF\System\Classes\MiddlewareChecks\MiddlewareAll as all;
+use PHP_SF\System\Classes\MiddlewareChecks\MiddlewareCustom as custom;
 
 final class ExampleController extends AbstractController
 {
-    use EntityRepositoriesTrait;
 
-
-    #[Route( url: 'example/page/{$response_type}', httpMethod: 'GET', middleware: [ cron::class, example_middleware::class ] )]
+    #[Route( url: 'example/page/{$response_type}', httpMethod: 'GET', middleware: [ custom::class => [ all::class => [ auth::class ], any::class => [ api::class, admin::class ] ] ] )]
     public function example_route( string $response_type ): Response|RedirectResponse|JsonResponse
     {
         // Return Response
         if ( $response_type === 'response' )
             return $this->render( login_page::class, [
-                'user' => $this->userRepository( true )->find( 1 ),
+                'user' => User::find( 1 ),
             ] );
 
         // Returns RedirectResponse
@@ -44,7 +46,7 @@ final class ExampleController extends AbstractController
                 'response_type' => 'response',
             ]);
 
-       // if ( $responseType === 'json_response' )
+        // if ( $responseType === 'json_response' )
             return new JsonResponse(
                 status: JsonResponse::HTTP_NO_CONTENT
             );

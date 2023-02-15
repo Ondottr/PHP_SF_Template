@@ -15,3 +15,13 @@
 /.idea
 /public/images/ci/minimaps/*
 /config/constants.php
+
+/public/js/*
+
+!/public/js/bootstrap.min.js
+!/public/js/jquery-3.6.0.min.js
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

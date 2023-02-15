@@ -1,6 +1,7 @@
-<?php declare(strict_types=1);
+<?php /** @noinspection MethodShouldBeFinalInspection */
+declare( strict_types=1 );
 /*
- * Copyright © 2018-2022, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -14,36 +15,24 @@
 
 namespace App\Entity;
 
+use App\Repository\UserGroupRepository;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Core\Annotation\ApiResource;
+use PHP_SF\System\Attributes\Validator\TranslatablePropertyName;
 use PHP_SF\System\Classes\Abstracts\AbstractEntity;
 
 
-/**
- * @ORM\HasLifecycleCallbacks
- * @ORM\Entity(repositoryClass="App\Repository\UserGroupRepository")
- * @ORM\Table(name="user_groups", indexes={
- *     @ORM\Index(
- *          name="user_groups_search_idx",
- *          columns={
- *              "id", "name"
- *          }
- *     )
- * })
- */
-#[ApiResource]
+#[ORM\Entity( repositoryClass: UserGroupRepository::class, readOnly: true )]
+#[ORM\Table( name: 'user_groups' )]
 class UserGroup extends AbstractEntity
 {
-
 
     public const ADMINISTRATOR = 1;
     public const MODERATOR = 3;
     public const USER = 6;
 
 
-    /**
-     * @ORM\Column(type="string", unique=true)
-     */
+    #[TranslatablePropertyName( 'Name' )]
+    #[ORM\Column( type: 'string', unique: true )]
     protected string $name;
 
 
@@ -54,7 +43,6 @@ class UserGroup extends AbstractEntity
 
     public function getLifecycleCallbacks(): array
     {
-        // TODO: Implement getLifecycleCallbacks() method.
         return [];
     }
 

@@ -1,7 +1,6 @@
 <?php declare( strict_types=1 );
-
 /*
- * Copyright © 2018-2022, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -20,7 +19,6 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
-use function array_key_exists;
 use function dirname;
 
 final class Kernel extends BaseKernel
@@ -43,8 +41,7 @@ final class Kernel extends BaseKernel
     private static function setInstance(): void
     {
         self::$instance = new self(
-            $_SERVER['APP_ENV'],
-            array_key_exists( 'APP_DEBUG', $_SERVER ) && $_SERVER['APP_DEBUG']
+            env( 'APP_ENV' ), env( 'APP_DEBUG' ) === 'true' || env( 'APP_DEBUG' ) === '1'
         );
 
         self::$instance->boot();
@@ -68,10 +65,9 @@ final class Kernel extends BaseKernel
         if ( is_file( dirname( __DIR__ ) . '/config/services.yaml' ) ) {
             $container->import( '../config/services.yaml' );
             $container->import( '../config/{services}_' . $this->environment . '.yaml' );
-        }
-        else {
+        } else
             $container->import( '../config/{services}.php' );
-        }
+
     }
 
     protected function configureRoutes( RoutingConfigurator $routes ): void
@@ -79,12 +75,11 @@ final class Kernel extends BaseKernel
         $routes->import( '../config/{routes}/' . $this->environment . '/*.yaml' );
         $routes->import( '../config/{routes}/*.yaml' );
 
-        if ( is_file( dirname( __DIR__ ) . '/config/routes.yaml' ) ) {
+        if ( is_file( dirname( __DIR__ ) . '/config/routes.yaml' ) )
             $routes->import( '../config/routes.yaml' );
-        }
-        else {
+        else
             $routes->import( '../config/{routes}.php' );
-        }
+
     }
 
 }

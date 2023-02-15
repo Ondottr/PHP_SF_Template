@@ -1,7 +1,6 @@
-<?php declare(strict_types=1);
-
+<?php declare( strict_types=1 );
 /*
- * Copyright © 2018-2022, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -21,30 +20,40 @@ use App\Kernel;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-if (empty($_SERVER['SCRIPT_FILENAME']))
+if ( empty( $_SERVER['SCRIPT_FILENAME'] ) )
     return;
 
-$app = static function (): Kernel {
+$app = function (): Kernel {
     return Kernel::getInstance();
 };
 
-if (!is_object($app))
-    throw new TypeError(sprintf('Invalid return value: callable object expected, "%s" returned from "%s".',
-        get_debug_type($app), $_SERVER['SCRIPT_FILENAME']));
+if ( !is_object( $app ) )
+    throw new TypeError(
+        sprintf(
+            'Invalid return value: callable object expected, "%s" returned from "%s".',
+            get_debug_type( $app ),
+            $_SERVER['SCRIPT_FILENAME']
+        )
+    );
 
 $runtime = $_SERVER['APP_RUNTIME'] ?? $_ENV['APP_RUNTIME'] ?? 'Symfony\\Component\\Runtime\\SymfonyRuntime';
-$runtime = new $runtime(($_SERVER['APP_RUNTIME_OPTIONS'] ?? $_ENV['APP_RUNTIME_OPTIONS'] ?? []) + [
+$runtime = new $runtime(
+    ( $_SERVER['APP_RUNTIME_OPTIONS'] ?? $_ENV['APP_RUNTIME_OPTIONS'] ?? [] ) + [
         'project_dir' => __DIR__,
-    ]);
+    ]
+);
 
-[$app, $args] = $runtime
-    ->getResolver($app)
+[
+    $app,
+    $args
+] = $runtime
+    ->getResolver( $app )
     ->resolve();
 
-$app = $app($args);
+$app = $app( $args );
 
 exit(
 $runtime
-    ->getRunner($app)
+    ->getRunner( $app )
     ->run()
 );

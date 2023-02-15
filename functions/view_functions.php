@@ -1,7 +1,6 @@
 <?php declare( strict_types=1 );
-
 /*
- * Copyright © 2018-2022, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -17,13 +16,13 @@
 use JetBrains\PhpStorm\Pure;
 
 #[Pure]
-function numFormat( int|float|null $number ): string
+function numFormat( int|float|null $number, int $decimals = 2, string $decimal_separator = ',', string $thousands_separator = ' ' ): string
 {
     if ( $number === null )
         return '0';
 
     if ( is_float( $number ) )
-        return number_format( $number, 2, ',', ' ' );
+        return number_format( $number, $decimals, $decimal_separator, $thousands_separator );
 
     return number_format( $number, thousands_separator: ' ' );
 }

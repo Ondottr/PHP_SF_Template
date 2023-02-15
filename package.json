@@ -15,10 +15,9 @@
     "url": "https://github.com/Ondottr/PHP_SF_template/issues"
   },
   "dependencies": {
-    "@popperjs/core": "^2.10.2",
+    "@babel/plugin-transform-modules-commonjs": "^7.20.11",
     "async": "^3.2.0",
     "axios": "^0.21.1",
-    "bootstrap": "^5.1.3",
     "jquery": "^3.6.0",
     "moments": "0.0.2"
   },
@@ -28,22 +27,27 @@
     "@types/bootstrap": "^5.1.6",
     "@types/jquery": "^3.5.9",
     "babel-loader": "^8.2.3",
+    "css-loader": "^6.7.3",
     "dotenv-webpack": "^7.0.2",
     "prettier": "2.4.1",
-    "react-bootstrap": "^2.0.3",
-    "webpack": "^5.32.0",
+    "webpack": "^5.75.0",
+    "sass": "^1.57.1",
+    "sass-loader": "^13.2.0",
+    "style-loader": "^3.3.1",
+    "terser-webpack-plugin": "^5.3.6",
     "webpack-cli": "^4.6.0"
   },
   "homepage": "https://github.com/Ondottr/PHP_SF_template/blob/master/README.md",
   "main": "index.js",
-  "name": "@nations-original/php-sf-template",
+  "name": "@nations-original/work-time",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Ondottr/PHP_SF_template.git"
   },
   "scripts": {
-    "dev": "webpack --mode development",
-    "build": "webpack --mode production"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --watch --env mode=development --env cache=0 --progress",
+    "build": "webpack --env mode=production --env cache --progress"
   },
   "version": "v1.0.1-dev"
 }

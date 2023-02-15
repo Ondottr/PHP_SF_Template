@@ -29,10 +29,7 @@ export default class CKEditor implements CKEditorObj {
         }
 
         this._instance = value;
-        if (
-            process.env.APP_ENV === process.env.DEV_ENV ||
-            process.env.APP_ENV === process.env.TEST_ENV
-        )
+        if (process.env.APP_ENV === 'dev' || process.env.APP_ENV === 'test')
             console.log(
                 'CKEditor class initialized! here is CKEditor class:',
                 CKEditor.instance,

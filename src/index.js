@@ -1,3 +1,7 @@
-const user = require('./Classes/User');
+import "./style/_app.scss";
 
-exports.fetchUser = user.fetchUser;
+// const fetchUser = require( './Classes/User' ).fetchUser;
+// const router = require( './Helpers/router' );
+
+// export {fetchUser, router};
+// export {router};

@@ -1,8 +1,7 @@
 #!/usr/bin/env php
 <?php declare( strict_types=1 );
-
 /*
- * Copyright © 2018-2022, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,7 +19,6 @@
 use App\Entity\User;
 use App\Kernel;
 use PHP_SF\System as PHP_SF;
-use PHP_SF\System\Database\DoctrineEntityManager;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Dotenv\Dotenv;
 
@@ -32,18 +30,16 @@ require_once __DIR__ . '/../functions/functions.php';
 require_once __DIR__ . '/../config/constants.php';
 
 ( new Dotenv )
-    ->bootEnv( __DIR__ . '/../.env' );
+  ->bootEnv( __DIR__ . '/../.env' );
 
 $kernel = ( new PHP_SF\Kernel() )
-    ->addTranslationFiles( __DIR__ . '/../lang' )
-    ->addControllers( __DIR__ . '/../App/Http/Controller' )
-    ->setApplicationUserClassName( User::class );
+  ->addTranslationFiles( __DIR__ . '/../lang' )
+  ->addControllers( __DIR__ . '/../App/Http/Controller' )
+  ->setApplicationUserClassName( User::class );
 
-DoctrineEntityManager::disableCache();
+return function () {
+  $kernel = Kernel::getInstance();
+  $kernel->boot();
 
-return static function () {
-    $kernel = Kernel::getInstance();
-    $kernel->boot();
-
-    return new Application( $kernel );
+  return new Application( $kernel );
 };

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018-2022, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -43,7 +43,7 @@ function parseErrorResponse(error) {
             const errorMsg =
                 'Error: The server responded with a status code that falls out of the range of 2xx';
 
-            if (process.env.APP_ENV === process.env.DEV_ENV) {
+            if (process.env.APP_ENV === 'dev') {
                 console.log('=============================>>', errorMsg);
 
                 console.log(
@@ -61,7 +61,7 @@ function parseErrorResponse(error) {
         // The request was made but ...
         const errorMsg = 'Error: No response was received';
 
-        if (process.env.APP_ENV === process.env.DEV_ENV) {
+        if (process.env.APP_ENV === 'dev') {
             console.log('=============================>>', errorMsg);
             console.log(
                 'Request:',
@@ -76,7 +76,7 @@ function parseErrorResponse(error) {
         const errorMsg =
             'Something happened in setting up the request that triggered an Error';
 
-        if (process.env.APP_ENV === process.env.DEV_ENV) {
+        if (process.env.APP_ENV === 'dev') {
             console.log('=============================>>', `${errorMsg}`);
             console.log(error.message, 'Request config:', error.config);
         } else console.log(errorMsg);

@@ -1,7 +1,6 @@
 <?php declare( strict_types=1 );
-
 /*
- * Copyright © 2018-2022, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -30,13 +29,5 @@ final class UserRepository extends AbstractEntityRepository
     public function __construct()
     {
         parent::__construct( em(), new ClassMetadata( User::class ) );
-    }
-
-    /**
-     * @deprecated
-     */
-    protected static function getEntityClass(): string
-    {
-        return User::class;
     }
 }

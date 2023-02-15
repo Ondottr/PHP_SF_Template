@@ -2,7 +2,6 @@ import Http from '../Providers/HttpProvider';
 
 interface userObj {
     id: bigint;
-    ep: number;
     login: string;
     email: string;
     userGroup: number;
@@ -10,7 +9,6 @@ interface userObj {
 
 export default class User implements userObj {
     private readonly _id: bigint;
-    private readonly _ep: number;
     private readonly _login: string;
     private readonly _email: string;
     private readonly _userGroup: number;
@@ -21,7 +19,6 @@ export default class User implements userObj {
      */
     constructor(userObj: userObj) {
         this._id = userObj.id;
-        this._ep = userObj.ep;
         this._login = userObj.login;
         this._email = userObj.email;
         this._userGroup = userObj.userGroup;
@@ -42,8 +39,7 @@ export default class User implements userObj {
 
         this._instance = value;
         if (
-            process.env.APP_ENV === process.env.DEV_ENV ||
-            process.env.APP_ENV === process.env.TEST_ENV
+            process.env.APP_ENV === 'dev' || process.env.APP_ENV === 'test'
         )
             console.log('User class initialized! here is User class:', User.instance);
     }
@@ -58,10 +54,6 @@ export default class User implements userObj {
 
     get id(): bigint {
         return this._id;
-    }
-
-    get ep(): number {
-        return this._ep;
     }
 
     public get login(): string {

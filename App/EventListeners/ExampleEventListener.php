@@ -1,6 +1,6 @@
-<?php declare(strict_types=1);
+<?php declare( strict_types=1 );
 /*
- * Copyright © 2018-2022, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -14,24 +14,29 @@
 
 namespace App\EventListeners;
 
-use PHP_SF\Framework\Http\Middleware\auth;
+use PHP_SF\Framework\Http\Middleware\api;
+use PHP_SF\System\Classes\Abstracts\AbstractController;
 use PHP_SF\System\Classes\Abstracts\AbstractEventListener;
+use PHP_SF\System\Classes\Abstracts\Middleware;
+use Symfony\Component\HttpFoundation\Request;
 
-class ExampleEventListener extends AbstractEventListener
+final class ExampleEventListener extends AbstractEventListener
 {
 
     public function getListeners(): array
     {
         return [
             // Method “listener” will be executed after loading the “auth” middleware
-            auth::class => method(__CLASS__, 'listener'),
+            api::class => 'listener',
         ];
     }
 
 
-    private function listener(): void
+    private function listener( AbstractController $controller, Middleware $middleware, Request $request ): void
     {
-
+//        dump( $controller, $middleware, $request );
+//
+//        trigger_error( 'This is an example of an event listener', E_USER_NOTICE );
     }
 
 }

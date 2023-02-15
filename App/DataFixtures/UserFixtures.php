@@ -1,7 +1,6 @@
 <?php declare( strict_types=1 );
-
 /*
- * Copyright © 2018-2022, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -15,28 +14,26 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\User;
 use App\Entity\UserGroup;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use PHP_SF\System\Kernel;
+use PHP_SF\System\Core\DateTime;
 
 
-class UserFixtures extends Fixture implements DependentFixtureInterface
+final class UserFixtures extends Fixture implements DependentFixtureInterface
 {
 
     public function load( ObjectManager $manager ): void
     {
-        $user = new ( Kernel::getApplicationUserClassName() );
+        $user = new User;
 
-        $user->setLogin( 'Administrator' );
-        $user->setPassword( env( 'ADMIN_PASSWORD' ) );
-        $user->setEmail( env( 'ADMIN_EMAIL' ) );
-        $user->setUserGroup(
-            em( false )
-                ->getRepository( UserGroup::class )
-                ->find( 1 )
-        );
+        $user
+            ->setEmail( env( 'ADMIN_EMAIL' ) )
+            ->setPassword( env( 'ADMIN_PASSWORD' ) )
+            ->setCreatedAt( new DateTime )
+            ->setUserGroup( UserGroup::find( UserGroup::ADMINISTRATOR ) );
 
         em()->persist( $user );
         em()->flushUsingTransaction( $user );
