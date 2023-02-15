@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php /** @noinspection PhpUnused */
+declare(strict_types=1);
 /*
  * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
@@ -15,6 +16,8 @@
 namespace App\Http\Controller;
 
 use App\Entity\User;
+use App\Http\Middleware\blank;
+use App\View\welcome_page;
 use PHP_SF\Framework\Http\Middleware\admin;
 use PHP_SF\Framework\Http\Middleware\api;
 use PHP_SF\Framework\Http\Middleware\auth;
@@ -30,6 +33,12 @@ use PHP_SF\System\Classes\MiddlewareChecks\MiddlewareCustom as custom;
 
 final class ExampleController extends AbstractController
 {
+
+    #[Route( url: '/', httpMethod: 'GET', middleware: [ blank::class ] ) ]
+    public function welcome_page(): Response
+    {
+        return $this->render( welcome_page::class );
+    }
 
     #[Route( url: 'example/page/{$response_type}', httpMethod: 'GET', middleware: [ custom::class => [ all::class => [ auth::class ], any::class => [ api::class, admin::class ] ] ] )]
     public function example_route( string $response_type ): Response|RedirectResponse|JsonResponse
