@@ -170,14 +170,14 @@ set_app_environment() {
   php -r "file_put_contents('.env', preg_replace('/^#APP_ENV=.*/m', 'APP_ENV=\"$application_environment\"', file_get_contents('.env')));"
 
   # Ask to enable debug mode
-  echo "Enable debug mode? true|false (default false)"
+  echo "Enable debug mode? y|N"
   read debug_mode
   # Check if the debug mode is empty and set default value
   if [ -z "$debug_mode" ]; then
     debug_mode="false"
   fi
 
-  if [ "$debug_mode" = "true" ]; then
+  if [ "$debug_mode" = "y" ] || [ "$debug_mode" = "Y" ]; then
     debug_mode="true"
   else
     debug_mode="false"
@@ -312,14 +312,14 @@ if grep -q "^#const SERVER_IP" config/constants.php; then
 fi
 
 set_dev_mode_and_templates_cache() {
-  echo "Enable templates cache? true|false (default true)"
+  echo "Enable templates cache? Y|n"
   read templates_cache_enabled
   # Check if the templates cache enabled is empty and set default value
   if [ -z "$templates_cache_enabled" ]; then
     templates_cache_enabled="true"
   fi
 
-  if [ "$templates_cache_enabled" = "true" ]; then
+  if [ "$templates_cache_enabled" = "y" ] || [ "$templates_cache_enabled" = "Y" ]; then
     templates_cache_enabled="true"
   else
     templates_cache_enabled="false"
@@ -328,14 +328,14 @@ set_dev_mode_and_templates_cache() {
   php -r "file_put_contents('config/constants.php', preg_replace('/^#const TEMPLATES_CACHE_ENABLED.*/m', 'const TEMPLATES_CACHE_ENABLED = $templates_cache_enabled;', file_get_contents('config/constants.php')));"
 
   # set DEV_MODE constant
-  echo "Enable dev mode? true|false (default false)"
+  echo "Enable dev mode? y|N"
   read dev_mode
   # Check if the dev mode is empty and set default value
   if [ -z "$dev_mode" ]; then
     dev_mode="false"
   fi
 
-  if [ "$dev_mode" = "true" ]; then
+  if [ "$dev_mode" = "y" ] || [ "$dev_mode" = "Y" ]; then
     dev_mode="true"
   else
     dev_mode="false"
@@ -428,17 +428,17 @@ fi
 echo "Create database? [Y/n]"
 read answer
 # If the answer is empty or y, create the database
-if [ -z "$answer" ] || [ "$answer" = "y" ]; then
+if [ -z "$answer" ] || [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
   php bin/console doctrine:schema:drop -f
   php bin/console doctrine:schema:create
 
   echo "Database schema created successfully"
 
   # Ask if is needed to run fixtures
-  echo "Run fixtures? y|n (default y)"
+  echo "Run fixtures? Y|n"
   read answer
   # If the answer is empty or y, run fixtures
-  if [ -z "$answer" ] || [ "$answer" = "y" ]; then
+  if [ -z "$answer" ] || [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
     php bin/console doctrine:fixtures:custom-loader -f
 
     echo "Fixtures loaded successfully"
