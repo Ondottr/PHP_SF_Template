@@ -1,6 +1,7 @@
 <?php /** @noinspection PhpMissingParentCallCommonInspection */
+declare( strict_types=1 );
 /*
- * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2024, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -12,26 +13,18 @@
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-declare( strict_types=1 );
-
 namespace App\Command;
 
-use App\DataFixtures\Purgers\CustomPurgerInterface;
+use App\Abstraction\Interfaces\CustomPurgerInterface;
 use Doctrine\Bundle\DoctrineBundle\Command\DoctrineCommand;
 use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 use Doctrine\Bundle\FixturesBundle\Purger\ORMPurgerFactory;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use function assert;
-use function implode;
-use function sprintf;
-
 
 /**
  * Load data fixtures from bundles.
@@ -65,11 +58,8 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
     {
         $ui = new SymfonyStyle( $input, $output );
 
-        $em = $this->getDoctrine()->getManager( $input->getOption( 'em' ) );
-        assert( $em instanceof EntityManagerInterface );
-
         if ( !$input->getOption( 'force' ) )
-            if ( !$ui->confirm( sprintf( 'Careful, database "%s" will be purged. Do you want to continue?', $em->getConnection()->getDatabase() ), !$input->isInteractive() ) )
+            if ( !$ui->confirm( sprintf( 'Careful, database "%s" will be purged. Do you want to continue?', em()->getConnection()->getDatabase() ), !$input->isInteractive() ) )
                 return 0;
 
 
@@ -93,21 +83,18 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
             if ( $purger instanceof CustomPurgerInterface === false )
                 $purger = $purger->createForEntityManager(
                     $input->getOption( 'em' ),
-                    $em,
+                    em(),
                     $input->getOption( 'purge-exclusions' ),
                     $input->getOption( 'purge-with-truncate' )
                 );
 
-            $executor = new ORMExecutor( $em, $purger );
+            $executor = new ORMExecutor( em(), $purger );
             $executor->setLogger( function ( $message ) use ( $ui ): void {
                 $ui->text( sprintf( '  <comment>></comment> <info>%s</info>', $message ) );
             } );
         }
 
         $executor->execute( $fixtures );
-
-        $fixturesTriggersCommand = $this->getApplication()?->find( 'doctrine:fixtures:create-triggers' );
-        $fixturesTriggersCommand->run( new ArrayInput( [] ), $output );
 
         return 0;
     }

@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 /*
- * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2024, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -14,36 +14,40 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\User;
-use App\Entity\UserGroup;
-use Doctrine\Bundle\FixturesBundle\Fixture;
+use App\Abstraction\Classes\AbstractDatabaseFixture;
+use App\Enums\UserGroupEnum;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use Doctrine\Persistence\ObjectManager;
-use PHP_SF\System\Core\DateTime;
 
-
-final class UserFixtures extends Fixture implements DependentFixtureInterface
+final class UserFixtures extends AbstractDatabaseFixture implements DependentFixtureInterface
 {
-
-    public function load( ObjectManager $manager ): void
-    {
-        $user = new User;
-
-        $user
-            ->setEmail( env( 'ADMIN_EMAIL' ) )
-            ->setPassword( env( 'ADMIN_PASSWORD' ) )
-            ->setCreatedAt( new DateTime )
-            ->setUserGroup( UserGroup::find( UserGroup::ADMINISTRATOR ) );
-
-        em()->persist( $user );
-        em()->flushUsingTransaction( $user );
-    }
 
     public function getDependencies(): array
     {
         return [
             UserGroupFixtures::class,
         ];
+    }
+
+    protected function loadTable(): array|string
+    {
+        return [
+            sprintf(
+                "INSERT INTO users (id, email, password, user_group_id) VALUES (1, '%s', '%s', %s);",
+                env('ADMIN_EMAIL'),
+                password_hash(env('ADMIN_PASSWORD'), PASSWORD_DEFAULT),
+                UserGroupEnum::ADMINISTRATOR->getId()
+            ),
+        ];
+    }
+
+    protected function loadFunctions(): array|string
+    {
+        return file_get_contents(__DIR__ . '/../../Doctrine/fixtures/user_prevent_admin_deletion_function.sql');
+    }
+
+    protected function loadTriggers(): array|string
+    {
+        return file_get_contents(__DIR__ . '/../../Doctrine/fixtures/user_prevent_admin_deletion_trigger.sql');
     }
 
 }

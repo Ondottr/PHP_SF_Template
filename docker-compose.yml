@@ -1,0 +1,46 @@
+version: '3.1'
+services:
+  memcached:
+    container_name: memcached_main_container
+    image: 'memcached:alpine'
+    ports:
+      - '7001:11211'
+
+  redis:
+    container_name: redis_main_container
+    image: 'redis:alpine'
+    ports:
+      - '7002:6379'
+
+  postgres:
+    container_name: postgres_main_container
+    image: 'postgres:16-alpine'
+    working_dir: /application
+    volumes:
+      - '.:/application'
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=nations-original-app
+    ports:
+      - '7003:5432'
+
+  rabbitmq:
+    container_name: rabbitmq_main_container
+    image: 'rabbitmq:latest'
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+    ports:
+      - '7004:5672'
+
+  mysql:
+    container_name: mysql_main_container
+    image: 'mysql:latest'
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=nations-original-app
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+    ports:
+      - '7005:3306'

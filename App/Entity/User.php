@@ -1,7 +1,7 @@
 <?php /** @noinspection MethodShouldBeFinalInspection */
 declare( strict_types=1 );
 /*
- * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2024, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -15,12 +15,16 @@ declare( strict_types=1 );
 
 namespace App\Entity;
 
+use App\DoctrineLifecycleCallbacks\UserPreRemoveCallback;
+use App\Enums\UserGroupEnum;
 use App\Repository\UserRepository;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping as ORM;
 use PHP_SF\Framework\Http\Middleware\auth;
 use PHP_SF\System\Attributes\Validator\Constraints as Validate;
 use PHP_SF\System\Attributes\Validator\TranslatablePropertyName;
 use PHP_SF\System\Classes\Abstracts\AbstractEntity;
+use PHP_SF\System\Core\DateTime;
 use PHP_SF\System\Interface\UserInterface;
 use PHP_SF\System\Traits\ModelProperty\ModelPropertyCreatedAtTrait;
 
@@ -28,6 +32,7 @@ use function is_int;
 
 #[ORM\Entity( repositoryClass: UserRepository::class )]
 #[ORM\Table( name: 'users' )]
+#[ORM\Cache( usage: 'READ_WRITE' )]
 #[ORM\Index( columns: [ 'email' ] )]
 class User extends AbstractEntity implements UserInterface
 {
@@ -56,25 +61,32 @@ class User extends AbstractEntity implements UserInterface
     # endregion
 
 
+    public function __construct()
+    {
+        $this->setCreatedAt( new DateTime );
+    }
+
+
+    # region Entity related methods
     public static function isAdmin( int|null $id = null ): bool
     {
-        return self::userGroupCheck( UserGroup::ADMINISTRATOR, $id );
+        return self::userGroupCheck( UserGroupEnum::ADMINISTRATOR, $id );
     }
 
-    private static function userGroupCheck( int $userGroup, int|null $id = null ): bool
+    private static function userGroupCheck( UserGroupEnum $userGroup, int|null $id = null ): bool
     {
         if ( $id !== null ) {
-
             if ( auth::isAuthenticated() && user()->getId() === $id )
-                return user()->getUserGroup()->getId() === $userGroup;
+                return user()->getUserGroup()->getId() === $userGroup->getId();
 
             if ( ( $user = self::find( $id ) ) instanceof self )
-                return $user->getUserGroup()->getId() === $userGroup;
-
+                return $user->getUserGroup()->getId() === $userGroup->getId();
         }
 
-        return auth::isAuthenticated() && user()->getUserGroup()->getId() === $userGroup;
+        return auth::isAuthenticated() && user()->getUserGroup()->getId() === $userGroup->getId();
     }
+    # endregion
+
 
     # region Getters and Setters for Basic properties
     public function getEmail(): string|null
@@ -94,9 +106,9 @@ class User extends AbstractEntity implements UserInterface
         return $this->password;
     }
 
-    public function setPassword( string|null $password ): self
+    public function setPassword( #[SensitiveParameter] string|null $password ): self
     {
-        $this->password = password_hash( $password, PASSWORD_DEFAULT );
+        $this->password = password_hash( $password, PASSWORD_ARGON2I );
 
         return $this;
     }
@@ -112,15 +124,20 @@ class User extends AbstractEntity implements UserInterface
         return $this->userGroup;
     }
 
-    public function setUserGroup( int|UserGroup $userGroup ): void
+    public function setUserGroup( int|UserGroup $userGroup ): self
     {
         $this->userGroup = $userGroup;
+
+        return $this;
     }
     # endregion
 
 
     public function getLifecycleCallbacks(): array
     {
-        return [];
+        return [
+            Events::postRemove => UserPreRemoveCallback::class,
+        ];
     }
+
 }

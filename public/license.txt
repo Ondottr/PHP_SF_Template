@@ -1,0 +1,30 @@
+========================================
+SOFTWARE LICENSE AGREEMENT
+
+IMPORTANT - READ CAREFULLY: This Software License Agreement ("Agreement") is a legal agreement between you (either an individual or a single entity) and Nation Original sp z o.o. for the software product identified above, which includes computer software and may include associated media, printed materials, and "online" or electronic documentation (the "Software"). By downloading, installing, copying, or otherwise using the Software, you agree to be bound by the terms of this Agreement. If you do not agree to the terms of this Agreement, do not download, install, copy, or use the Software.
+
+    LICENSE GRANT
+    Subject to the terms and conditions of this Agreement, Nation Original sp z o.o. grants you a non-exclusive, non-transferable, revocable license to use the Software solely for your personal, non-commercial use. You may not sell, rent, lease, sublicense, distribute, transfer, copy, reproduce, display, modify, or create derivative works of the Software or any part thereof.
+
+    RESTRICTIONS
+    You may not reverse engineer, decompile, disassemble, or otherwise attempt to discover the source code of the Software or any part thereof, except and only to the extent that such activity is expressly permitted by applicable law. You may not use any automated or manual process to scrape or extract data from the Software or any part thereof.
+
+    INTELLECTUAL PROPERTY
+    The Software and all copyrights, trademarks, patents, trade secrets, and other intellectual property rights therein are and shall remain the sole and exclusive property of Nation Original sp z o.o.. This Agreement does not convey to you any interest in or to the Software, but only a limited right of use revocable in accordance with the terms of this Agreement.
+
+    DISCLAIMER OF WARRANTY
+    THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. Nation Original sp z o.o. DOES NOT WARRANT THAT THE SOFTWARE WILL MEET YOUR REQUIREMENTS OR THAT THE OPERATION OF THE SOFTWARE WILL BE UNINTERRUPTED OR ERROR-FREE.
+
+    LIMITATION OF LIABILITY
+    IN NO EVENT SHALL Nation Original sp z o.o. BE LIABLE FOR ANY INDIRECT, SPECIAL, INCIDENTAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING OUT OF OR IN CONNECTION WITH THE USE OR INABILITY TO USE THE SOFTWARE, WHETHER BASED ON CONTRACT, TORT, NEGLIGENCE, STRICT LIABILITY, OR OTHERWISE, EVEN IF Nation Original sp z o.o. HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+    TERMINATION
+    This Agreement shall terminate automatically if you breach any of its terms. In such event, you must immediately cease all use of the Software and destroy all copies thereof. The provisions of Sections 2, 3, 4, 5, and 6 shall survive termination of this Agreement.
+
+    GOVERNING LAW AND JURISDICTION
+    This Agreement shall be governed by and construed in accordance with the laws of Poland, without regard to its conflict of law provisions. The parties hereby submit to the exclusive jurisdiction of the courts of Poland for any dispute arising under or in connection with this Agreement.
+
+    ENTIRE AGREEMENT
+    This Agreement constitutes the entire agreement between you and Nation Original sp z o.o. with respect to the Software and supersedes all prior or contemporaneous communications and proposals, whether oral or written, between the parties with respect to the Software.
+
+========================================

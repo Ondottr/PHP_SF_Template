@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 /*
- * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2024, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -13,6 +13,7 @@
  */
 
 use App\Entity\User;
+use App\Kernel;
 use PHP_SF\Framework\Http\Middleware\auth;
 use PHP_SF\System as PHP_SF;
 use PHP_SF\System\Router;
@@ -37,8 +38,10 @@ require_once __DIR__ . '/../Platform/vendor/autoload.php';
 require_once __DIR__ . '/../functions/functions.php';
 require_once __DIR__ . '/../config/constants.php';
 require_once __DIR__ . '/../vendor/autoload.php';
+
 if ( DEV_MODE )
     Debug::enable();
+
 require_once __DIR__ . '/../config/eventListeners.php';
 
 ( new Dotenv )->bootEnv( __DIR__ . '/../.env' );
@@ -55,5 +58,7 @@ require_once __DIR__ . '/testing.php';
 
 auth::logInUser();
 Router::init( $kernel );
+
+Kernel::addRoutesToSymfony();
 
 require_once __DIR__ . '/../autoload_runtime.php';

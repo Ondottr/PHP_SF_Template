@@ -1,7 +1,6 @@
-import "./style/_app.scss";
+import './style/_app.scss';
 
-// const fetchUser = require( './Classes/User' ).fetchUser;
-// const router = require( './Helpers/router' );
-
-// export {fetchUser, router};
-// export {router};
+// Wait for DOM to load before loading anything else
+document.addEventListener('DOMContentLoaded', async () => {
+  // todo
+});

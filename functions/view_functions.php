@@ -1,6 +1,6 @@
 <?php declare( strict_types=1 );
 /*
- * Copyright © 2018-2023, Nations Original Sp. z o.o. <contact@nations-original.com>
+ * Copyright © 2018-2024, Nations Original Sp. z o.o. <contact@nations-original.com>
  *
  * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
  * granted, provided that the above copyright notice and this permission notice appear in all copies.
@@ -25,4 +25,17 @@ function numFormat( int|float|null $number, int $decimals = 2, string $decimal_s
         return number_format( $number, $decimals, $decimal_separator, $thousands_separator );
 
     return number_format( $number, thousands_separator: ' ' );
+}
+
+
+function checkbox( string $name, bool $checked = false, string $id = null, bool $isRequired = false ): string
+{
+    $id         ??= $name;
+    $checked    = $checked ? 'checked' : '';
+    $isRequired = $isRequired ? 'required' : '';
+
+    return <<<HTML
+<input type="checkbox" id="$id" name="$name" style="display: none;" $checked $isRequired>
+<span class="checkbox-icon"></span>
+HTML;
 }

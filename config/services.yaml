@@ -6,7 +6,7 @@
 parameters:
 
 services:
-  # default configuration for services in *this* file
+    # default configuration for services in *this* file
   _defaults:
     autowire: true      # Automatically injects dependencies in your services.
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
@@ -27,13 +27,13 @@ services:
   App\:
     resource: '../App/'
     exclude:
-      - '../App/Http/'
+      - '../App/Http/Controllers'
+      - '../App/Http/Middlewares'
       - '../App/DoctrineLifecycleCallbacks/'
       - '../App/DependencyInjection/'
       - '../App/Entity/'
       - '../App/Router.php'
       - '../App/Kernel.php'
-      - '../App/Tests/'
       - '../App/DataFixtures/Purgers/'
       - '../App/Helpers/'
       - '../App/EventListeners/'
