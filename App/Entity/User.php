@@ -56,25 +56,26 @@ class User extends AbstractEntity implements UserInterface
     # endregion
 
 
+    # region Entity related methods
     public static function isAdmin( int|null $id = null ): bool
     {
-        return self::userGroupCheck( UserGroup::ADMINISTRATOR, $id );
+        return self::userGroupCheck( UserGroupEnum::ADMINISTRATOR, $id );
     }
 
-    private static function userGroupCheck( int $userGroup, int|null $id = null ): bool
+    private static function userGroupCheck( UserGroupEnum $userGroup, int|null $id = null ): bool
     {
         if ( $id !== null ) {
-
             if ( auth::isAuthenticated() && user()->getId() === $id )
-                return user()->getUserGroup()->getId() === $userGroup;
+                return user()->getUserGroup()->getId() === $userGroup->getId();
 
             if ( ( $user = self::find( $id ) ) instanceof self )
-                return $user->getUserGroup()->getId() === $userGroup;
-
+                return $user->getUserGroup()->getId() === $userGroup->getId();
         }
 
-        return auth::isAuthenticated() && user()->getUserGroup()->getId() === $userGroup;
+        return auth::isAuthenticated() && user()->getUserGroup()->getId() === $userGroup->getId();
     }
+    # endregion
+
 
     # region Getters and Setters for Basic properties
     public function getEmail(): string|null
@@ -94,9 +95,9 @@ class User extends AbstractEntity implements UserInterface
         return $this->password;
     }
 
-    public function setPassword( string|null $password ): self
+    public function setPassword( #[SensitiveParameter] string|null $password ): self
     {
-        $this->password = password_hash( $password, PASSWORD_DEFAULT );
+        $this->password = password_hash( $password, PASSWORD_ARGON2I );
 
         return $this;
     }

@@ -26,11 +26,6 @@ use PHP_SF\System\Classes\Abstracts\AbstractEntity;
 class UserGroup extends AbstractEntity
 {
 
-    public const ADMINISTRATOR = 1;
-    public const MODERATOR = 3;
-    public const USER = 6;
-
-
     #[TranslatablePropertyName( 'Name' )]
     #[ORM\Column( type: 'string', unique: true )]
     protected string $name;

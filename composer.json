@@ -15,7 +15,7 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "App\\Tests\\": "tests/"
+      "Tests\\": "tests/"
     }
   },
   "config": {
@@ -36,7 +36,7 @@
   "extra": {
     "symfony": {
       "allow-contrib": false,
-      "require": "6.*"
+      "require": "7.*"
     }
   },
   "license": "ISC",
@@ -49,7 +49,8 @@
     "symfony/polyfill-php72": "*"
   },
   "require": {
-    "php": "8.1.*",
+    "php": "8.3.*",
+    "ext-amqp": "*",
     "ext-apcu": "*",
     "ext-ctype": "*",
     "ext-curl": "*",
@@ -59,63 +60,57 @@
     "ext-intl": "*",
     "ext-json": "*",
     "ext-memcached": "*",
+    "ext-posix": "*",
     "ext-redis": "*",
+    "ext-yaml": "*",
+    "ext-zend-opcache": "*",
     "ext-zlib": "*",
     "composer/package-versions-deprecated": "1.11.99.4",
+    "nelmio/api-doc-bundle": "^4.16",
+    "php-amqplib/php-amqplib": "^3.6",
     "phpdocumentor/reflection-docblock": "^5.3",
+    "phpstan/phpdoc-parser": "^1.24",
     "predis/predis": "^1.1",
     "psr/simple-cache": "^3.0",
-    "symfony/asset": "6.*",
-    "symfony/console": "6.*",
-    "symfony/dotenv": "6.*",
-    "symfony/expression-language": "6.*",
+    "symfony/amqp-messenger": "7.*",
+    "symfony/asset": "7.*",
+    "symfony/console": "7.*",
+    "symfony/dotenv": "7.*",
+    "symfony/expression-language": "7.*",
     "symfony/flex": "^1.17|^2",
-    "symfony/form": "6.*",
-    "symfony/framework-bundle": "6.*",
-    "symfony/http-client": "6.*",
-    "symfony/intl": "6.*",
-    "symfony/mailer": "6.*",
-    "symfony/mime": "6.*",
-    "symfony/notifier": "6.*",
-    "symfony/process": "6.*",
-    "symfony/property-access": "6.*",
-    "symfony/property-info": "6.*",
-    "symfony/proxy-manager-bridge": "6.*",
-    "symfony/runtime": "6.*",
-    "symfony/serializer": "6.*",
-    "symfony/string": "6.*",
-    "symfony/validator": "6.*",
-    "symfony/web-link": "6.*",
-    "symfony/yaml": "6.*",
-    "twig/extra-bundle": "^2.12|^3.0"
+    "symfony/framework-bundle": "7.*",
+    "symfony/http-client": "7.*",
+    "symfony/intl": "7.*",
+    "symfony/messenger": "7.*",
+    "symfony/mime": "7.*",
+    "symfony/process": "7.*",
+    "symfony/property-access": "7.*",
+    "symfony/property-info": "7.*",
+    "symfony/proxy-manager-bridge": "*",
+    "symfony/runtime": "7.*",
+    "symfony/serializer": "7.*",
+    "symfony/string": "7.*",
+    "symfony/twig-bundle": "7.*",
+    "symfony/web-link": "7.*",
+    "symfony/yaml": "7.*",
+    "twig/extra-bundle": "^2.12|^3.0",
+    "twig/twig": "^2.12|^3.0"
   },
   "require-dev": {
     "doctrine/doctrine-fixtures-bundle": "^3.4",
-    "phpunit/phpunit": "^9.5",
+    "phpunit/php-code-coverage": "10.*",
+    "phpunit/phpunit": "10.*",
     "roave/security-advisories": "dev-latest",
-    "symfony/browser-kit": "6.*",
-    "symfony/css-selector": "6.*",
-    "symfony/debug-bundle": "6.*",
+    "symfony/browser-kit": "7.*",
+    "symfony/css-selector": "7.*",
+    "symfony/debug-bundle": "7.*",
     "symfony/maker-bundle": "^1.43",
     "symfony/phpunit-bridge": "^6.2",
-    "symfony/stopwatch": "6.*",
-    "symfony/thanks": "^1.2"
+    "symfony/stopwatch": "7.*",
+    "symfony/thanks": "^1.2",
+    "symfony/web-profiler-bundle": "7.*"
   },
   "scripts": {
-    "auto-scripts": {
-      "assets:install %PUBLIC_DIR%": "symfony-cmd",
-      "cache:clear": "symfony-cmd",
-      "app:cache:clear": "symfony-cmd"
-    },
-    "post-install-cmd": [
-      "@auto-scripts"
-    ],
-    "post-update-cmd": [
-      "@auto-scripts"
-    ],
-    "post-autoload-dump": [
-      "@auto-scripts"
-    ]
   },
   "type": "project"
 }
