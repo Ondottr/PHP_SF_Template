@@ -5,13 +5,9 @@ framework:
     transports:
       async: 'in-memory://'
       default_queue: '%env(MESSENGER_TRANSPORT_DSN)%/default_queue'
-      logs_queue: '%env(MESSENGER_TRANSPORT_DSN)%/logs_queue'
-      notifications_queue: '%env(MESSENGER_TRANSPORT_DSN)%/notifications_queue'
 
     routing:
       'stdClass': default_queue
-      'App\Message\SendLogMessage': logs_queue
-      'App\Message\SendNotificationMessage': notifications_queue
 
 # when@test:
 #    framework:
