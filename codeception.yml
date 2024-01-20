@@ -1,0 +1,24 @@
+namespace: Tests
+support_namespace: Support
+paths:
+    tests: tests
+    output: tests/_output
+    data: tests/_data
+    support: tests/Support
+    envs: tests/_envs
+actor_suffix: Tester
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
+coverage:
+    enabled: true
+    include:
+        - App/*
+        - Platform/*
+        - templates/*
+        - functions/*
+    low_limit: 30
+    high_limit: 60
+    show_uncovered: true
+env:
+    .env.test

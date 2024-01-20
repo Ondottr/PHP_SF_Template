@@ -1,0 +1,15 @@
+# Codeception Test Suite Configuration
+#
+# Suite for acceptance tests.
+# Perform tests in browser using the WebDriver or PhpBrowser.
+# If you need both WebDriver and PHPBrowser tests - create a separate suite.
+
+actor: AcceptanceTester
+modules:
+  enabled:
+    - WebDriver:
+        browser: firefox
+        url: 'https://127.0.0.1:7000/'
+        window_size: 1280x1280
+        capabilities:
+          acceptInsecureCerts: true # allow self-signed certificates

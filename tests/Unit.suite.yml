@@ -1,0 +1,8 @@
+actor: Uni2Tester
+suite_namespace: Tests\Uni2
+modules:
+    # enable helpers as array
+    enabled:
+        - Asserts
+        - \Tests\Support\Helper\Unit
+bootstrap: ../bootstrap.php
