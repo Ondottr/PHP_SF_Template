@@ -26,3 +26,16 @@ function numFormat( int|float|null $number, int $decimals = 2, string $decimal_s
 
     return number_format( $number, thousands_separator: ' ' );
 }
+
+
+function checkbox( string $name, bool $checked = false, string $id = null, bool $isRequired = false ): string
+{
+    $id         ??= $name;
+    $checked    = $checked ? 'checked' : '';
+    $isRequired = $isRequired ? 'required' : '';
+
+    return <<<HTML
+<input type="checkbox" id="$id" name="$name" style="display: none;" $checked $isRequired>
+<span class="checkbox-icon"></span>
+HTML;
+}

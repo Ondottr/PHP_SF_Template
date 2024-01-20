@@ -14,12 +14,12 @@
 
 namespace App;
 
+use App\Entity\BlockedIp;
+use OpenApi\Attributes\Response;
+use PHP_SF\System\Router;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
-use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
-
-use function dirname;
+use Symfony\Component\Routing\Route;
 
 final class Kernel extends BaseKernel
 {
@@ -28,6 +28,12 @@ final class Kernel extends BaseKernel
     private static bool $isEditorActivated = false;
 
     private static self $instance;
+
+
+    public function __construct( string $environment, bool $debug )
+    {
+        parent::__construct( $environment, $debug );
+    }
 
 
     public static function getInstance(): self
@@ -57,29 +63,37 @@ final class Kernel extends BaseKernel
         self::$isEditorActivated = $isEditorActivated;
     }
 
-    protected function configureContainer( ContainerConfigurator $container ): void
+    public static function addRoutesToSymfony(): void
     {
-        $container->import( '../config/{packages}/*.yaml' );
-        $container->import( '../config/{packages}/' . $this->environment . '/*.yaml' );
+        $collection = self::getInstance()
+            ->getContainer()
+            ->get( 'router' )
+            ->getRouteCollection();
 
-        if ( is_file( dirname( __DIR__ ) . '/config/services.yaml' ) ) {
-            $container->import( '../config/services.yaml' );
-            $container->import( '../config/{services}_' . $this->environment . '.yaml' );
-        } else
-            $container->import( '../config/{services}.php' );
+        foreach ( Router::getRoutesList() as $routeName => $route ) {
+            if ( DEV_MODE || ( $OAResponseAttrs = mca()->get( "cache:oa_response_attrs:$routeName" ) ) === null ) {
+                $OAResponseAttrs = ( new ReflectionClass( $route['class'] ) )
+                    ->getMethod( $route['method'] )
+                    ->getAttributes( Response::class );
 
-    }
+                $OAResponseAttrs = !empty( $OAResponseAttrs );
 
-    protected function configureRoutes( RoutingConfigurator $routes ): void
-    {
-        $routes->import( '../config/{routes}/' . $this->environment . '/*.yaml' );
-        $routes->import( '../config/{routes}/*.yaml' );
+                if ( DEV_MODE === false )
+                    mca()->set( "cache:oa_response_attrs:$routeName", $OAResponseAttrs );
 
-        if ( is_file( dirname( __DIR__ ) . '/config/routes.yaml' ) )
-            $routes->import( '../config/routes.yaml' );
-        else
-            $routes->import( '../config/{routes}.php' );
+            }
 
+            if ( $OAResponseAttrs === false )
+                continue;
+
+
+            $route['url'] = str_replace( '{$', '/{', $route['url'] );
+            $route = ( new Route( $route['url'] ) )
+                ->setMethods( [ $route['httpMethod'] ] )
+                ->addDefaults( [ '_controller' => $route['class'] . '::' . $route['method'] ] );
+
+            $collection->add( $routeName, $route );
+        }
     }
 
 }

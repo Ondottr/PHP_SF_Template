@@ -56,6 +56,8 @@ final class AppCacheClearCommand extends Command
             mca()->clear();
 
         rca()->clear();
+
+        s()->clear();
     }
 
 }

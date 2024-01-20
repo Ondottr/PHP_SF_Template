@@ -15,21 +15,31 @@
 
 namespace App\DataFixtures;
 
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
+use App\Abstraction\Classes\AbstractDatabaseFixture;
 
-final class UserGroupFixtures extends Fixture
+final class UserGroupFixtures extends AbstractDatabaseFixture
 {
 
-    public function load( ObjectManager $manager ): void
+    protected function loadTable(): array|string
     {
-        $queries = file( __DIR__ . '/../../Doctrine/fixtures/user_groups.sql', FILE_SKIP_EMPTY_LINES );
+        return <<<SQL
+INSERT INTO public.user_groups (id, name)
+VALUES
+    (-1, 'banned'),
+    (1, 'administrator'),
+    (3, 'moderator'),
+    (6, 'user');
+SQL;
+    }
 
-        // Add user groups
-        foreach ( $queries as $q )
-            em()
-                ->getConnection()
-                ->executeQuery( $q );
+    protected function loadFunctions(): array|string
+    {
+        return file_get_contents( __DIR__ . '/../../Doctrine/fixtures/user_groups_prevent_any_changes_function.sql' );
+    }
+
+    protected function loadTriggers(): array|string
+    {
+        return file_get_contents( __DIR__ . '/../../Doctrine/fixtures/user_groups_prevent_any_changes_trigger.sql' );
     }
 
 }

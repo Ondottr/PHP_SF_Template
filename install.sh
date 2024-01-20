@@ -167,7 +167,7 @@ set_app_environment() {
   if [ -z "$application_environment" ]; then
     application_environment="dev"
   fi
-  php -r "file_put_contents('.env', preg_replace('/^#APP_ENV=.*/m', 'APP_ENV=\"$application_environment\"', file_get_contents('.env')));"
+  php -r "file_put_contents('.env', preg_replace('/^#APP_ENV=.*/m', 'APP_ENV=$application_environment', file_get_contents('.env')));"
 
   # Ask to enable debug mode
   echo "Enable debug mode? y|N"
@@ -418,6 +418,11 @@ if [ ! -d "node_modules" ]; then
   yarn build
   cd ../..
   echo "Assets built"
+
+  # Build twig assets
+  echo "Building twig assets..."
+  php bin/console assets:install
+  echo "Twig assets built"
 fi
 
 # endregion

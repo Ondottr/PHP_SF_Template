@@ -15,12 +15,11 @@
 namespace App\DoctrineLifecycleCallbacks;
 
 use App\Entity\User;
-use Doctrine\Common\EventArgs;
 use PHP_SF\System\Classes\Abstracts\AbstractDoctrineLifecycleCallback;
 
 /**
- * @property User      entity
- * @property EventArgs args
+ * @property User                                   entity
+ * @property \Doctrine\ORM\Event\PreRemoveEventArgs args
  */
 class UserPreRemoveCallback extends AbstractDoctrineLifecycleCallback
 {

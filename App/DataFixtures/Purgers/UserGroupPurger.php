@@ -14,24 +14,19 @@
 
 namespace App\DataFixtures\Purgers;
 
-use Doctrine\Common\DataFixtures\Purger\ORMPurgerInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use App\Abstraction\Classes\AbstractPurger;
 
-
-final class UserGroupPurger implements ORMPurgerInterface, CustomPurgerInterface
+final class UserGroupPurger extends AbstractPurger
 {
-    public function purge(): void
+
+    protected function getQueries(): array
     {
-        $queries = file( __DIR__ . '/../../../Doctrine/fixtures/user_groups_purger.sql', FILE_SKIP_EMPTY_LINES );
-
-        // Delete user_group table, functions and triggers
-        foreach ( $queries as $q )
-            em()
-                ->createNativeQuery( $q, new ResultSetMappingBuilder( em() ) )
-                ->execute();
+        return [
+            /** @lang PostgreSQL */
+            'DROP FUNCTION IF EXISTS raise_user_groups_table_exception() CASCADE',
+            /** @lang PostgreSQL */
+            'TRUNCATE TABLE user_groups CASCADE'
+        ];
     }
-
-    public function setEntityManager( EntityManagerInterface $em ): void {}
 
 }

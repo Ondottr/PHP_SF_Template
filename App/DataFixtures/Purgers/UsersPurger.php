@@ -14,24 +14,19 @@
 
 namespace App\DataFixtures\Purgers;
 
-use Doctrine\Common\DataFixtures\Purger\ORMPurgerInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use App\Abstraction\Classes\AbstractPurger;
 
-
-final class UsersPurger implements ORMPurgerInterface, CustomPurgerInterface
+final class UsersPurger extends AbstractPurger
 {
-    public function purge(): void
+
+    protected function getQueries(): array
     {
-        $queries = file( __DIR__ . '/../../../Doctrine/fixtures/users_purger.sql', FILE_SKIP_EMPTY_LINES );
-
-        // Delete users table, functions and triggers
-        foreach ( $queries as $q )
-            em()
-                ->createNativeQuery( $q, new ResultSetMappingBuilder( em() ) )
-                ->execute();
+        return [
+            /** @lang PostgreSQL */
+            'DROP FUNCTION IF EXISTS prevent_admin_deletion() CASCADE',
+            /** @lang PostgreSQL */
+            'TRUNCATE TABLE users CASCADE'
+        ];
     }
-
-    public function setEntityManager( EntityManagerInterface $em ): void {}
 
 }

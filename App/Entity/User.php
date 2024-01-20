@@ -15,12 +15,16 @@ declare( strict_types=1 );
 
 namespace App\Entity;
 
+use App\DoctrineLifecycleCallbacks\UserPreRemoveCallback;
+use App\Enums\UserGroupEnum;
 use App\Repository\UserRepository;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping as ORM;
 use PHP_SF\Framework\Http\Middleware\auth;
 use PHP_SF\System\Attributes\Validator\Constraints as Validate;
 use PHP_SF\System\Attributes\Validator\TranslatablePropertyName;
 use PHP_SF\System\Classes\Abstracts\AbstractEntity;
+use PHP_SF\System\Core\DateTime;
 use PHP_SF\System\Interface\UserInterface;
 use PHP_SF\System\Traits\ModelProperty\ModelPropertyCreatedAtTrait;
 
@@ -28,6 +32,7 @@ use function is_int;
 
 #[ORM\Entity( repositoryClass: UserRepository::class )]
 #[ORM\Table( name: 'users' )]
+#[ORM\Cache( usage: 'READ_WRITE' )]
 #[ORM\Index( columns: [ 'email' ] )]
 class User extends AbstractEntity implements UserInterface
 {
@@ -54,6 +59,12 @@ class User extends AbstractEntity implements UserInterface
     protected int|UserGroup $userGroup;
 
     # endregion
+
+
+    public function __construct()
+    {
+        $this->setCreatedAt( new DateTime );
+    }
 
 
     # region Entity related methods
@@ -113,15 +124,20 @@ class User extends AbstractEntity implements UserInterface
         return $this->userGroup;
     }
 
-    public function setUserGroup( int|UserGroup $userGroup ): void
+    public function setUserGroup( int|UserGroup $userGroup ): self
     {
         $this->userGroup = $userGroup;
+
+        return $this;
     }
     # endregion
 
 
     public function getLifecycleCallbacks(): array
     {
-        return [];
+        return [
+            Events::postRemove => UserPreRemoveCallback::class,
+        ];
     }
+
 }

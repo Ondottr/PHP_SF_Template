@@ -4,7 +4,7 @@
 # Run this script from the project root directory
 
 # If you don't have Symfony CLI installed, use the built-in PHP web server
-if ! command symfony -v &>/dev/null; then
+if ! [ -x "$(command -v symfony)" ]; then
   use_symfony_cli=false
 else
   use_symfony_cli=true
@@ -29,7 +29,11 @@ fi
 
 # Start the web server
 if [ "$use_symfony_cli" = true ]; then
-  symfony server:start --port=$port
+  if [ "$httpsEnabled" = true ]; then
+    symfony serve --port=$port
+  else
+    symfony serve --port=$port --no-tls
+  fi
 else
   php -S 127.0.0.1:"$port" -t public
 fi
