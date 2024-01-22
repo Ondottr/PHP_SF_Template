@@ -23,7 +23,7 @@ final class UserGroupFixtures extends AbstractDatabaseFixture
     protected function loadTable(): array|string
     {
         return <<<SQL
-INSERT INTO public.user_groups (id, name)
+INSERT INTO user_groups (id, name)
 VALUES
     (-1, 'banned'),
     (1, 'administrator'),

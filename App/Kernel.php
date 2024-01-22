@@ -14,7 +14,6 @@
 
 namespace App;
 
-use App\Entity\BlockedIp;
 use OpenApi\Attributes\Response;
 use PHP_SF\System\Router;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
