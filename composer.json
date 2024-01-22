@@ -111,6 +111,10 @@
     "symfony/web-profiler-bundle": "7.*"
   },
   "scripts": {
+    "auto-scripts": {
+      "cache:clear": "symfony-cmd",
+      "assets:install %PUBLIC_DIR%": "symfony-cmd"
+    }
   },
   "type": "project"
 }

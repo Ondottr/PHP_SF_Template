@@ -22,7 +22,7 @@
 !/public/js/bootstrap.min.js
 !/public/js/jquery-3.6.0.min.js
 
-###> phpunit/phpunit ###
+###> symfony/phpunit-bridge ###
 /phpunit.xml
 .phpunit.result.cache
-###< phpunit/phpunit ###
+###< symfony/phpunit-bridge ###
