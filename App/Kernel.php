@@ -16,6 +16,7 @@ namespace App;
 
 use OpenApi\Attributes\Response;
 use PHP_SF\System\Router;
+use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Route;
