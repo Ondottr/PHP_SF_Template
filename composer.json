@@ -116,11 +116,5 @@
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     }
   },
-  "type": "project",
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "git@github.com:Ondottr/PHP_SF_Platform.git"
-    }
-  ]
+  "type": "project"
 }
