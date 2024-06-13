@@ -24,13 +24,13 @@ doctrine:
         prefix: 'App\Entity'
         alias: App
 when@test:
-    doctrine:
-        dbal:
-            # "TEST_TOKEN" is typically set by ParaTest
-            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+  doctrine:
+    dbal:
+      # "TEST_TOKEN" is typically set by ParaTest
+      dbname_suffix: '_test%env(default::TEST_TOKEN)%'
 
 when@prod:
-    doctrine:
-        orm:
-            auto_generate_proxy_classes: false
-            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
+  doctrine:
+    orm:
+      auto_generate_proxy_classes: false
+      proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'

@@ -9,8 +9,7 @@
   "autoload": {
     "psr-4": {
       "App\\": "App/",
-      "App\\View\\": "templates/",
-      "Doctrine\\": "Platform/CustomRepositories/Doctrine"
+      "App\\View\\": "templates/"
     }
   },
   "autoload-dev": {
@@ -65,6 +64,7 @@
     "ext-yaml": "*",
     "ext-zend-opcache": "*",
     "ext-zlib": "*",
+    "nations-original/php-simple-framework": "~1.0.0",
     "composer/package-versions-deprecated": "1.11.99.4",
     "nelmio/api-doc-bundle": "^4.16",
     "php-amqplib/php-amqplib": "^3.6",
@@ -116,5 +116,11 @@
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     }
   },
-  "type": "project"
+  "type": "project",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:Ondottr/PHP_SF_Platform.git"
+    }
+  ]
 }

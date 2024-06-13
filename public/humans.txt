@@ -1,0 +1,33 @@
+/* TEAM */
+Lead Developer: Dmytro Dyvulskyi
+   - Lead architect and developer responsible for building the main game engine, designing, and implementing microservices using RabbitMQ, Rust, and Go. Shapes the technical foundation of our project. Connect with Dmytro on LinkedIn: [Dmytro's LinkedIn Profile](https://www.linkedin.com/in/ondottr/).
+
+UI/UX Designer: Iryna Kravtsova
+   - Creative mind behind the user interface and experience design.
+
+/* THANKS */
+We extend our gratitude to the following individuals and organizations for their invaluable contributions:
+— The PHP_SF community for creating a powerful and flexible web application framework.
+— FASTPANEL.DIRECT for their exceptional server management panel.
+— OpenAI for their contributions to ChatGPT, enhancing our documentation.
+— Our families and friends for unwavering support.
+
+/* TECHNOLOGIES */
+This website was built using the following technologies:
+— PHP_SF framework with Symfony and Doctrine ORM
+— HTML5 and CSS3
+— JavaScript, jQuery, and WebPack
+— PostgreSQL and MySQL databases
+— FASTPANEL server management panel
+— Microservices implemented in Rust and Go
+— Debian 12 used on both servers and as a desktop OS for work
+— Servers hosted on Contabo
+
+For more information about these technologies, please visit:
+- [PHP_SF](https://github.com/Ondottr/PHP_SF_Platform)
+- [Symfony](https://symfony.com/)
+- [Doctrine ORM](https://www.doctrine-project.org/)
+- [FASTPANEL](https://fastpanel.direct/)
+
+/* COPYRIGHT */
+Copyright © 2018-2024 Nations Original sp. z o.o. All rights reserved.

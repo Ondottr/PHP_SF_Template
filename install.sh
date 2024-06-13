@@ -8,13 +8,6 @@ if [ ! -f "composer.json" ]; then
   exit 1
 fi
 
-# Clone Platform repository from git if not installed
-if [ ! -d "Platform" ]; then
-  echo "Cloning Platform repository..."
-  git clone git@github.com:Ondottr/PHP_SF_platform.git Platform
-  echo "Cloning Platform repository... Done"
-fi
-
 # Check if composer is installed
 if ! [ -x "$(command -v composer)" ]; then
   echo "Composer is not installed"
@@ -33,41 +26,39 @@ if [ ! -f "config/constants.php" ]; then
   cp config/constants.example.php config/constants.php
 fi
 
-# Check if composer dependencies are installed for Platform
-# If not, install them
-if [ ! -d "Platform/vendor" ]; then
-  echo "Installing Platform composer dependencies..."
-  cd Platform && composer install --ignore-platform-reqs --no-interaction --no-progress --no-suggest --no-scripts && cd ..
-  echo "Installing Platform composer dependencies... Done"
-fi
-
 # region Configure .env file
 
 set_db_credentials() {
   echo "Provide the database credentials"
 
-  # Set default ports
-  default_postgresql_port="5432"
-  default_mysql_port="3306"
-  default_mariadb_port="3306"
+  # Set available databases
+  databases=("postgresql" "mysql" "sqlite" "mariadb")
+
+  # Set default port for each database
+  declare -A ports
+  ports["postgresql"]="5432"
+  ports["mysql"]="3306"
+  ports["mariadb"]="3306"
 
   # Set default database versions
-  default_postgresql_version="13"
-  default_mysql_version="8"
-  default_mariadb_version="10"
+  declare -A versions
+  versions["postgresql"]="13"
+  versions["mysql"]="8"
+  versions["mariadb"]="10"
 
   # Ask for the database credentials
   read -p "Select a database postgresql, mysql, mariadb or sqlite: " database
 
-  default_port=""
-  case $database in
-    "postgresql") default_port=$default_postgresql_port ;;
-    "mysql") default_port=$default_mysql_port ;;
-    "mariadb") default_port=$default_mariadb_port ;;
-  esac
+  # Check if the database is valid
+  if [[ ! " ${databases[*]} " =~ " ${database} " ]]; then
+    echo "Invalid database, please select one of the following: postgresql, mysql, mariadb or sqlite"
+    exit 1
+  fi
+
+  default_port=${ports[$database]}
 
   # If the database is sqlite, ask for the database path
-  # If the database is not sqlite, ask for the database user, password, host, and port
+  # If the database is not sqlite, ask for the database user, password, host and port
   if [ "$database" = "sqlite" ]; then
     read -p "Database path: " database_path
 
@@ -91,19 +82,15 @@ set_db_credentials() {
     fi
 
     read -p "Database host (default 127.0.0.1): " database_host
-    # Check if the database host is empty and set the default value
+    # Check if the database host is empty and set default value
     if [ -z "$database_host" ]; then
       database_host="127.0.0.1"
     fi
 
     read -p "Database port (default $default_port):" database_port
-    # Check if the database port is empty and set the default value
+    # Check if the database port is empty and set default value
     if [ -z "$database_port" ]; then
-      case $database in
-        "postgresql") database_port=$default_postgresql_port ;;
-        "mysql") database_port=$default_mysql_port ;;
-        "mariadb") database_port=$default_mariadb_port ;;
-      esac
+      database_port=$default_port
     fi
 
     # If db is mysql or postgresql ask for the collation
@@ -116,11 +103,7 @@ set_db_credentials() {
 
     read -p "Database version (default ${versions[$database]}): " database_version
     if [ -z "$database_version" ]; then
-      case $database in
-        "postgresql") database_version=$default_postgresql_version ;;
-        "mysql") database_version=$default_mysql_version ;;
-        "mariadb") database_version=$default_mariadb_version ;;
-      esac
+      database_version=${versions[$database]}
     fi
 
     # Check if the database name is mariadb and then add 'mariadb-' prefix
