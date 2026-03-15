@@ -16,13 +16,13 @@
 /.idea
 /public/images/ci/minimaps/*
 /config/constants.php
-
+/config/reference.php
 /public/build/*
 
 !/public/js/bootstrap.min.js
 !/public/js/jquery-3.6.0.min.js
 
-###> symfony/phpunit-bridge ###
+###> phpunit/phpunit ###
 /phpunit.xml
-.phpunit.result.cache
-###< symfony/phpunit-bridge ###
+/.phpunit.cache/
+###< phpunit/phpunit ###

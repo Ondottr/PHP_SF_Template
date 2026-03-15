@@ -369,19 +369,11 @@ fi
 # region Install dependencies
 
 # Install composer dependencies
-fix_symfony_cache_error() {
-  # This is a temporary fix for the symfony error
-  php -f Platform/app/Command/ClearRedundantClassesCommand.php
-}
-
 # Check if vendor directory exists
 if [ ! -d "vendor" ]; then
 
   echo "Installing project composer dependencies, it may take a while..."
   composer install --ignore-platform-reqs --no-scripts
-  echo "Almost done, fixing symfony errors and installing composer dependencies again..."
-  fix_symfony_cache_error
-  composer dump-autoload --ignore-platform-reqs --no-scripts
   echo "Composer project dependencies ... Done"
 fi
 
