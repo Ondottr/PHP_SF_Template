@@ -1,10 +1,4 @@
 <?php declare( strict_types=1 );
-/**
- * Created by PhpStorm.
- * User: ondottr
- * Date: 15/02/2023
- * Time: 6:38 pm
- */
 
 namespace App\View;
 
@@ -78,7 +72,7 @@ final class welcome_page extends AbstractView { public function show(): void { ?
                 body { font-size: 20px; }
                 .warning { text-align: center; }
             }
-            
+
             .content {
               width: 100%;
             }
