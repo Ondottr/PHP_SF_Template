@@ -18,28 +18,40 @@ namespace App\Command;
 use App\Abstraction\Interfaces\CustomPurgerInterface;
 use Doctrine\Bundle\DoctrineBundle\Command\DoctrineCommand;
 use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
-use Doctrine\Bundle\FixturesBundle\Purger\ORMPurgerFactory;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Log\AbstractLogger;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 
 /**
+ * Class LoadDataFixturesDoctrineCommand
+ *
  * Load data fixtures from bundles.
+ *
+ * @author  Dmytro Dyvulskyi <dmytro.dyvulskyi@nations-original.com>
  */
 final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
 {
 
     private SymfonyFixturesLoader $fixturesLoader;
 
+    /** @var CustomPurgerInterface[] */
+    private array $purgers;
 
-    public function __construct( SymfonyFixturesLoader $fixturesLoader, ManagerRegistry|null $doctrine = null )
-    {
+
+    public function __construct(
+        SymfonyFixturesLoader $fixturesLoader,
+        #[TaggedIterator( 'app.fixture_purger' )] iterable $purgers,
+        ManagerRegistry|null $doctrine = null
+    ) {
         parent::__construct( $doctrine );
 
         $this->fixturesLoader = $fixturesLoader;
+        $this->purgers        = iterator_to_array( $purgers );
     }
 
     protected function configure(): void
@@ -49,9 +61,7 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
             ->setDescription( 'Load data fixtures to your database' )
             ->addOption( 'force', 'f', InputOption::VALUE_NONE, 'Force loading fixtures without confirmation.' )
             ->addOption( 'em', null, InputOption::VALUE_REQUIRED, 'The entity manager to use for this command.' )
-            ->addOption( 'group', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Only load fixtures that belong to this group' )
-            ->addOption( 'purge-exclusions', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'List of database tables to ignore while purging' )
-            ->addOption( 'purge-with-truncate', null, InputOption::VALUE_NONE, 'Purge data by using a database-level TRUNCATE statement' );
+            ->addOption( 'group', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Only load fixtures that belong to this group' );
     }
 
     protected function execute( InputInterface $input, OutputInterface $output ): int
@@ -77,24 +87,27 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
             return 1;
         }
 
-        $purgerFactories[] = new ORMPurgerFactory();
+        $executor = new ORMExecutor( em() );
+        $executor->setLogger( new class( $ui ) extends AbstractLogger {
 
-        foreach ( $purgerFactories as $purger ) {
-            if ( $purger instanceof CustomPurgerInterface === false )
-                $purger = $purger->createForEntityManager(
-                    $input->getOption( 'em' ),
-                    em(),
-                    $input->getOption( 'purge-exclusions' ),
-                    $input->getOption( 'purge-with-truncate' )
-                );
+            public function __construct( private readonly SymfonyStyle $ui ) {}
 
-            $executor = new ORMExecutor( em(), $purger );
-            $executor->setLogger( function ( $message ) use ( $ui ): void {
-                $ui->text( sprintf( '  <comment>></comment> <info>%s</info>', $message ) );
-            } );
-        }
+            public function log( $level, $message, array $context = [] ): void
+            {
+                $this->ui->text( sprintf( '  <comment>></comment> <info>%s</info>', $message ) );
+            }
 
-        $executor->execute( $fixtures );
+        } );
+
+        // Purge outside the executor's transaction: TRUNCATE causes an implicit
+        // commit in MySQL which would break the wrapInTransaction() used by execute().
+        $ui->text( '  <comment>></comment> <info>purging database</info>' );
+
+        foreach ( $this->purgers as $purger )
+            $purger->purge();
+
+        // append=true skips the built-in purge inside execute() — we already did it above.
+        $executor->execute( $fixtures, true );
 
         return 0;
     }

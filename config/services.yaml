@@ -7,38 +7,38 @@ parameters:
 
 services:
     # default configuration for services in *this* file
-  _defaults:
-    autowire: true      # Automatically injects dependencies in your services.
-    autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
 
-  Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader:
-    alias: 'doctrine.fixtures.loader'
+    _instanceof:
+        App\Abstraction\Interfaces\CustomPurgerInterface:
+            tags: [ 'app.fixture_purger' ]
 
-  Symfony\Component\Form\FormFactory:
-    public: true
+    Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader:
+        alias: 'doctrine.fixtures.loader'
 
-  app.cache.adapter.redis:
-    parent: 'cache.adapter.redis'
-    tags:
-      - { name: 'cache.pool', namespace: '%env(resolve:SERVER_PREFIX)%' }
+    app.cache.adapter.redis:
+        parent: 'cache.adapter.redis'
+        tags:
+            - { name: 'cache.pool', namespace: '%env(resolve:SERVER_PREFIX)%' }
 
-  # make classes in App/ available to be used as services
-  # this creates a service per class whose id is the fully-qualified class name
-  App\:
-    resource: '../App/'
-    exclude:
-      - '../App/Http/Controllers'
-      - '../App/Http/Middlewares'
-      - '../App/DoctrineLifecycleCallbacks/'
-      - '../App/DependencyInjection/'
-      - '../App/Entity/'
-      - '../App/Router.php'
-      - '../App/Kernel.php'
-      - '../App/DataFixtures/Purgers/'
-      - '../App/Helpers/'
-      - '../App/EventListeners/'
-      - '../App/Enums/'
-      - '../tests/'
+    # make classes in App/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../App/'
+        exclude:
+            - '../App/Http/Controllers'
+            - '../App/Http/Middlewares'
+            - '../App/DoctrineLifecycleCallbacks/'
+            - '../App/DependencyInjection/'
+            - '../App/Entity/'
+            - '../App/Router.php'
+            - '../App/Kernel.php'
+            - '../App/Helpers/'
+            - '../App/EventListeners/'
+            - '../App/Enums/'
+            - '../tests/'
 
-  # add more service definitions when explicit configuration is needed
-  # please note that last definitions always *replace* previous ones
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
