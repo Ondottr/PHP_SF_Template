@@ -1,19 +1,19 @@
 version: '3.1'
 services:
   memcached:
-    container_name: memcached_main_container
+    container_name: memcached_php_sf_playground_container
     image: 'memcached:alpine'
     ports:
       - '7001:11211'
 
   redis:
-    container_name: redis_main_container
+    container_name: redis_php_sf_playground_container
     image: 'redis:alpine'
     ports:
       - '7002:6379'
 
   postgres:
-    container_name: postgres_main_container
+    container_name: postgres_php_sf_playground_container
     image: 'postgres:16-alpine'
     working_dir: /application
     volumes:
@@ -21,12 +21,12 @@ services:
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=nations-original-app
+      - POSTGRES_DB=php-sf-playground-db-postgresql
     ports:
       - '7003:5432'
 
   rabbitmq:
-    container_name: rabbitmq_main_container
+    container_name: rabbitmq_php_sf_playground_container
     image: 'rabbitmq:latest'
     environment:
       - RABBITMQ_DEFAULT_USER=admin
@@ -35,12 +35,23 @@ services:
       - '7004:5672'
 
   mysql:
-    container_name: mysql_main_container
+    container_name: mysql_php_sf_playground_container
     image: 'mysql:latest'
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=nations-original-app
+      - MYSQL_DATABASE=php-sf-playground-db-mysql
       - MYSQL_USER=user
       - MYSQL_PASSWORD=password
     ports:
       - '7005:3306'
+
+  mariadb:
+    container_name:    mariadb_php_sf_playground_container
+    image: 'mariadb:latest'
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=php-sf-playground-db-mariadb
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+    ports:
+      - '7006:3306'
