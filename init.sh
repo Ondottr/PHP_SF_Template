@@ -192,6 +192,21 @@ configure_db_connection() {
     read -r -p "Database name: " dbname
     [ -z "$dbname" ] && { echo "Database name cannot be empty!"; exit 1; }
 
+    # Warn if user entered a reserved MySQL/MariaDB system database name
+    case "$database" in
+      mysql|mariadb)
+        case "$dbname" in
+          mysql|information_schema|performance_schema|sys)
+            echo "WARNING: '$dbname' is a reserved MySQL/MariaDB system database name."
+            echo "         Using it will cause doctrine:schema:update to try to DROP system tables."
+            echo "         Use a different name (e.g. '${em_name}_db' or your app name)."
+            read -r -p "Continue anyway? [y/N]: " _confirm
+            [[ "$_confirm" =~ ^[yY]$ ]] || { echo "Aborted."; exit 1; }
+            ;;
+        esac
+        ;;
+    esac
+
     # Determine schema: MySQL/MariaDB have no schema concept separate from the database,
     # so schema = dbname. PostgreSQL schemas are real namespaces; default is 'public'.
     case "$database" in
