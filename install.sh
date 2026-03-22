@@ -206,7 +206,7 @@ if [ ${#configured_ems[@]} -gt 0 ]; then
   if [ -z "$answer" ] || [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
     for em in "${configured_ems[@]}"; do
       echo "Creating schema for '$em'..."
-      php bin/console doctrine:database:create --if-not-exists --em="$em"
+      php bin/console doctrine:database:create --if-not-exists --connection="$em"
       php bin/console doctrine:schema:drop -f --em="$em"
       php bin/console doctrine:schema:create --em="$em"
     done

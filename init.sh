@@ -106,7 +106,7 @@ if ($has_mapping_types === 'true') {
 $yaml['doctrine']['dbal']['connections'][$em_name] = $conn;
 
 // ── ORM entity manager ─────────────────────────────────────────────────────
-$yaml['doctrine']['orm']['entity_managers'][$em_name] = [
+$em = [
     'connection' => $em_name,
     'mappings'   => [
         $pascal_name => [
@@ -118,6 +118,13 @@ $yaml['doctrine']['orm']['entity_managers'][$em_name] = [
         ],
     ],
 ];
+// MySQL/MariaDB: schema in ORM\Table is treated as database prefix by DDL but
+// DBAL introspects unqualified names — use UnqualifiedTableQuoteStrategy to prevent
+// doctrine:schema:update from generating spurious CREATE + DROP pairs.
+if ($driver === 'pdo_mysql') {
+    $em['quote_strategy'] = 'App\\Doctrine\\UnqualifiedTableQuoteStrategy';
+}
+$yaml['doctrine']['orm']['entity_managers'][$em_name] = $em;
 
 // ── when@test: dbname override ─────────────────────────────────────────────
 if (!isset($yaml['when@test']['doctrine']['dbal']['connections'])
@@ -143,6 +150,7 @@ PHPEOF
 # region DB connections
 
 declare -a configured_ems=()
+declare -A em_schemas=()
 
 declare -A db_default_ports=( [postgresql]=5432 [mysql]=3306 [mariadb]=3306 )
 declare -A db_default_versions=( [postgresql]=16 [mysql]=8.0.0 [mariadb]=11.0.0 )
@@ -173,15 +181,28 @@ configure_db_connection() {
     sqlite) driver="pdo_sqlite" ;;
   esac
 
-  local dbname database_user database_password database_host database_port
+  local dbname schema database_user database_password database_host database_port
   local charset="" server_version
 
   if [ "$database" = "sqlite" ]; then
     read -r -p "Database path: " dbname
+    schema=""
     server_version=""
   else
     read -r -p "Database name: " dbname
     [ -z "$dbname" ] && { echo "Database name cannot be empty!"; exit 1; }
+
+    # Determine schema: MySQL/MariaDB have no schema concept separate from the database,
+    # so schema = dbname. PostgreSQL schemas are real namespaces; default is 'public'.
+    case "$database" in
+      mysql|mariadb)
+        schema="$dbname"
+        ;;
+      postgresql)
+        read -r -p "Default schema for new entities (default: public): " schema
+        [ -z "$schema" ] && schema="public"
+        ;;
+    esac
 
     read -r -p "Database user: " database_user
     [ -z "$database_user" ] && { echo "Database user cannot be empty!"; exit 1; }
@@ -256,15 +277,17 @@ configure_db_connection() {
   mkdir -p "App/Maker"
   echo "Created App/Entity/$pascal_name/ and App/Repository/$pascal_name/"
 
-  generate_maker "$em_name" "$pascal_name"
+  generate_maker "$em_name" "$pascal_name" "$schema"
 
   configured_ems+=("$em_name")
+  em_schemas["$em_name"]="$schema"
   echo "'$em_name' connection configured"
 }
 
 generate_maker() {
   local em_name="$1"
   local pascal_name="$2"
+  local schema="$3"
   local maker_file="App/Maker/Make${pascal_name}Entity.php"
 
   cat > "$maker_file" << 'PHPEOF'
@@ -281,7 +304,7 @@ final class Make__PASCAL__Entity extends AbstractEntityMaker
     protected string $repositoryNamespace = 'App\Repository\__PASCAL__';
     protected string $entityDir           = __DIR__ . '/../Entity/__PASCAL__';
     protected string $repositoryDir       = __DIR__ . '/../Repository/__PASCAL__';
-    protected string $schema              = '__EM__';
+    protected string $schema              = '__SCHEMA__';
 
     public static function getCommandName(): string
     {
@@ -291,7 +314,7 @@ final class Make__PASCAL__Entity extends AbstractEntityMaker
 }
 PHPEOF
 
-  sed -i "s/__PASCAL__/${pascal_name}/g; s/__EM__/${em_name}/g" "$maker_file"
+  sed -i "s/__PASCAL__/${pascal_name}/g; s/__EM__/${em_name}/g; s/__SCHEMA__/${schema}/g" "$maker_file"
   echo "Created $maker_file (command: ${em_name}:make:entity)"
 }
 
@@ -328,6 +351,7 @@ user_pascal=$(to_pascal_case "$user_em")
 create_user_entity() {
   local em_name="$1"
   local pascal_name="$2"
+  local schema="$3"
   # ── User entity ──────────────────────────────────────────────────────
   cat > "App/Entity/${pascal_name}/User.php" << 'PHPEOF'
 <?php declare( strict_types=1 );
@@ -344,7 +368,7 @@ use PHP_SF\System\Interface\UserInterface;
 use PHP_SF\System\Traits\ModelProperty\ModelPropertyCreatedAtTrait;
 
 #[ORM\Entity( repositoryClass: UserRepository::class )]
-#[ORM\Table( name: 'users', schema: '__EM__' )]
+#[ORM\Table( name: 'users', schema: '__SCHEMA__' )]
 #[ORM\Cache( usage: 'READ_WRITE' )]
 class User extends AbstractEntity implements UserInterface
 {
@@ -396,7 +420,7 @@ class User extends AbstractEntity implements UserInterface
 }
 PHPEOF
 
-  sed -i "s/__PASCAL__/${pascal_name}/g; s/__EM__/${em_name}/g" "App/Entity/${pascal_name}/User.php"
+  sed -i "s/__PASCAL__/${pascal_name}/g; s/__EM__/${em_name}/g; s/__SCHEMA__/${schema}/g" "App/Entity/${pascal_name}/User.php"
 
   # ── UserRepository ───────────────────────────────────────────────────
   cat > "App/Repository/${pascal_name}/UserRepository.php" << 'PHPEOF'
@@ -484,7 +508,7 @@ PHPEOF
   echo "Use bin/console ${em_name}:make:entity to generate more entities in this connection."
 }
 
-create_user_entity "$user_em" "$user_pascal"
+create_user_entity "$user_em" "$user_pascal" "${em_schemas[$user_em]}"
 
 # endregion
 
