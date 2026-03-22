@@ -16,7 +16,7 @@ doctrine:
         connections:
             # Intentionally non-functional — fail-fast guard against accidental default usage
             dummy:
-                url: 'sqlite:///:memory:'
+                driver_class: 'PHP_SF\System\Doctrine\ForbiddenDriver'
 
     orm:
         default_entity_manager: dummy

@@ -41,6 +41,8 @@ services:
       - MYSQL_DATABASE=php-sf-playground-db-mysql
       - MYSQL_USER=user
       - MYSQL_PASSWORD=password
+    volumes:
+      - './docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql'
     ports:
       - '7005:3306'
 
@@ -52,6 +54,8 @@ services:
       - MYSQL_DATABASE=php-sf-playground-db-mariadb
       - MYSQL_USER=user
       - MYSQL_PASSWORD=password
+    volumes:
+      - './docker/mariadb/init.sql:/docker-entrypoint-initdb.d/init.sql'
     ports:
       - '7006:3306'
 

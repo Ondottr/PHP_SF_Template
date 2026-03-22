@@ -206,6 +206,7 @@ if [ ${#configured_ems[@]} -gt 0 ]; then
   if [ -z "$answer" ] || [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
     for em in "${configured_ems[@]}"; do
       echo "Creating schema for '$em'..."
+      php bin/console doctrine:database:create --if-not-exists --connection="$em"
       php bin/console doctrine:schema:drop -f --em="$em"
       php bin/console doctrine:schema:create --em="$em"
     done
@@ -216,7 +217,7 @@ if [ ${#configured_ems[@]} -gt 0 ]; then
     if [ -z "$answer" ] || [ "$answer" = "y" ] || [ "$answer" = "Y" ]; then
       for em in "${configured_ems[@]}"; do
         echo "Loading fixtures for '$em'..."
-        php bin/console doctrine:fixtures:custom-loader -f --em="$em"
+        php bin/console doctrine:fixtures:load --no-interaction --em="$em"
       done
       echo "Fixtures loaded"
     fi

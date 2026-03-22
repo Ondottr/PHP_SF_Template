@@ -15,9 +15,11 @@
 namespace App;
 
 use OpenApi\Attributes\Response;
+use PHP_SF\System\Doctrine\ForbidDefaultDoctrinePass;
 use PHP_SF\System\Router;
 use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Route;
 
@@ -33,6 +35,12 @@ final class Kernel extends BaseKernel
     public function __construct( string $environment, bool $debug )
     {
         parent::__construct( $environment, $debug );
+    }
+
+    public function build( ContainerBuilder $container ): void
+    {
+        parent::build( $container );
+        $container->addCompilerPass( new ForbidDefaultDoctrinePass() );
     }
 
 

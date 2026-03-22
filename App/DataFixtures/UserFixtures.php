@@ -18,6 +18,8 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use PHP_SF\System\Interface\UserInterface;
 use PHP_SF\System\Kernel;
+use RuntimeException;
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 /**
  * Creates the initial admin user using credentials from ADMIN_EMAIL / ADMIN_PASSWORD env vars.
@@ -31,7 +33,15 @@ final class UserFixtures extends Fixture
 
     public function load( ObjectManager $manager ): void
     {
-        $userClass = Kernel::getApplicationUserClassName();
+        try {
+            $userClass = Kernel::getApplicationUserClassName();
+        } catch ( InvalidConfigurationException $e ) {
+            throw new RuntimeException(
+                'UserFixtures requires setApplicationUserClassName() to be called in bin/console. Run init.sh first.',
+                0,
+                $e
+            );
+        }
 
         if ( $manager->getMetadataFactory()->isTransient( $userClass ) )
             return;
