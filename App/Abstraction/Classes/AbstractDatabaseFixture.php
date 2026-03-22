@@ -15,6 +15,7 @@
 namespace App\Abstraction\Classes;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ObjectManager;
 use RuntimeException;
@@ -25,14 +26,16 @@ abstract class AbstractDatabaseFixture extends Fixture
 
     final public function load( ObjectManager $manager ): void
     {
+        assert( $manager instanceof EntityManagerInterface );
+
         try {
             $queries = $this->loadTable();
             if ( is_array( $queries ) === false )
                 $queries = [ $queries ];
 
             foreach ( $queries as $query )
-                em()
-                    ->createNativeQuery( $query, new ResultSetMappingBuilder( em() ) )
+                $manager
+                    ->createNativeQuery( $query, new ResultSetMappingBuilder( $manager ) )
                     ->execute();
         } catch ( Throwable $e ) {
             throw new RuntimeException( 'Error while inserting data to the table: ' . $e->getMessage(), previous: $e );
@@ -44,8 +47,8 @@ abstract class AbstractDatabaseFixture extends Fixture
                 $queries = [ $queries ];
 
             foreach ( $queries as $query )
-                em()
-                    ->createNativeQuery( $query, new ResultSetMappingBuilder( em() ) )
+                $manager
+                    ->createNativeQuery( $query, new ResultSetMappingBuilder( $manager ) )
                     ->execute();
         } catch ( Throwable $e ) {
             throw new RuntimeException( 'Error while creating functions: ' . $e->getMessage(), previous: $e );
@@ -57,8 +60,8 @@ abstract class AbstractDatabaseFixture extends Fixture
                 $queries = [ $queries ];
 
             foreach ( $queries as $query )
-                em()
-                    ->createNativeQuery( $query, new ResultSetMappingBuilder( em() ) )
+                $manager
+                    ->createNativeQuery( $query, new ResultSetMappingBuilder( $manager ) )
                     ->execute();
         } catch ( Throwable $e ) {
             throw new RuntimeException( 'Error while creating triggers: ' . $e->getMessage(), previous: $e );
@@ -74,11 +77,11 @@ abstract class AbstractDatabaseFixture extends Fixture
     /**
      * @return array|string List of queries or one query to be executed to create all required functions
      */
-    abstract protected function loadFunctions(): array|string;
+    protected function loadFunctions(): array|string { return []; }
 
     /**
      * @return array|string List of queries or one query to be executed to create all required triggers
      */
-    abstract protected function loadTriggers(): array|string;
+    protected function loadTriggers(): array|string { return []; }
 
 }

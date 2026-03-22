@@ -184,10 +184,6 @@ Editor.defaultConfig = {
 
     textPartLanguage: [
       { title: 'English', languageCode: 'en' },
-      { title: 'Русский', languageCode: 'ru' },
-      { title: 'Українська', languageCode: 'uk' },
-      { title: 'Polski', languageCode: 'pl' },
-      { title: 'Norsk (Bokmål)', languageCode: 'nb' },
     ],
   },
   image: {

@@ -1,36 +1,47 @@
+# Doctrine configuration
+#
+# WARNING: The default connection and entity manager are deliberately set to a non-functional
+# "dummy" placeholder. Any code that accidentally uses the default connection will fail fast
+# and loudly, forcing explicit use of the named connections.
+#
+# All database access MUST use explicitly named entity managers, e.g.:
+#   em('main'), em('blog'), em('payments')
+#
+# Run init.sh to add real connections and generate entity/repository directories.
+# If not, DO NOT change the default_connection or default_entity_manager.
+
 doctrine:
-  dbal:
-    url: '%env(resolve:DATABASE_URL)%'
-    driver_class: PHP_SF\System\Database\DoctrineEntityManager
-
-    # IMPORTANT: You MUST configure your server version,
-    # either here or in the DATABASE_URL env var (see .env file)
-    #server_version: '15'
-
-    profiling_collect_backtrace: '%kernel.debug%'
-  orm:
-    auto_generate_proxy_classes: true
-    enable_lazy_ghost_objects: true
-    report_fields_where_declared: true
-    validate_xml_mapping: true
-    naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
-    auto_mapping: true
-    proxy_namespace: Proxies
-    mappings:
-      App:
-        type: attribute
-        is_bundle: false
-        dir: '%kernel.project_dir%/App/Entity'
-        prefix: 'App\Entity'
-        alias: App
-when@test:
-  doctrine:
     dbal:
-      # "TEST_TOKEN" is typically set by ParaTest
-      dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+        default_connection: dummy
+        connections:
+            # Intentionally non-functional — fail-fast guard against accidental default usage
+            dummy:
+                url: 'sqlite:///:memory:'
+
+    orm:
+        default_entity_manager: dummy
+        auto_generate_proxy_classes: true
+        enable_lazy_ghost_objects: true
+        proxy_namespace: Proxies
+
+        entity_managers:
+            dummy:
+                connection: dummy
+                mappings:
+                    Dummy:
+                        is_bundle: false
+                        type: attribute
+                        dir: '%kernel.project_dir%/App/Entity/Dummy'
+                        prefix: 'App\Entity\Dummy'
+                        alias: Dummy
+
+when@test:
+    doctrine:
+        dbal:
+            connections:
 
 when@prod:
-  doctrine:
-    orm:
-      auto_generate_proxy_classes: false
-      proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
+    doctrine:
+        orm:
+            auto_generate_proxy_classes: false
+            proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'

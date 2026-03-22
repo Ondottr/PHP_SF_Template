@@ -28,4 +28,4 @@ const AVAILABLE_HOSTS = [ SERVER_IP, '127.0.0.1' ];
 
 const ENTITY_DIRECTORY = __DIR__ . '/../App/Entity';
 
-const LANGUAGES_LIST = [ 'en', 'pl' ];
+const LANGUAGES_LIST = [ 'en' ];
