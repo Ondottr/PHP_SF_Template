@@ -167,11 +167,11 @@ configure_db_connection() {
   echo ""
   echo "Configure '$em_name' connection"
 
-  read -r -p "Database type (postgresql, mysql, mariadb, sqlite) [default: postgresql]: " database
+  read -r -p "Database type (postgresql, mysql, mariadb) [default: postgresql]: " database
   if [ -z "$database" ]; then database="postgresql"; fi
 
-  if [[ ! "postgresql mysql mariadb sqlite" =~ (^| )"$database"( |$) ]]; then
-    echo "Invalid database type. Must be one of: postgresql, mysql, mariadb, sqlite"
+  if [[ ! "postgresql mysql mariadb" =~ (^| )"$database"( |$) ]]; then
+    echo "Invalid database type. Must be one of: postgresql, mysql, mariadb"
     exit 1
   fi
 
@@ -182,82 +182,75 @@ configure_db_connection() {
   case "$database" in
     postgresql) driver="pdo_pgsql" ;;
     mysql|mariadb) driver="pdo_mysql"; has_mapping_types="true" ;;
-    sqlite) driver="pdo_sqlite" ;;
   esac
 
   local dbname schema database_user database_password database_host database_port
   local charset="" server_version
 
-  if [ "$database" = "sqlite" ]; then
-    read -r -p "Database path: " dbname
-    schema=""
-    server_version=""
-  else
-    read -r -p "Database name: " dbname
-    [ -z "$dbname" ] && { echo "Database name cannot be empty!"; exit 1; }
+  read -r -p "Database name: " dbname
+  [ -z "$dbname" ] && { echo "Database name cannot be empty!"; exit 1; }
 
-    # Warn if user entered a reserved MySQL/MariaDB system database name
-    case "$database" in
-      mysql|mariadb)
-        case "$dbname" in
-          mysql|information_schema|performance_schema|sys)
-            echo "WARNING: '$dbname' is a reserved MySQL/MariaDB system database name."
-            echo "         Using it will cause doctrine:schema:update to try to DROP system tables."
-            echo "         Use a different name (e.g. '${em_name}_db' or your app name)."
-            read -r -p "Continue anyway? [y/N]: " _confirm
-            [[ "$_confirm" =~ ^[yY]$ ]] || { echo "Aborted."; exit 1; }
-            ;;
-        esac
-        ;;
-    esac
+  # Warn if user entered a reserved MySQL/MariaDB system database name
+  case "$database" in
+    mysql|mariadb)
+      case "$dbname" in
+        mysql|information_schema|performance_schema|sys)
+          echo "WARNING: '$dbname' is a reserved MySQL/MariaDB system database name."
+          echo "         Using it will cause doctrine:schema:update to try to DROP system tables."
+          echo "         Use a different name (e.g. '${em_name}_db' or your app name)."
+          read -r -p "Continue anyway? [y/N]: " _confirm
+          [[ "$_confirm" =~ ^[yY]$ ]] || { echo "Aborted."; exit 1; }
+          ;;
+      esac
+      ;;
+  esac
 
-    # Determine schema: MySQL/MariaDB have no schema concept separate from the database,
-    # so schema = dbname. PostgreSQL schemas are real namespaces; default is 'public'.
-    case "$database" in
-      mysql|mariadb)
-        schema="$dbname"
-        ;;
-      postgresql)
-        read -r -p "Default schema for new entities (default: public): " schema
-        [ -z "$schema" ] && schema="public"
-        ;;
-    esac
+  # Determine schema: MySQL/MariaDB have no schema concept separate from the database,
+  # so schema = dbname. PostgreSQL schemas are real namespaces; default is 'public'.
+  case "$database" in
+    mysql|mariadb)
+      schema="$dbname"
+      ;;
+    postgresql)
+      read -r -p "Default schema for new entities (default: public): " schema
+      [ -z "$schema" ] && schema="public"
+      ;;
+  esac
 
-    read -r -p "Database user: " database_user
-    [ -z "$database_user" ] && { echo "Database user cannot be empty!"; exit 1; }
+  read -r -p "Database user: " database_user
+  [ -z "$database_user" ] && { echo "Database user cannot be empty!"; exit 1; }
 
-    read -r -p "Database password: " database_password
-    [ -z "$database_password" ] && { echo "Database password cannot be empty!"; exit 1; }
+  read -r -p "Database password: " database_password
+  [ -z "$database_password" ] && { echo "Database password cannot be empty!"; exit 1; }
 
-    read -r -p "Database host (default 127.0.0.1): " database_host
-    [ -z "$database_host" ] && database_host="127.0.0.1"
+  read -r -p "Database host (default 127.0.0.1): " database_host
+  [ -z "$database_host" ] && database_host="127.0.0.1"
 
-    read -r -p "Database port (default $default_port): " database_port
-    [ -z "$database_port" ] && database_port=$default_port
+  read -r -p "Database port (default $default_port): " database_port
+  [ -z "$database_port" ] && database_port=$default_port
 
-    if [ "$database" = "mysql" ] || [ "$database" = "postgresql" ]; then
-      read -r -p "Database charset (default utf8): " charset
-      [ -z "$charset" ] && charset="utf8"
-    fi
+  if [ "$database" = "mysql" ] || [ "$database" = "postgresql" ]; then
+    read -r -p "Database charset (default utf8): " charset
+    [ -z "$charset" ] && charset="utf8"
+  fi
 
-    read -r -p "Database version (default $default_version): " server_version
-    [ -z "$server_version" ] && server_version=$default_version
+  read -r -p "Database version (default $default_version): " server_version
+  [ -z "$server_version" ] && server_version=$default_version
 
-    if [ "$database" = "mariadb" ]; then
-      server_version=$(php -r "
-        \$v = preg_replace('/^mariadb-/i', '', '$server_version');
-        \$parts = explode('.', \$v);
-        while (count(\$parts) < 3) \$parts[] = '0';
-        echo 'mariadb-' . implode('.', \$parts);
-      ")
-    elif [ "$database" = "mysql" ] || [ "$database" = "postgresql" ]; then
-      server_version=$(php -r "
-        \$v = '$server_version';
-        \$parts = explode('.', \$v);
-        while (count(\$parts) < 3) \$parts[] = '0';
-        echo implode('.', \$parts);
-      ")
-    fi
+  if [ "$database" = "mariadb" ]; then
+    server_version=$(php -r "
+      \$v = preg_replace('/^mariadb-/i', '', '$server_version');
+      \$parts = explode('.', \$v);
+      while (count(\$parts) < 3) \$parts[] = '0';
+      echo 'mariadb-' . implode('.', \$parts);
+    ")
+  elif [ "$database" = "mysql" ] || [ "$database" = "postgresql" ]; then
+    server_version=$(php -r "
+      \$v = '$server_version';
+      \$parts = explode('.', \$v);
+      while (count(\$parts) < 3) \$parts[] = '0';
+      echo implode('.', \$parts);
+    ")
   fi
 
   # Write individual credential vars to .env
