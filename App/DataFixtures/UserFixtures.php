@@ -38,8 +38,8 @@ final class UserFixtures extends Fixture
 
         /** @var UserInterface $user */
         $user = new $userClass();
-        $user->setEmail( $_ENV['ADMIN_EMAIL'] ?? 'admin@example.com' );
-        $user->setPassword( $_ENV['ADMIN_PASSWORD'] ?? 'admin_password' );
+        $user->setEmail( env( 'ADMIN_EMAIL', 'admin@example.com' ) );
+        $user->setPassword( env( 'ADMIN_PASSWORD', 'admin_password' ) );
 
         $manager->persist( $user );
         $manager->flush();
