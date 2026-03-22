@@ -223,11 +223,11 @@ configure_db_connection() {
   # Write individual credential vars to .env
   php -r "
     \$env = file_get_contents('.env');
-    \$block = 'DATABASE_${em_upper}_DRIVER=${driver}\n'
-            . 'DATABASE_${em_upper}_HOST=${database_host}\n'
-            . 'DATABASE_${em_upper}_PORT=${database_port}\n'
-            . 'DATABASE_${em_upper}_USER=${database_user}\n'
-            . 'DATABASE_${em_upper}_PASSWORD=${database_password}\n'
+    \$block = \"DATABASE_${em_upper}_DRIVER=${driver}\n\"
+            . \"DATABASE_${em_upper}_HOST=${database_host}\n\"
+            . \"DATABASE_${em_upper}_PORT=${database_port}\n\"
+            . \"DATABASE_${em_upper}_USER=${database_user}\n\"
+            . \"DATABASE_${em_upper}_PASSWORD=${database_password}\n\"
             . '###< doctrine/doctrine-bundle ###';
     \$env = str_replace('###< doctrine/doctrine-bundle ###', \$block, \$env);
     file_put_contents('.env', \$env);
@@ -236,11 +236,11 @@ configure_db_connection() {
   # Write commented placeholder vars to .env.example (HOST/USER/PASSWORD empty, DRIVER+PORT have defaults)
   php -r "
     \$ex = file_get_contents('.env.example');
-    \$block = '#DATABASE_${em_upper}_DRIVER=${driver}\n'
-            . '#DATABASE_${em_upper}_HOST=\n'
-            . '#DATABASE_${em_upper}_PORT=${database_port}\n'
-            . '#DATABASE_${em_upper}_USER=\n'
-            . '#DATABASE_${em_upper}_PASSWORD=\n'
+    \$block = \"#DATABASE_${em_upper}_DRIVER=${driver}\n\"
+            . \"#DATABASE_${em_upper}_HOST=\n\"
+            . \"#DATABASE_${em_upper}_PORT=${database_port}\n\"
+            . \"#DATABASE_${em_upper}_USER=\n\"
+            . \"#DATABASE_${em_upper}_PASSWORD=\n\"
             . '###< doctrine/doctrine-bundle ###';
     \$ex = str_replace('###< doctrine/doctrine-bundle ###', \$block, \$ex);
     file_put_contents('.env.example', \$ex);
@@ -328,7 +328,6 @@ user_pascal=$(to_pascal_case "$user_em")
 create_user_entity() {
   local em_name="$1"
   local pascal_name="$2"
-
   # ── User entity ──────────────────────────────────────────────────────
   cat > "App/Entity/${pascal_name}/User.php" << 'PHPEOF'
 <?php declare( strict_types=1 );
