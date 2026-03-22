@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
 # This file is the entry point to configure your own services.
 # Files in the packages/ subdirectory configure your dependencies.
 
@@ -39,6 +40,16 @@ services:
             - '../App/EventListeners/'
             - '../App/Enums/'
             - '../tests/'
+
+    PHP_SF\System\EventListener\EntityAttributesListener:
+        tags:
+            - { name: doctrine.event_listener, event: loadClassMetadata }
+
+    App\Maker\:
+        resource: '../App/Maker/*'
+        tags: [ 'maker.command' ]
+        bind:
+            $commandLoader: '@console.command_loader'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

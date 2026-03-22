@@ -14,7 +14,7 @@
 
 namespace App\EventListeners;
 
-use PHP_SF\Framework\Http\Middleware\api;
+use PHP_SF\Framework\Http\Middleware\api_example;
 use PHP_SF\System\Classes\Abstracts\AbstractController;
 use PHP_SF\System\Classes\Abstracts\AbstractEventListener;
 use PHP_SF\System\Classes\Abstracts\Middleware;
@@ -27,7 +27,7 @@ final class ExampleEventListener extends AbstractEventListener
     {
         return [
             // Method “listener” will be executed after loading the “auth” middleware
-            api::class => 'listener',
+            api_example::class => 'listener',
         ];
     }
 

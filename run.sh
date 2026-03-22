@@ -45,9 +45,9 @@ fi
 # Start the web server
 if [ "$use_symfony_cli" = true ]; then
   if [ "$httpsEnabled" = true ]; then
-    symfony serve --port="$port"
+    symfony server:start --listen-ip=0.0.0.0 --port="$port"
   else
-    symfony serve --port="$port" --no-tls
+    symfony server:start --listen-ip=0.0.0.0 --port="$port" --no-tls
   fi
 else
   php -S 127.0.0.1:"$port" -t public
