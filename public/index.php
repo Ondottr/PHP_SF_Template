@@ -50,8 +50,8 @@ $kernel = ( new PHP_SF\Kernel )
     ->addControllers( __DIR__ . '/../App/Http/Controller' )
     ->setHeaderTemplateClassName( header::class )
     ->setFooterTemplateClassName( footer::class )
-    ->setApplicationUserClassName( User::class )
-    ->addTemplatesDirectory( 'templates', 'App\View' );
+    ->addTemplatesDirectory( 'templates', 'App\View' )
+;
 
 require_once __DIR__ . '/testing.php';
 

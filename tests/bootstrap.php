@@ -13,7 +13,6 @@
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-use App\Entity\User;
 use PHP_SF\Framework\Http\Middleware\auth;
 use PHP_SF\System as PHP_SF;
 use PHP_SF\Templates\Layout\footer;
@@ -27,15 +26,15 @@ require_once __DIR__ . '/../config/constants.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../config/eventListeners.php';
 
-( new Dotenv )->bootEnv( __DIR__ . '/../.env' );
+( new Dotenv() )->bootEnv( __DIR__ . '/../.env' );
 
-$kernel = ( new PHP_SF\Kernel )
+$kernel = ( new PHP_SF\Kernel() )
     ->addTranslationFiles( __DIR__ . '/../lang' )
     ->addControllers( __DIR__ . '/../App/Http/Controller' )
     ->setHeaderTemplateClassName( header::class )
     ->setFooterTemplateClassName( footer::class )
-    ->setApplicationUserClassName( User::class )
-    ->addTemplatesDirectory( 'templates', 'App\View' );
+    ->addTemplatesDirectory( 'templates', 'App\View' )
+;
 
 auth::logInUser();
 

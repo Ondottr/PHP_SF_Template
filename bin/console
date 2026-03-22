@@ -16,7 +16,6 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-use App\Entity\User;
 use App\Kernel;
 use PHP_SF\System as PHP_SF;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -29,13 +28,13 @@ require_once __DIR__ . '/../vendor/autoload_runtime.php';
 require_once __DIR__ . '/../functions/functions.php';
 require_once __DIR__ . '/../config/constants.php';
 
-( new Dotenv )
+( new Dotenv() )
   ->bootEnv( __DIR__ . '/../.env' );
 
 $kernel = ( new PHP_SF\Kernel() )
   ->addTranslationFiles( __DIR__ . '/../lang' )
   ->addControllers( __DIR__ . '/../App/Http/Controller' )
-  ->setApplicationUserClassName( User::class );
+;
 
 return function () {
   $kernel = Kernel::getInstance();
