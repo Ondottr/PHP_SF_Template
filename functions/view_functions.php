@@ -11,31 +11,3 @@
  * RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
  * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-
-
-use JetBrains\PhpStorm\Pure;
-
-#[Pure]
-function numFormat( int|float|null $number, int $decimals = 2, string $decimal_separator = ',', string $thousands_separator = ' ' ): string
-{
-    if ( $number === null )
-        return '0';
-
-    if ( is_float( $number ) )
-        return number_format( $number, $decimals, $decimal_separator, $thousands_separator );
-
-    return number_format( $number, thousands_separator: ' ' );
-}
-
-
-function checkbox( string $name, bool $checked = false, string $id = null, bool $isRequired = false ): string
-{
-    $id         ??= $name;
-    $checked    = $checked ? 'checked' : '';
-    $isRequired = $isRequired ? 'required' : '';
-
-    return <<<HTML
-<input type="checkbox" id="$id" name="$name" style="display: none;" $checked $isRequired>
-<span class="checkbox-icon"></span>
-HTML;
-}
