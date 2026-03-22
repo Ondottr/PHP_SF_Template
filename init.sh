@@ -20,23 +20,27 @@ if ! [ -x "$(command -v composer)" ]; then
   exit 1
 fi
 
-if [ -f ".env" ]; then
-  echo "ERROR: .env already exists. This project has already been initialized."
-  echo "To set up an existing project on a new machine, use install.sh instead."
-  exit 1
-fi
+# region Detect existing configuration
 
-# Copy example files
-cp .env.example .env
-if [ ! -f "config/constants.php" ]; then
-  cp config/constants.example.php config/constants.php
-fi
+already_configured=false
+declare -a existing_ems=()
 
-# region Install dependencies (must be first — update_doctrine_yaml requires vendor/autoload.php)
+if [ -f "vendor/autoload.php" ]; then
+  connections_json=$(php -r "
+    require_once 'vendor/autoload.php';
+    use Symfony\Component\Yaml\Yaml;
+    \$yaml = Yaml::parseFile('config/packages/doctrine.yaml');
+    \$connections = array_keys(\$yaml['doctrine']['dbal']['connections'] ?? []);
+    \$real = array_filter(\$connections, fn(\$c) => \$c !== 'dummy');
+    echo json_encode(array_values(\$real));
+  " 2>/dev/null || echo '[]')
 
-if [ ! -d "vendor" ]; then
-  echo "Installing composer dependencies..."
-  composer install --ignore-platform-reqs --no-scripts
+  if [ "$connections_json" != "[]" ] && [ -n "$connections_json" ]; then
+    already_configured=true
+    while IFS= read -r em; do
+      [ -n "$em" ] && existing_ems+=("$em")
+    done < <(php -r "foreach (json_decode('$connections_json', true) as \$em) echo \$em . PHP_EOL;")
+  fi
 fi
 
 # endregion
@@ -147,7 +151,7 @@ PHPEOF
 
 # endregion
 
-# region DB connections
+# region DB connection helpers
 
 declare -a configured_ems=()
 declare -A em_schemas=()
@@ -333,36 +337,6 @@ PHPEOF
   echo "Created $maker_file (command: ${em_name}:make:entity)"
 }
 
-db_prompt="Add a database connection? [Y/n]: "
-while true; do
-  echo ""
-  read -r -p "$db_prompt" add_conn
-  if [ -z "$add_conn" ] || [ "$add_conn" = "y" ] || [ "$add_conn" = "Y" ]; then
-    read -r -p "Entity manager name (e.g. main, blog, payments, catalog): " em_name
-    [ -z "$em_name" ] && { echo "Entity manager name cannot be empty"; continue; }
-    configure_db_connection "$em_name"
-    db_prompt="Add another database connection? [Y/n]: "
-  else
-    break
-  fi
-done
-
-# endregion
-
-# region User entity creation
-
-user_em=""
-if [ ${#configured_ems[@]} -eq 1 ]; then
-  user_em="${configured_ems[0]}"
-elif [ ${#configured_ems[@]} -gt 1 ]; then
-  echo ""
-  echo "Which entity manager will contain the User entity? (${configured_ems[*]})"
-  read -r -p "Entity manager name: " user_em
-  if [ -z "$user_em" ]; then user_em="${configured_ems[0]}"; fi
-fi
-
-user_pascal=$(to_pascal_case "$user_em")
-
 create_user_entity() {
   local em_name="$1"
   local pascal_name="$2"
@@ -523,128 +497,280 @@ PHPEOF
   echo "Use bin/console ${em_name}:make:entity to generate more entities in this connection."
 }
 
-create_user_entity "$user_em" "$user_pascal" "${em_schemas[$user_em]}"
-
 # endregion
 
-# region Other env configuration
+# region Main flow
 
-echo "Set application environment prod|dev|test (default dev):"
-read -r application_environment
-[ -z "$application_environment" ] && application_environment="dev"
-php -r "file_put_contents('.env', preg_replace('/^#APP_ENV=.*/m', 'APP_ENV=$application_environment', file_get_contents('.env')));"
+if $already_configured; then
 
-echo "Enable debug mode? y|N"
-read -r debug_mode
-if [ "$debug_mode" = "y" ] || [ "$debug_mode" = "Y" ]; then debug_mode="true"; else debug_mode="false"; fi
-php -r "file_put_contents('.env', preg_replace('/^#APP_DEBUG=.*/m', 'APP_DEBUG=$debug_mode', file_get_contents('.env')));"
-
-echo ""
-echo "Set Redis credentials"
-read -r -p "Redis host (default localhost): " redis_host;   [ -z "$redis_host" ]   && redis_host="localhost"
-read -r -p "Redis port (default 6379): " redis_port;        [ -z "$redis_port" ]   && redis_port="6379"
-read -r -p "Redis database (default 0): " redis_db;         [ -z "$redis_db" ]     && redis_db="0"
-php -r "file_put_contents('.env', preg_replace('/^#REDIS_CACHE_URL=.*/m', 'REDIS_CACHE_URL=redis://$redis_host:$redis_port/$redis_db', file_get_contents('.env')));"
-
-echo ""
-echo "Set Memcached credentials"
-read -r -p "Memcached host (default localhost): " memcached_host; [ -z "$memcached_host" ] && memcached_host="localhost"
-read -r -p "Memcached port (default 11211): " memcached_port;     [ -z "$memcached_port" ] && memcached_port="11211"
-php -r "file_put_contents('.env', preg_replace('/^#MEMCACHED_SERVER=.*/m', 'MEMCACHED_SERVER=$memcached_host', file_get_contents('.env')));"
-php -r "file_put_contents('.env', preg_replace('/^#MEMCACHED_PORT=.*/m', 'MEMCACHED_PORT=$memcached_port', file_get_contents('.env')));"
-
-echo ""
-echo "Set server prefix (default server):"
-echo "The server prefix is used to identify the server in the cache"
-read -r server_prefix; [ -z "$server_prefix" ] && server_prefix="server"
-php -r "file_put_contents('.env', preg_replace('/^#SERVER_PREFIX=.*/m', 'SERVER_PREFIX=$server_prefix', file_get_contents('.env')));"
-
-echo ""
-echo "Set admin user credentials"
-read -r -p "Admin email (default adminemail@example.com): " admin_email; [ -z "$admin_email" ] && admin_email="adminemail@example.com"
-read -r -p "Admin password (default admin_password): " admin_password;   [ -z "$admin_password" ] && admin_password="admin_password"
-php -r "file_put_contents('.env', preg_replace('/^#ADMIN_EMAIL=.*/m', 'ADMIN_EMAIL=$admin_email', file_get_contents('.env')));"
-php -r "file_put_contents('.env', preg_replace('/^#ADMIN_PASSWORD=.*/m', 'ADMIN_PASSWORD=$admin_password', file_get_contents('.env')));"
-
-# endregion
-
-# region Configure config/constants.php
-
-if grep -q "^#const SERVER_IP" config/constants.php; then
-  echo "Set server IP (default 127.0.0.1):"
-  read -r server_ip; [ -z "$server_ip" ] && server_ip="127.0.0.1"
-  php -r "file_put_contents('config/constants.php', preg_replace('/^#const SERVER_IP.*/m', 'const SERVER_IP = \"$server_ip\";', file_get_contents('config/constants.php')));"
-fi
-
-if grep -q "^#const DEV_MODE" config/constants.php; then
-  echo "Enable templates cache? Y|n"
-  read -r templates_cache_enabled
-  if [ "$templates_cache_enabled" = "n" ] || [ "$templates_cache_enabled" = "N" ]; then templates_cache_enabled="false"; else templates_cache_enabled="true"; fi
-  php -r "file_put_contents('config/constants.php', preg_replace('/^#const TEMPLATES_CACHE_ENABLED.*/m', 'const TEMPLATES_CACHE_ENABLED = $templates_cache_enabled;', file_get_contents('config/constants.php')));"
-
-  echo "Enable dev mode? y|N"
-  read -r dev_mode
-  if [ "$dev_mode" = "y" ] || [ "$dev_mode" = "Y" ]; then dev_mode="true"; else dev_mode="false"; fi
-  php -r "file_put_contents('config/constants.php', preg_replace('/^#const DEV_MODE.*/m', 'const DEV_MODE = $dev_mode;', file_get_contents('config/constants.php')));"
-fi
-
-if grep -q "^#const APPLICATION_NAME" config/constants.php; then
-  echo "Set application name (default Platform):"
-  read -r application_name; [ -z "$application_name" ] && application_name="Platform"
-  php -r "file_put_contents('config/constants.php', preg_replace('/^#const APPLICATION_NAME.*/m', 'const APPLICATION_NAME = \"$application_name\";', file_get_contents('config/constants.php')));"
-fi
-
-if grep -q "^//define('LANGUAGES_LIST" config/constants.php; then
+  # ── Already-initialized project ────────────────────────────────────────────
   echo ""
-  echo "You must define or uncomment the LANGUAGES_LIST constant in config/constants.php manually!"
-  echo "See Platform/src/Classes/Helpers/Locale.php for available locales."
-  echo "Example: define('LANGUAGES_LIST', Locale::getLocaleKey( Locale::en ));"
-  exit 1
-fi
-
-# endregion
-
-# region Install npm dependencies and build assets
-
-if [ ! -d "node_modules" ]; then
-  echo "Installing npm dependencies..."
-  yarn install
-  cd public/CKEditor || cd .
-  yarn install
-  cd ../..
-
-  if [ -d "public/CKEditor" ]; then
-    echo "Building assets..."
-    yarn build
-    cd public/CKEditor || cd .
-    yarn build
-    cd ../..
+  echo "This project already has the following database connections configured:"
+  printf '  - %s\n' "${existing_ems[@]}"
+  echo ""
+  echo "init.sh is designed for initial project setup only."
+  echo "Running the full initialization on an already-configured project could overwrite"
+  echo "your existing .env, doctrine.yaml, and other configuration files."
+  echo ""
+  read -r -p "Do you want to add another database connection? [y/N]: " add_another
+  if [[ ! "$add_another" =~ ^[yY]$ ]]; then
+    echo ""
+    echo "Aborted. Use install.sh to set up an already-configured project on a new machine."
+    exit 0
   fi
 
-  php bin/console assets:install
-fi
+  db_prompt="Add a database connection? [Y/n]: "
+  while true; do
+    echo ""
+    read -r -p "$db_prompt" add_conn
+    if [ -z "$add_conn" ] || [ "$add_conn" = "y" ] || [ "$add_conn" = "Y" ]; then
+      read -r -p "Entity manager name (e.g. main, blog, payments, catalog): " em_name
+      [ -z "$em_name" ] && { echo "Entity manager name cannot be empty"; continue; }
+      configure_db_connection "$em_name"
+      db_prompt="Add another database connection? [Y/n]: "
+    else
+      break
+    fi
+  done
 
-# endregion
-
-# region Build Codeception actors
-
-echo "Building Codeception actor classes..."
-vendor/bin/codecept build --quiet
-
-# endregion
-
-# region Create schemas and load fixtures
-
-if [ ${#configured_ems[@]} -gt 0 ]; then
+  # Check whether the User entity is present and properly wired
   echo ""
-  echo "Configured entity managers: ${configured_ems[*]}"
+  user_entity_file=""
+  for f in App/Entity/*/User.php; do
+    if [ -f "$f" ]; then
+      user_entity_file="$f"
+      break
+    fi
+  done
+
+  if [ -n "$user_entity_file" ]; then
+    echo "User entity found at $user_entity_file."
+    if grep -q "setApplicationUserClassName" bin/console 2>/dev/null; then
+      echo "Entry points are configured correctly with the User entity."
+    else
+      echo "WARNING: Entry points (bin/console, public/index.php, tests/bootstrap.php) do not"
+      echo "         appear to have setApplicationUserClassName() configured."
+      echo "         Please add it manually, or re-run init.sh from scratch on a clean project."
+    fi
+  else
+    echo "No User entity found."
+    echo "The User entity is required for the PHP_SF framework to function (authentication,"
+    echo "session handling, and access control all depend on it)."
+    echo ""
+    all_ems=("${existing_ems[@]}" "${configured_ems[@]}")
+    user_em=""
+    if [ ${#all_ems[@]} -eq 1 ]; then
+      user_em="${all_ems[0]}"
+      echo "Using entity manager '$user_em' for the User entity."
+    elif [ ${#all_ems[@]} -gt 1 ]; then
+      echo "Which entity manager should contain the User entity? (${all_ems[*]})"
+      read -r -p "Entity manager name: " user_em
+      [ -z "$user_em" ] && user_em="${all_ems[0]}"
+    fi
+    if [ -n "$user_em" ]; then
+      user_pascal=$(to_pascal_case "$user_em")
+      user_schema="${em_schemas[$user_em]:-public}"
+      create_user_entity "$user_em" "$user_pascal" "$user_schema"
+    fi
+  fi
+
+else
+
+  # ── Full initialization ────────────────────────────────────────────────────
+
+  if [ -f ".env" ]; then
+    echo "ERROR: .env already exists but doctrine.yaml has no configured connections."
+    echo "This is an inconsistent state. Please check your configuration manually."
+    exit 1
+  fi
+
+  # Copy example files
+  cp .env.example .env
+  if [ ! -f "config/constants.php" ]; then
+    cp config/constants.example.php config/constants.php
+  fi
+
+  # region Install dependencies (must be first — update_doctrine_yaml requires vendor/autoload.php)
+
+  if [ ! -d "vendor" ]; then
+    echo "Installing composer dependencies..."
+    composer install --ignore-platform-reqs --no-scripts
+  fi
+
+  # endregion
+
+  # region DB connections
+
+  db_prompt="Add a database connection? [Y/n]: "
+  while true; do
+    echo ""
+    read -r -p "$db_prompt" add_conn
+    if [ -z "$add_conn" ] || [ "$add_conn" = "y" ] || [ "$add_conn" = "Y" ]; then
+      read -r -p "Entity manager name (e.g. main, blog, payments, catalog): " em_name
+      [ -z "$em_name" ] && { echo "Entity manager name cannot be empty"; continue; }
+      configure_db_connection "$em_name"
+      db_prompt="Add another database connection? [Y/n]: "
+    else
+      break
+    fi
+  done
+
+  # endregion
+
+  # region User entity creation
+
+  user_em=""
+  if [ ${#configured_ems[@]} -eq 1 ]; then
+    user_em="${configured_ems[0]}"
+  elif [ ${#configured_ems[@]} -gt 1 ]; then
+    echo ""
+    echo "The User entity is required by the PHP_SF framework — authentication, session"
+    echo "handling, and access control all depend on it. You must assign it to one EM."
+    echo "Which entity manager will contain the User entity? (${configured_ems[*]})"
+    read -r -p "Entity manager name: " user_em
+    if [ -z "$user_em" ]; then user_em="${configured_ems[0]}"; fi
+  fi
+
+  user_pascal=$(to_pascal_case "$user_em")
+
+  create_user_entity "$user_em" "$user_pascal" "${em_schemas[$user_em]}"
+
+  # endregion
+
+  # region Other env configuration
+
+  echo "Set application environment prod|dev|test (default dev):"
+  read -r application_environment
+  [ -z "$application_environment" ] && application_environment="dev"
+  php -r "file_put_contents('.env', preg_replace('/^#APP_ENV=.*/m', 'APP_ENV=$application_environment', file_get_contents('.env')));"
+
+  echo "Enable debug mode? y|N"
+  read -r debug_mode
+  if [ "$debug_mode" = "y" ] || [ "$debug_mode" = "Y" ]; then debug_mode="true"; else debug_mode="false"; fi
+  php -r "file_put_contents('.env', preg_replace('/^#APP_DEBUG=.*/m', 'APP_DEBUG=$debug_mode', file_get_contents('.env')));"
+
+  echo ""
+  echo "Set Redis credentials"
+  read -r -p "Redis host (default localhost): " redis_host;   [ -z "$redis_host" ]   && redis_host="localhost"
+  read -r -p "Redis port (default 6379): " redis_port;        [ -z "$redis_port" ]   && redis_port="6379"
+  read -r -p "Redis database (default 0): " redis_db;         [ -z "$redis_db" ]     && redis_db="0"
+  php -r "file_put_contents('.env', preg_replace('/^#REDIS_CACHE_URL=.*/m', 'REDIS_CACHE_URL=redis://$redis_host:$redis_port/$redis_db', file_get_contents('.env')));"
+
+  echo ""
+  echo "Set Memcached credentials"
+  read -r -p "Memcached host (default localhost): " memcached_host; [ -z "$memcached_host" ] && memcached_host="localhost"
+  read -r -p "Memcached port (default 11211): " memcached_port;     [ -z "$memcached_port" ] && memcached_port="11211"
+  php -r "file_put_contents('.env', preg_replace('/^#MEMCACHED_SERVER=.*/m', 'MEMCACHED_SERVER=$memcached_host', file_get_contents('.env')));"
+  php -r "file_put_contents('.env', preg_replace('/^#MEMCACHED_PORT=.*/m', 'MEMCACHED_PORT=$memcached_port', file_get_contents('.env')));"
+
+  echo ""
+  echo "Set server prefix (default server):"
+  echo "The server prefix is used to identify the server in the cache"
+  read -r server_prefix; [ -z "$server_prefix" ] && server_prefix="server"
+  php -r "file_put_contents('.env', preg_replace('/^#SERVER_PREFIX=.*/m', 'SERVER_PREFIX=$server_prefix', file_get_contents('.env')));"
+
+  echo ""
+  echo "Set admin user credentials"
+  read -r -p "Admin email (default adminemail@example.com): " admin_email; [ -z "$admin_email" ] && admin_email="adminemail@example.com"
+  read -r -p "Admin password (default admin_password): " admin_password;   [ -z "$admin_password" ] && admin_password="admin_password"
+  php -r "file_put_contents('.env', preg_replace('/^#ADMIN_EMAIL=.*/m', 'ADMIN_EMAIL=$admin_email', file_get_contents('.env')));"
+  php -r "file_put_contents('.env', preg_replace('/^#ADMIN_PASSWORD=.*/m', 'ADMIN_PASSWORD=$admin_password', file_get_contents('.env')));"
+
+  # endregion
+
+  # region Configure config/constants.php
+
+  if grep -q "^#const SERVER_IP" config/constants.php; then
+    echo "Set server IP (default 127.0.0.1):"
+    read -r server_ip; [ -z "$server_ip" ] && server_ip="127.0.0.1"
+    php -r "file_put_contents('config/constants.php', preg_replace('/^#const SERVER_IP.*/m', 'const SERVER_IP = \"$server_ip\";', file_get_contents('config/constants.php')));"
+  fi
+
+  if grep -q "^#const DEV_MODE" config/constants.php; then
+    echo "Enable templates cache? Y|n"
+    read -r templates_cache_enabled
+    if [ "$templates_cache_enabled" = "n" ] || [ "$templates_cache_enabled" = "N" ]; then templates_cache_enabled="false"; else templates_cache_enabled="true"; fi
+    php -r "file_put_contents('config/constants.php', preg_replace('/^#const TEMPLATES_CACHE_ENABLED.*/m', 'const TEMPLATES_CACHE_ENABLED = $templates_cache_enabled;', file_get_contents('config/constants.php')));"
+
+    echo "Enable dev mode? y|N"
+    read -r dev_mode
+    if [ "$dev_mode" = "y" ] || [ "$dev_mode" = "Y" ]; then dev_mode="true"; else dev_mode="false"; fi
+    php -r "file_put_contents('config/constants.php', preg_replace('/^#const DEV_MODE.*/m', 'const DEV_MODE = $dev_mode;', file_get_contents('config/constants.php')));"
+  fi
+
+  if grep -q "^#const APPLICATION_NAME" config/constants.php; then
+    echo "Set application name (default Platform):"
+    read -r application_name; [ -z "$application_name" ] && application_name="Platform"
+    php -r "file_put_contents('config/constants.php', preg_replace('/^#const APPLICATION_NAME.*/m', 'const APPLICATION_NAME = \"$application_name\";', file_get_contents('config/constants.php')));"
+  fi
+
+  if grep -q "^//define('LANGUAGES_LIST" config/constants.php; then
+    echo ""
+    echo "You must define or uncomment the LANGUAGES_LIST constant in config/constants.php manually!"
+    echo "See Platform/src/Classes/Helpers/Locale.php for available locales."
+    echo "Example: define('LANGUAGES_LIST', Locale::getLocaleKey( Locale::en ));"
+    exit 1
+  fi
+
+  # endregion
+
+  # region Install npm dependencies and build assets
+
+  if [ ! -d "node_modules" ]; then
+    echo "Installing npm dependencies..."
+    yarn install
+    cd public/CKEditor || cd .
+    yarn install
+    cd ../..
+
+    if [ -d "public/CKEditor" ]; then
+      echo "Building assets..."
+      yarn build
+      cd public/CKEditor || cd .
+      yarn build
+      cd ../..
+    fi
+
+    php bin/console assets:install
+  fi
+
+  # endregion
+
+  # region Build Codeception actors
+
+  echo "Building Codeception actor classes..."
+  vendor/bin/codecept build --quiet
+
+  # endregion
+
+  # region Create schemas and load fixtures
+
+  if [ ${#configured_ems[@]} -gt 0 ]; then
+    echo ""
+    echo "Configured entity managers: ${configured_ems[*]}"
+  fi
+
+  # endregion
+
+  chmod +x run.sh
+
+  echo ""
+  echo "Initialization complete. You can now run the application with: ./run.sh"
+  echo ""
+
 fi
 
 # endregion
 
-chmod +x run.sh
+# region Keep or delete init.sh
 
 echo ""
-echo "Initialization complete. You can now run the application with: ./run.sh"
-echo ""
-echo "NEXT STEP: Create your User entity (see the notice above)."
+read -r -p "Do you want to keep this init.sh script? [Y/n]: " keep_script
+if [ "$keep_script" = "n" ] || [ "$keep_script" = "N" ]; then
+  rm -- "$0"
+  echo "init.sh has been deleted."
+else
+  echo "init.sh kept."
+fi
+
+# endregion
