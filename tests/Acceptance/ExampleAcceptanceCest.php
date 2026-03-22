@@ -7,11 +7,17 @@ use Tests\Support\AcceptanceTester;
 class ExampleAcceptanceCest
 {
 
-    public function testSomething(AcceptanceTester $I): void
+    public function testWelcomePageLoads(AcceptanceTester $I): void
     {
         $I->amOnPage('/');
-        $I->wait(1);
-        $I->see('Haven’t registered yet');
+        $I->seeInTitle('Welcome');
+        $I->see('Welcome');
+    }
+
+    public function testWelcomePageHasReadyMessage(AcceptanceTester $I): void
+    {
+        $I->amOnPage('/');
+        $I->see('Your application is now ready');
     }
 
 }

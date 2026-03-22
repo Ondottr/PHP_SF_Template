@@ -42,8 +42,5 @@ $kernel = ( new PHP_SF\Kernel() )
 
 auth::logInUser();
 
-restore_error_handler();
-restore_exception_handler();
-
 /** @noinspection GlobalVariableUsageInspection */
 $GLOBALS['kernel'] = $kernel;
