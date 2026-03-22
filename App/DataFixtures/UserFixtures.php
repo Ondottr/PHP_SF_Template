@@ -15,8 +15,6 @@
 namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\DBAL\Platforms\SqlitePlatform;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ObjectManager;
 use PHP_SF\System\Interface\UserInterface;
 use PHP_SF\System\Kernel;
@@ -44,13 +42,6 @@ final class UserFixtures extends Fixture
                 $e
             );
         }
-
-        if ( $manager instanceof EntityManagerInterface
-            && $manager->getConnection()->getDatabasePlatform() instanceof SqlitePlatform )
-            throw new RuntimeException(
-                'doctrine:fixtures:load is targeting the dummy SQLite EM. '
-                . 'Run with --em=<name> to target a real database.'
-            );
 
         if ( $manager->getMetadataFactory()->isTransient( $userClass ) )
             return;
