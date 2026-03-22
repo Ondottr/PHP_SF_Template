@@ -26,7 +26,7 @@ require_once __DIR__ . '/../config/constants.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../config/eventListeners.php';
 
-( new Dotenv() )->bootEnv( __DIR__ . '/../.env' );
+( new Dotenv() )->bootEnv( __DIR__ . '/../.env.test.local' );
 
 $kernel = ( new PHP_SF\Kernel() )
     ->addTranslationFiles( __DIR__ . '/../lang' )
