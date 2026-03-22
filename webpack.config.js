@@ -61,12 +61,6 @@ module.exports = ( env ) => {
           "!jquery-3.6.0.min.js",
         ],
       } ),
-      new Dotenv( {
-        path: "./.env",
-        safe: true,
-        allowEmptyValues: true,
-        systemvars: true,
-      } ),
       isProduction && new JavaScriptObfuscator( {
         domainLock: [
           'localhost',

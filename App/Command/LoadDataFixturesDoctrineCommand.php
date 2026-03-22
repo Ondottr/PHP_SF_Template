@@ -15,12 +15,15 @@ declare( strict_types=1 );
 
 namespace App\Command;
 
+use App\Abstraction\Classes\AbstractPurger;
 use App\Abstraction\Interfaces\CustomPurgerInterface;
 use Doctrine\Bundle\DoctrineBundle\Command\DoctrineCommand;
 use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\AbstractLogger;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,16 +33,21 @@ use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
 /**
  * Class LoadDataFixturesDoctrineCommand
  *
- * Load data fixtures from bundles.
+ * Load data fixtures to your database. Requires --em to specify which entity manager
+ * (and therefore which database) to target.
  *
  * @author  Dmytro Dyvulskyi <dmytro.dyvulskyi@nations-original.com>
  */
+#[AsCommand(
+    name: 'doctrine:fixtures:custom-loader',
+    description: 'Load data fixtures to your database',
+)]
 final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
 {
 
     private SymfonyFixturesLoader $fixturesLoader;
 
-    /** @var CustomPurgerInterface[] */
+    /** @var AbstractPurger[] */
     private array $purgers;
 
 
@@ -57,10 +65,8 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
     protected function configure(): void
     {
         $this
-            ->setName( 'doctrine:fixtures:custom-loader' )
-            ->setDescription( 'Load data fixtures to your database' )
             ->addOption( 'force', 'f', InputOption::VALUE_NONE, 'Force loading fixtures without confirmation.' )
-            ->addOption( 'em', null, InputOption::VALUE_REQUIRED, 'The entity manager to use for this command.' )
+            ->addOption( 'em', null, InputOption::VALUE_REQUIRED, 'The entity manager to use.' )
             ->addOption( 'group', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, 'Only load fixtures that belong to this group' );
     }
 
@@ -68,10 +74,22 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
     {
         $ui = new SymfonyStyle( $input, $output );
 
-        if ( !$input->getOption( 'force' ) )
-            if ( !$ui->confirm( sprintf( 'Careful, database "%s" will be purged. Do you want to continue?', em()->getConnection()->getDatabase() ), !$input->isInteractive() ) )
-                return 0;
+        $emName = $input->getOption( 'em' );
+        if ( $emName === null ) {
+            $available = implode( ', ', array_filter(
+                array_keys( $this->getDoctrine()->getManagerNames() ),
+                static fn( string $name ) => $name !== 'dummy'
+            ) );
+            $ui->error( sprintf( 'The --em option is required. Available entity managers: %s.', $available ) );
 
+            return 1;
+        }
+
+        $em = $this->getEntityManager( $emName );
+
+        if ( !$input->getOption( 'force' ) )
+            if ( !$ui->confirm( sprintf( 'Careful, database "%s" will be purged. Do you want to continue?', $em->getConnection()->getDatabase() ), !$input->isInteractive() ) )
+                return 0;
 
         $fixtures = $this->fixturesLoader
             ->getFixtures( $groups = $input->getOption( 'group' ) );
@@ -87,7 +105,7 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
             return 1;
         }
 
-        $executor = new ORMExecutor( em() );
+        $executor = new ORMExecutor( $em );
         $executor->setLogger( new class( $ui ) extends AbstractLogger {
 
             public function __construct( private readonly SymfonyStyle $ui ) {}
@@ -99,12 +117,17 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
 
         } );
 
-        // Purge outside the executor's transaction: TRUNCATE causes an implicit
-        // commit in MySQL which would break the wrapInTransaction() used by execute().
+        // Purge outside the executor's transaction: TRUNCATE/DELETE causes an implicit
+        // commit in MySQL/MariaDB which would break the wrapInTransaction() used by execute().
         $ui->text( '  <comment>></comment> <info>purging database</info>' );
 
-        foreach ( $this->purgers as $purger )
+        foreach ( $this->purgers as $purger ) {
+            if ( $purger->getEntityManagerName() !== $emName )
+                continue;
+
+            $purger->setEntityManager( $em );
             $purger->purge();
+        }
 
         // append=true skips the built-in purge inside execute() — we already did it above.
         $executor->execute( $fixtures, true );
