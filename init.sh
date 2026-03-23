@@ -93,13 +93,13 @@ $yaml = Yaml::parse($content);
 
 // ── DBAL connection ────────────────────────────────────────────────────────
 $conn = [
-    'driver'         => "%env(DATABASE_{$em_upper}_DRIVER)%",
+    'driver'         => $driver,
     'host'           => "%env(DATABASE_{$em_upper}_HOST)%",
     'port'           => "%env(int:DATABASE_{$em_upper}_PORT)%",
     'user'           => "%env(DATABASE_{$em_upper}_USER)%",
     'password'       => "%env(DATABASE_{$em_upper}_PASSWORD)%",
-    'dbname'         => $dbname,
-    'server_version' => $server_version,
+    'dbname'         => "%env(DATABASE_{$em_upper}_DBNAME)%",
+    'server_version' => "%env(DATABASE_{$em_upper}_VERSION)%",
 ];
 if ($charset !== '') {
     $conn['charset'] = $charset;
@@ -130,13 +130,16 @@ if ($driver === 'pdo_mysql') {
 }
 $yaml['doctrine']['orm']['entity_managers'][$em_name] = $em;
 
-// ── when@test: dbname override ─────────────────────────────────────────────
+// ── Fallback parameter: _test suffix when DBNAME_TEST is not set ───────────
+$yaml['parameters']["app.db_{$em_name}_test_dbname"] = "%env(DATABASE_{$em_upper}_DBNAME)%_test";
+
+// ── when@test: use DBNAME_TEST if set, otherwise fall back to DBNAME + _test
 if (!isset($yaml['when@test']['doctrine']['dbal']['connections'])
     || $yaml['when@test']['doctrine']['dbal']['connections'] === null) {
     $yaml['when@test']['doctrine']['dbal']['connections'] = [];
 }
 $yaml['when@test']['doctrine']['dbal']['connections'][$em_name] = [
-    'dbname' => $dbname . '_test',
+    'dbname' => "%env(default:app.db_{$em_name}_test_dbname:DATABASE_{$em_upper}_DBNAME_TEST)%",
 ];
 
 $output = $header . Yaml::dump($yaml, 10, 4, Yaml::DUMP_NULL_AS_TILDE);
@@ -256,24 +259,28 @@ configure_db_connection() {
   # Write individual credential vars to .env
   php -r "
     \$env = file_get_contents('.env');
-    \$block = \"DATABASE_${em_upper}_DRIVER=${driver}\n\"
-            . \"DATABASE_${em_upper}_HOST=${database_host}\n\"
+    \$block = \"DATABASE_${em_upper}_HOST=${database_host}\n\"
             . \"DATABASE_${em_upper}_PORT=${database_port}\n\"
             . \"DATABASE_${em_upper}_USER=${database_user}\n\"
             . \"DATABASE_${em_upper}_PASSWORD=${database_password}\n\"
+            . \"DATABASE_${em_upper}_DBNAME=${dbname}\n\"
+            . \"DATABASE_${em_upper}_VERSION=${server_version}\n\"
             . '###< doctrine/doctrine-bundle ###';
     \$env = str_replace('###< doctrine/doctrine-bundle ###', \$block, \$env);
     file_put_contents('.env', \$env);
   "
 
-  # Write commented placeholder vars to .env.example (HOST/USER/PASSWORD empty, DRIVER+PORT have defaults)
+  # Write commented placeholder vars to .env.example (HOST/USER/PASSWORD empty, others have defaults)
   php -r "
     \$ex = file_get_contents('.env.example');
-    \$block = \"#DATABASE_${em_upper}_DRIVER=${driver}\n\"
-            . \"#DATABASE_${em_upper}_HOST=\n\"
+    \$block = \"#DATABASE_${em_upper}_HOST=\n\"
             . \"#DATABASE_${em_upper}_PORT=${database_port}\n\"
             . \"#DATABASE_${em_upper}_USER=\n\"
             . \"#DATABASE_${em_upper}_PASSWORD=\n\"
+            . \"#DATABASE_${em_upper}_DBNAME=${dbname}\n\"
+            . \"#DATABASE_${em_upper}_VERSION=${server_version}\n\"
+            . \"# Optional: override test DB name (default: DATABASE_${em_upper}_DBNAME + _test)\n\"
+            . \"#DATABASE_${em_upper}_DBNAME_TEST=\n\"
             . '###< doctrine/doctrine-bundle ###';
     \$ex = str_replace('###< doctrine/doctrine-bundle ###', \$block, \$ex);
     file_put_contents('.env.example', \$ex);

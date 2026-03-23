@@ -28,18 +28,30 @@ set_db_credentials() {
   echo ""
   echo "Configure '$em_name' connection"
 
-  # Read the default driver and port from .env (written by init.sh into .env.example → copied to .env)
+  # Read driver from doctrine.yaml to determine default port
   local current_driver
   current_driver=$(php -r "
-    foreach (file('.env', FILE_IGNORE_NEW_LINES) as \$l) {
-      if (preg_match('/^#?(DATABASE_${em_upper}_DRIVER)=(.*)/', \$l, \$m)) {
-        echo trim(\$m[2]); break;
-      }
-    }
-  ")
+    require_once 'vendor/autoload.php';
+    use Symfony\Component\Yaml\Yaml;
+    \$yaml = Yaml::parseFile('config/packages/doctrine.yaml');
+    echo \$yaml['doctrine']['dbal']['connections']['${em_name}']['driver'] ?? '';
+  " 2>/dev/null || echo '')
 
   declare -A driver_ports=( [pdo_pgsql]=5432 [pdo_mysql]=3306 [pdo_sqlite]=0 )
   local default_port=${driver_ports[$current_driver]:-3306}
+
+  # Read current defaults from .env
+  local current_dbname current_version
+  current_dbname=$(php -r "
+    foreach (file('.env', FILE_IGNORE_NEW_LINES) as \$l) {
+      if (preg_match('/^#?DATABASE_${em_upper}_DBNAME=(.*)/', \$l, \$m)) { echo trim(\$m[1]); break; }
+    }
+  ")
+  current_version=$(php -r "
+    foreach (file('.env', FILE_IGNORE_NEW_LINES) as \$l) {
+      if (preg_match('/^#?DATABASE_${em_upper}_VERSION=(.*)/', \$l, \$m)) { echo trim(\$m[1]); break; }
+    }
+  ")
 
   read -r -p "Database host (default 127.0.0.1): " database_host
   [ -z "$database_host" ] && database_host="127.0.0.1"
@@ -53,14 +65,22 @@ set_db_credentials() {
   read -r -p "Database password: " database_password
   [ -z "$database_password" ] && { echo "Database password cannot be empty!"; exit 1; }
 
-  # Uncomment the DRIVER line and write HOST, PORT, USER, PASSWORD
+  read -r -p "Database name (default ${current_dbname:-$em_name}): " database_dbname
+  [ -z "$database_dbname" ] && database_dbname="${current_dbname:-$em_name}"
+
+  read -r -p "Database version (default ${current_version:-}): " database_version
+  [ -z "$database_version" ] && database_version="${current_version:-}"
+
+  # Write HOST, PORT, USER, PASSWORD, DBNAME, VERSION
+  # DBNAME_TEST is optional — update it only if the line already exists in .env
   php -r "
     \$env = file_get_contents('.env');
-    \$env = preg_replace('/^#(DATABASE_${em_upper}_DRIVER=.*)/m', '\$1', \$env);
     \$env = preg_replace('/^#?DATABASE_${em_upper}_HOST=.*/m',     'DATABASE_${em_upper}_HOST=${database_host}', \$env);
     \$env = preg_replace('/^#?DATABASE_${em_upper}_PORT=.*/m',     'DATABASE_${em_upper}_PORT=${database_port}', \$env);
     \$env = preg_replace('/^#?DATABASE_${em_upper}_USER=.*/m',     'DATABASE_${em_upper}_USER=${database_user}', \$env);
     \$env = preg_replace('/^#?DATABASE_${em_upper}_PASSWORD=.*/m', 'DATABASE_${em_upper}_PASSWORD=${database_password}', \$env);
+    \$env = preg_replace('/^#?DATABASE_${em_upper}_DBNAME=.*/m',   'DATABASE_${em_upper}_DBNAME=${database_dbname}', \$env);
+    \$env = preg_replace('/^#?DATABASE_${em_upper}_VERSION=.*/m',  'DATABASE_${em_upper}_VERSION=${database_version}', \$env);
     file_put_contents('.env', \$env);
   "
   echo "'$em_name' credentials saved"
