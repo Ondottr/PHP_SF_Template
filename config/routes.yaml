@@ -3,3 +3,8 @@ controllers:
         path: ../App/Http/SymfonyControllers/
         namespace: App\Http\SymfonyControllers
     type: attribute
+
+when@test:
+    php_sf_routes:
+        resource: '.'
+        type: php_sf
