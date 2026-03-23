@@ -53,7 +53,7 @@ services:
         bind:
             $commandLoader: '@console.command_loader'
 
-    App\Routing\PhpSfRouteLoader:
+    PHP_SF\Framework\Routing\PhpSfRouteLoader:
         arguments:
             $controllersDir: '%kernel.project_dir%/App/Http/Controller'
         tags:
