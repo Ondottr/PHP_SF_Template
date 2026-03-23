@@ -17,7 +17,6 @@
  */
 
 use App\Kernel;
-use App\Entity\Main\User;
 use PHP_SF\System as PHP_SF;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Dotenv\Dotenv;
@@ -53,7 +52,6 @@ $_SERVER['APP_RUNTIME_OPTIONS']['disable_dotenv'] = true;
 $kernel = ( new PHP_SF\Kernel() )
   ->addTranslationFiles( __DIR__ . '/../lang' )
   ->addControllers( __DIR__ . '/../App/Http/Controller' )
-  ->setApplicationUserClassName( User::class )
 ;
 
 return function () {

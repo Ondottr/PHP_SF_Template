@@ -16,14 +16,14 @@
 //
 //
     'E-mail' => 'E-mail',
-    'Email' => 'Email (not_translated)',
+    'Email' => 'Email',
 //
 //
     'Feb' => 'Feb',
     'February' => 'February',
-    'Field %s is too long. It should have %s character or less.' 
+    'Field %s is too long. It should have %s character or less.'
     => 'Field %s is too long. It should have %s character or less.',
-    'Field %s is too short. It should have %s character or more.' 
+    'Field %s is too short. It should have %s character or more.'
     => 'Field %s is too short. It should have %s character or more.',
     'Field `%s` cannot be null.' => 'Field `%s` cannot be null.',
     'Field `%s` is not a valid email address.' => 'Field `%s` is not a valid email address.',
@@ -50,7 +50,7 @@
 //
     'Sep' => 'Sep',
     'September' => 'September',
-    'Sign In' => 'Sign In (not_translated)',
+    'Sign In' => 'Sign In',
 //
 //
     'User Group' => 'User Group',
