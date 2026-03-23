@@ -93,13 +93,13 @@ $yaml = Yaml::parse($content);
 
 // ── DBAL connection ────────────────────────────────────────────────────────
 $conn = [
-    'driver'         => "%env(DATABASE_{$em_upper}_DRIVER)%",
+    'driver'         => $driver,
     'host'           => "%env(DATABASE_{$em_upper}_HOST)%",
     'port'           => "%env(int:DATABASE_{$em_upper}_PORT)%",
     'user'           => "%env(DATABASE_{$em_upper}_USER)%",
     'password'       => "%env(DATABASE_{$em_upper}_PASSWORD)%",
-    'dbname'         => $dbname,
-    'server_version' => $server_version,
+    'dbname'         => "%env(DATABASE_{$em_upper}_DBNAME)%",
+    'server_version' => "%env(DATABASE_{$em_upper}_VERSION)%",
 ];
 if ($charset !== '') {
     $conn['charset'] = $charset;
@@ -136,7 +136,7 @@ if (!isset($yaml['when@test']['doctrine']['dbal']['connections'])
     $yaml['when@test']['doctrine']['dbal']['connections'] = [];
 }
 $yaml['when@test']['doctrine']['dbal']['connections'][$em_name] = [
-    'dbname' => $dbname . '_test',
+    'dbname' => "%env(DATABASE_{$em_upper}_DBNAME_TEST)%",
 ];
 
 $output = $header . Yaml::dump($yaml, 10, 4, Yaml::DUMP_NULL_AS_TILDE);
@@ -256,24 +256,28 @@ configure_db_connection() {
   # Write individual credential vars to .env
   php -r "
     \$env = file_get_contents('.env');
-    \$block = \"DATABASE_${em_upper}_DRIVER=${driver}\n\"
-            . \"DATABASE_${em_upper}_HOST=${database_host}\n\"
+    \$block = \"DATABASE_${em_upper}_HOST=${database_host}\n\"
             . \"DATABASE_${em_upper}_PORT=${database_port}\n\"
             . \"DATABASE_${em_upper}_USER=${database_user}\n\"
             . \"DATABASE_${em_upper}_PASSWORD=${database_password}\n\"
+            . \"DATABASE_${em_upper}_DBNAME=${dbname}\n\"
+            . \"DATABASE_${em_upper}_VERSION=${server_version}\n\"
+            . \"DATABASE_${em_upper}_DBNAME_TEST=${dbname}_test\n\"
             . '###< doctrine/doctrine-bundle ###';
     \$env = str_replace('###< doctrine/doctrine-bundle ###', \$block, \$env);
     file_put_contents('.env', \$env);
   "
 
-  # Write commented placeholder vars to .env.example (HOST/USER/PASSWORD empty, DRIVER+PORT have defaults)
+  # Write commented placeholder vars to .env.example (HOST/USER/PASSWORD empty, others have defaults)
   php -r "
     \$ex = file_get_contents('.env.example');
-    \$block = \"#DATABASE_${em_upper}_DRIVER=${driver}\n\"
-            . \"#DATABASE_${em_upper}_HOST=\n\"
+    \$block = \"#DATABASE_${em_upper}_HOST=\n\"
             . \"#DATABASE_${em_upper}_PORT=${database_port}\n\"
             . \"#DATABASE_${em_upper}_USER=\n\"
             . \"#DATABASE_${em_upper}_PASSWORD=\n\"
+            . \"#DATABASE_${em_upper}_DBNAME=${dbname}\n\"
+            . \"#DATABASE_${em_upper}_VERSION=${server_version}\n\"
+            . \"#DATABASE_${em_upper}_DBNAME_TEST=${dbname}_test\n\"
             . '###< doctrine/doctrine-bundle ###';
     \$ex = str_replace('###< doctrine/doctrine-bundle ###', \$block, \$ex);
     file_put_contents('.env.example', \$ex);
