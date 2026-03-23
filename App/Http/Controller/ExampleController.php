@@ -40,7 +40,7 @@ final class ExampleController extends AbstractController
         return $this->render( welcome_page::class );
     }
 
-    #[Route( url: 'example/page/{$response_type}', httpMethod: 'GET', middleware: [ custom::class => [ all::class => [ auth::class ], any::class => [ api_example::class, admin_example::class ] ] ] )]
+    #[Route( url: 'example/page/{$response_type}', httpMethod: 'GET', middleware: [ custom::class => [ any::class => [ auth::class, api_example::class, admin_example::class ] ] ] )]
     public function example_route( string $response_type ): Response|RedirectResponse|JsonResponse
     {
         // Return Response
@@ -56,9 +56,7 @@ final class ExampleController extends AbstractController
             ] );
 
         // if ( $responseType === 'json_response' )
-        return new JsonResponse(
-            status: JsonResponse::HTTP_NO_CONTENT
-        );
+        return new JsonResponse( [ 'status' => 'ok' ] );
     }
 
 }
