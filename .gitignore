@@ -11,6 +11,7 @@
 /vendor/
 ###< symfony/framework-bundle ###
 /Platform/
+./wiki
 /node_modules/
 /public/js/app.js
 /.idea
