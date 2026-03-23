@@ -41,7 +41,7 @@ set_db_credentials() {
   local default_port=${driver_ports[$current_driver]:-3306}
 
   # Read current defaults from .env
-  local current_dbname current_version current_dbname_test
+  local current_dbname current_version
   current_dbname=$(php -r "
     foreach (file('.env', FILE_IGNORE_NEW_LINES) as \$l) {
       if (preg_match('/^#?DATABASE_${em_upper}_DBNAME=(.*)/', \$l, \$m)) { echo trim(\$m[1]); break; }
@@ -50,11 +50,6 @@ set_db_credentials() {
   current_version=$(php -r "
     foreach (file('.env', FILE_IGNORE_NEW_LINES) as \$l) {
       if (preg_match('/^#?DATABASE_${em_upper}_VERSION=(.*)/', \$l, \$m)) { echo trim(\$m[1]); break; }
-    }
-  ")
-  current_dbname_test=$(php -r "
-    foreach (file('.env', FILE_IGNORE_NEW_LINES) as \$l) {
-      if (preg_match('/^#?DATABASE_${em_upper}_DBNAME_TEST=(.*)/', \$l, \$m)) { echo trim(\$m[1]); break; }
     }
   ")
 
@@ -76,20 +71,16 @@ set_db_credentials() {
   read -r -p "Database version (default ${current_version:-}): " database_version
   [ -z "$database_version" ] && database_version="${current_version:-}"
 
-  local default_test="${current_dbname_test:-${database_dbname}_test}"
-  read -r -p "Test database name (default $default_test): " database_dbname_test
-  [ -z "$database_dbname_test" ] && database_dbname_test="$default_test"
-
-  # Write HOST, PORT, USER, PASSWORD, DBNAME, VERSION, DBNAME_TEST
+  # Write HOST, PORT, USER, PASSWORD, DBNAME, VERSION
+  # DBNAME_TEST is optional — update it only if the line already exists in .env
   php -r "
     \$env = file_get_contents('.env');
-    \$env = preg_replace('/^#?DATABASE_${em_upper}_HOST=.*/m',       'DATABASE_${em_upper}_HOST=${database_host}', \$env);
-    \$env = preg_replace('/^#?DATABASE_${em_upper}_PORT=.*/m',       'DATABASE_${em_upper}_PORT=${database_port}', \$env);
-    \$env = preg_replace('/^#?DATABASE_${em_upper}_USER=.*/m',       'DATABASE_${em_upper}_USER=${database_user}', \$env);
-    \$env = preg_replace('/^#?DATABASE_${em_upper}_PASSWORD=.*/m',   'DATABASE_${em_upper}_PASSWORD=${database_password}', \$env);
-    \$env = preg_replace('/^#?DATABASE_${em_upper}_DBNAME=.*/m',     'DATABASE_${em_upper}_DBNAME=${database_dbname}', \$env);
-    \$env = preg_replace('/^#?DATABASE_${em_upper}_VERSION=.*/m',    'DATABASE_${em_upper}_VERSION=${database_version}', \$env);
-    \$env = preg_replace('/^#?DATABASE_${em_upper}_DBNAME_TEST=.*/m','DATABASE_${em_upper}_DBNAME_TEST=${database_dbname_test}', \$env);
+    \$env = preg_replace('/^#?DATABASE_${em_upper}_HOST=.*/m',     'DATABASE_${em_upper}_HOST=${database_host}', \$env);
+    \$env = preg_replace('/^#?DATABASE_${em_upper}_PORT=.*/m',     'DATABASE_${em_upper}_PORT=${database_port}', \$env);
+    \$env = preg_replace('/^#?DATABASE_${em_upper}_USER=.*/m',     'DATABASE_${em_upper}_USER=${database_user}', \$env);
+    \$env = preg_replace('/^#?DATABASE_${em_upper}_PASSWORD=.*/m', 'DATABASE_${em_upper}_PASSWORD=${database_password}', \$env);
+    \$env = preg_replace('/^#?DATABASE_${em_upper}_DBNAME=.*/m',   'DATABASE_${em_upper}_DBNAME=${database_dbname}', \$env);
+    \$env = preg_replace('/^#?DATABASE_${em_upper}_VERSION=.*/m',  'DATABASE_${em_upper}_VERSION=${database_version}', \$env);
     file_put_contents('.env', \$env);
   "
   echo "'$em_name' credentials saved"
