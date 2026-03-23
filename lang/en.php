@@ -16,6 +16,7 @@
 //
 //
     'E-mail' => 'E-mail',
+    'Email' => 'Email (not_translated)',
 //
 //
     'Feb' => 'Feb',
@@ -49,6 +50,7 @@
 //
     'Sep' => 'Sep',
     'September' => 'September',
+    'Sign In' => 'Sign In (not_translated)',
 //
 //
     'User Group' => 'User Group',

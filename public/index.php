@@ -13,6 +13,7 @@
  */
 
 use App\Kernel;
+use App\Entity\Main\User;
 use PHP_SF\Framework\Http\Middleware\auth;
 use PHP_SF\System as PHP_SF;
 use PHP_SF\System\Router;
@@ -50,6 +51,7 @@ $kernel = ( new PHP_SF\Kernel() )
     ->setHeaderTemplateClassName( header::class )
     ->setFooterTemplateClassName( footer::class )
     ->addTemplatesDirectory( 'templates', 'App\View' )
+    ->setApplicationUserClassName( User::class )
 ;
 
 require_once __DIR__ . '/testing.php';

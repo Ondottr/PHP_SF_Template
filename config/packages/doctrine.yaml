@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=../../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
 # Doctrine configuration
 #
 # WARNING: The default connection and entity manager are deliberately set to a non-functional
@@ -14,16 +15,23 @@ doctrine:
     dbal:
         default_connection: dummy
         connections:
-            # Intentionally non-functional — fail-fast guard against accidental default usage
             dummy:
-                driver_class: 'PHP_SF\System\Doctrine\ForbiddenDriver'
-
+                driver_class: PHP_SF\System\Doctrine\ForbiddenDriver
+            main:
+                driver: pdo_mysql
+                host: '%env(DATABASE_MAIN_HOST)%'
+                port: '%env(int:DATABASE_MAIN_PORT)%'
+                user: '%env(DATABASE_MAIN_USER)%'
+                password: '%env(DATABASE_MAIN_PASSWORD)%'
+                dbname: '%env(DATABASE_MAIN_DBNAME)%'
+                server_version: '%env(DATABASE_MAIN_VERSION)%'
+                mapping_types:
+                    enum: string
     orm:
         default_entity_manager: dummy
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
         proxy_namespace: Proxies
-
         entity_managers:
             dummy:
                 connection: dummy
@@ -32,16 +40,28 @@ doctrine:
                         is_bundle: false
                         type: attribute
                         dir: '%kernel.project_dir%/App/Entity/Dummy'
-                        prefix: 'App\Entity\Dummy'
+                        prefix: App\Entity\Dummy
                         alias: Dummy
-
+            main:
+                connection: main
+                mappings:
+                    Main:
+                        is_bundle: false
+                        type: attribute
+                        dir: '%kernel.project_dir%/App/Entity/Main'
+                        prefix: App\Entity\Main
+                        alias: Main
+                quote_strategy: App\Doctrine\UnqualifiedTableQuoteStrategy
 when@test:
     doctrine:
         dbal:
             connections:
-
+                main:
+                    dbname: '%env(default:app.db_main_test_dbname:DATABASE_MAIN_DBNAME_TEST)%'
 when@prod:
     doctrine:
         orm:
             auto_generate_proxy_classes: false
             proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
+parameters:
+    app.db_main_test_dbname: '%env(DATABASE_MAIN_DBNAME)%_test'

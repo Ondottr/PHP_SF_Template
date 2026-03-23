@@ -32,7 +32,7 @@
     }
   },
   "license": "ISC",
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "name": "nations-original/php-simple-framework-template",
   "prefer-stable": true,
   "replace": {
@@ -57,7 +57,7 @@
     "ext-yaml": "*",
     "ext-zend-opcache": "*",
     "ext-zlib": "*",
-    "nations-original/php-simple-framework": "~1.1.0",
+    "nations-original/php-simple-framework": "*",
     "composer/package-versions-deprecated": "1.11.99.4",
     "nelmio/api-doc-bundle": "^4.16",
     "php-amqplib/php-amqplib": "^3.6",
@@ -113,5 +113,14 @@
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     }
   },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "Platform",
+      "options": {
+        "symlink": true
+      }
+    }
+  ],
   "type": "project"
 }
