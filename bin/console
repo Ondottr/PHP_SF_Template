@@ -28,8 +28,26 @@ require_once __DIR__ . '/../vendor/autoload_runtime.php';
 require_once __DIR__ . '/../functions/functions.php';
 require_once __DIR__ . '/../config/constants.php';
 
+// Pre-detect --env / -e CLI option so bootEnv loads the correct .env.{env} file
+// (SymfonyRuntime processes --env after bootEnv runs, which would otherwise undo it)
+foreach ( $_SERVER['argv'] ?? [] as $i => $v ) {
+    if ( in_array( $v, ['--env', '-e'], true ) && isset( $_SERVER['argv'][$i + 1] ) ) {
+        $_SERVER['APP_ENV'] = $_ENV['APP_ENV'] = $_SERVER['argv'][$i + 1];
+        break;
+    }
+    if ( preg_match( '/^(?:--env|-e)=(.+)$/', $v, $m ) ) {
+        $_SERVER['APP_ENV'] = $_ENV['APP_ENV'] = $m[1];
+        break;
+    }
+}
+
 ( new Dotenv() )
   ->bootEnv( __DIR__ . '/../.env' );
+
+// Prevent SymfonyRuntime from calling bootEnv a second time:
+// its constructor runs getInput() (setting APP_ENV from --env) and then bootEnv,
+// which re-loads .env and overwrites APP_ENV back to the value in that file.
+$_SERVER['APP_RUNTIME_OPTIONS']['disable_dotenv'] = true;
 
 $kernel = ( new PHP_SF\Kernel() )
   ->addTranslationFiles( __DIR__ . '/../lang' )

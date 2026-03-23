@@ -274,16 +274,16 @@
         },
         {
             "name": "nations-original/php-simple-framework",
-            "version": "v1.1.0.0",
+            "version": "v1.1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ondottr/PHP_SF_Platform.git",
-                "reference": "d5b956f1e4035efe6b6eef820d708ebe04207fbe"
+                "reference": "57eac97c643b3c6275215e0a9f425107fe773271"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/d5b956f1e4035efe6b6eef820d708ebe04207fbe",
-                "reference": "d5b956f1e4035efe6b6eef820d708ebe04207fbe",
+                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/57eac97c643b3c6275215e0a9f425107fe773271",
+                "reference": "57eac97c643b3c6275215e0a9f425107fe773271",
                 "shasum": ""
             },
             "require": {
@@ -315,9 +315,9 @@
             "description": "A simple PHP framework for Nations Original.",
             "support": {
                 "issues": "https://github.com/Ondottr/PHP_SF_Platform/issues",
-                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v1.1.0.0"
+                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v1.1.0.1"
             },
-            "time": "2026-03-22T12:39:43+00:00"
+            "time": "2026-03-22T16:20:41+00:00"
         },
         {
             "name": "nelmio/api-doc-bundle",
@@ -8671,16 +8671,16 @@
         },
         {
             "name": "psy/psysh",
-            "version": "v0.12.21",
+            "version": "v0.12.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "4821fab5b7cd8c49a673a9fd5754dc9162bb9e97"
+                "reference": "3be75d5b9244936dd4ac62ade2bfb004d13acf0f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/4821fab5b7cd8c49a673a9fd5754dc9162bb9e97",
-                "reference": "4821fab5b7cd8c49a673a9fd5754dc9162bb9e97",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/3be75d5b9244936dd4ac62ade2bfb004d13acf0f",
+                "reference": "3be75d5b9244936dd4ac62ade2bfb004d13acf0f",
                 "shasum": ""
             },
             "require": {
@@ -8744,9 +8744,9 @@
             ],
             "support": {
                 "issues": "https://github.com/bobthecow/psysh/issues",
-                "source": "https://github.com/bobthecow/psysh/tree/v0.12.21"
+                "source": "https://github.com/bobthecow/psysh/tree/v0.12.22"
             },
-            "time": "2026-03-06T21:21:28+00:00"
+            "time": "2026-03-22T23:03:24+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
