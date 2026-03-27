@@ -5,6 +5,7 @@ const Dotenv = require( "dotenv-webpack" );
 const TerserPlugin = require( "terser-webpack-plugin" );
 const JavaScriptObfuscator = require( "webpack-obfuscator" );
 const { CleanWebpackPlugin } = require( "clean-webpack-plugin" );
+const { WebpackManifestPlugin } = require( "webpack-manifest-plugin" );
 const dotenv = require( "dotenv" );
 
 module.exports = ( env ) => {
@@ -13,9 +14,9 @@ module.exports = ( env ) => {
 
   return {
     mode: env.mode,
-    entry: "./src/index.js",
+    entry: { app: "./src/index.js" },
     cache: Boolean( env.cache ),
-    devtool: isProduction ? "source-map" : "inline-source-map",
+    devtool: isProduction ? false : "inline-source-map",
 
     performance: {
       hints: isProduction ? false : "warning",
@@ -61,6 +62,7 @@ module.exports = ( env ) => {
           "!jquery-3.6.0.min.js",
         ],
       } ),
+      isProduction && new WebpackManifestPlugin( { publicPath: '/build/' } ),
       isProduction && new JavaScriptObfuscator( {
         domainLock: [
           'localhost',
@@ -68,28 +70,32 @@ module.exports = ( env ) => {
           'nations-original.com',
         ],
         debugProtection: true,
+        debugProtectionInterval: 4000,  // re-triggers debugger every 4s — devtools unusable
         disableConsoleOutput: true,
         compact: true,
-        controlFlowFlattening: false,
-        deadCodeInjection: false,
-        debugProtectionInterval: 0,
+        controlFlowFlattening: true,
+        controlFlowFlatteningThreshold: 0.75,
+        deadCodeInjection: true,
+        deadCodeInjectionThreshold: 0.4,
         identifierNamesGenerator: 'hexadecimal',
         log: false,
-        numbersToExpressions: false,
+        numbersToExpressions: true,
         renameGlobals: false,
         selfDefending: true,
         simplify: true,
-        splitStrings: false,
+        splitStrings: true,
+        splitStringsChunkLength: 5,
         stringArray: true,
-        stringArrayCallsTransform: false,
-        stringArrayEncoding: [],
+        stringArrayCallsTransform: true,
+        stringArrayCallsTransformThreshold: 0.75,
+        stringArrayEncoding: [ 'rc4' ],
         stringArrayIndexShift: true,
         stringArrayRotate: true,
         stringArrayShuffle: true,
-        stringArrayWrappersCount: 1,
+        stringArrayWrappersCount: 2,
         stringArrayWrappersChainedCalls: true,
-        stringArrayWrappersParametersMaxCount: 2,
-        stringArrayWrappersType: 'variable',
+        stringArrayWrappersParametersMaxCount: 4,
+        stringArrayWrappersType: 'function',
         stringArrayThreshold: 0.75,
         unicodeEscapeSequence: false,
       } ),
