@@ -17,6 +17,7 @@ namespace App\Http\Controller;
 
 use App\Http\Middleware\blank;
 use App\View\welcome_page;
+use Composer\InstalledVersions;
 use PHP_SF\Framework\Http\Middleware\admin_example;
 use PHP_SF\Framework\Http\Middleware\api_example;
 use PHP_SF\Framework\Http\Middleware\auth;
@@ -36,16 +37,8 @@ final class ExampleController extends AbstractController
     #[Route( url: '/', httpMethod: 'GET', middleware: [ blank::class ] )]
     public function welcome_page(): Response
     {
-        $composerLock = j_decode( file_get_contents( project_dir() . '/composer.lock' ), true );
-        foreach ( $composerLock['packages'] as $package ) {
-            if ( $package['name'] !== 'nations-original/php-simple-framework' )
-                continue;
-
-            break;
-        }
-
         return $this->render( welcome_page::class, [
-            'framework_version' => $package['version'],
+            'framework_version' => InstalledVersions::getPrettyVersion( 'nations-original/php-simple-framework' ),
         ] );
     }
 
