@@ -4,17 +4,13 @@ namespace App\View;
 
 use PHP_SF\System\Classes\Abstracts\AbstractView;
 
+/**
+ * @property string $framework_version
+ */
 // @formatter:off
 final class welcome_page extends AbstractView { public function show(): void { ?>
   <!--@formatter:on-->
 
-    <!DOCTYPE html>
-    <html dir="ltr" lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="robots" content="noindex,nofollow,noarchive,nosnippet,noodp,notranslate,noimageindex" />
-        <title>Welcome to Symfony!</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>👋</text></svg>">
         <style>
             <?php $hue = random_int(0, 360); ?>
             <?php $darkColor = static function (float $alpha = 1) use ($hue) { return "hsla($hue, 20%, 45%, $alpha)"; }; ?>
@@ -77,8 +73,6 @@ final class welcome_page extends AbstractView { public function show(): void { ?
               width: 100%;
             }
         </style>
-    </head>
-    <body>
     <div class="wrapper">
         <div class="container">
             <div class="welcome">
@@ -87,7 +81,7 @@ final class welcome_page extends AbstractView { public function show(): void { ?
                 </div>
                 <h1>
                   <small>Welcome to</small>
-                  PHP_SF <span class="version"><?= env( 'DEVELOPMENT_STAGE' ) ?></span>
+                  PHP_SF <span class="version"><?= $this->framework_version ?></span>
                   <small style="font-size: 50%;">(Based on Symfony 7)</small>
                 </h1>
             </div>
@@ -110,29 +104,28 @@ final class welcome_page extends AbstractView { public function show(): void { ?
                 <div class="resource">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M12 11.55C9.64 9.35 6.48 8 3 8v11c3.48 0 6.64 1.35 9 3.55 2.36-2.19 5.52-3.55 9-3.55V8c-3.48 0-6.64 1.35-9 3.55zM12 8c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3z"/></svg>
                     <h2>Documentation</h2>
-                    <a href="https://phpsf.wiki">
+                    <a href="https://wiki.nations-original.com/framework">
                         Guides, components, references
                     </a>
                 </div>
                 <div class="resource">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" d="M0 0h24v24H0V0z"/><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
                     <h2>Tutorials</h2>
-                  <a href="https://phpsf.wiki/first_page">
+                  <a href="https://wiki.nations-original.com/en/framework/getting-started/first_page">
                         Create your first page
                     </a>
                 </div>
                 <div class="resource">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                     <h2>Community</h2>
-                  <a href="https://phpsf.wiki/community">
+                  <a href="https://github.com/Ondottr/PHP_SF_Template">
                         Connect, get help, or contribute
                     </a>
                 </div>
             </div>
         </div>
     </div>
-    </body>
-    </html>
+
 
 
     <!--@formatter:off-->
