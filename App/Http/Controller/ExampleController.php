@@ -22,7 +22,6 @@ use PHP_SF\Framework\Http\Middleware\api_example;
 use PHP_SF\Framework\Http\Middleware\auth;
 use PHP_SF\System\Attributes\Route;
 use PHP_SF\System\Classes\Abstracts\AbstractController;
-use PHP_SF\System\Classes\MiddlewareChecks\MiddlewareAll as all;
 use PHP_SF\System\Classes\MiddlewareChecks\MiddlewareAny as any;
 use PHP_SF\System\Classes\MiddlewareChecks\MiddlewareCustom as custom;
 use PHP_SF\System\Core\RedirectResponse;
@@ -37,10 +36,20 @@ final class ExampleController extends AbstractController
     #[Route( url: '/', httpMethod: 'GET', middleware: [ blank::class ] )]
     public function welcome_page(): Response
     {
-        return $this->render( welcome_page::class );
+        $composerLock = j_decode( file_get_contents( project_dir() . '/composer.lock' ), true );
+        foreach ( $composerLock['packages'] as $package ) {
+            if ( $package['name'] !== 'nations-original/php-simple-framework' )
+                continue;
+
+            break;
+        }
+
+        return $this->render( welcome_page::class, [
+            'framework_version' => $package['version'],
+        ] );
     }
 
-    #[Route( url: 'example/page/{$response_type}', httpMethod: 'GET', middleware: [ custom::class => [ any::class => [ auth::class, api_example::class, admin_example::class ] ] ] )]
+    #[Route( url: 'example/page/{response_type}', httpMethod: 'GET', middleware: [ custom::class => [ any::class => [ auth::class, api_example::class, admin_example::class ] ] ] )]
     public function example_route( string $response_type ): Response|RedirectResponse|JsonResponse
     {
         // Return Response
