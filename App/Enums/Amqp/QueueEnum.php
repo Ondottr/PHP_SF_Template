@@ -9,7 +9,6 @@ use PHP_SF\System\Database\RabbitMQConsumer;
  * Class QueueEnum
  *
  * @package App\Enums\Amqp
- * @author  Dmytro Dyvulskyi <dmytro.dyvulskyi@nations-original.com>
  */
 enum QueueEnum: string
 {
