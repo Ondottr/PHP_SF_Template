@@ -111,8 +111,9 @@ $yaml['doctrine']['dbal']['connections'][$em_name] = $conn;
 
 // ── ORM entity manager ─────────────────────────────────────────────────────
 $em = [
-    'connection' => $em_name,
-    'mappings'   => [
+    'connection'       => $em_name,
+    'naming_strategy'  => 'doctrine.orm.naming_strategy.underscore_number_aware',
+    'mappings'         => [
         $pascal_name => [
             'is_bundle' => false,
             'type'      => 'attribute',
@@ -440,17 +441,37 @@ PHPEOF
   echo "Created App/Entity/${pascal_name}/User.php"
   echo "Created App/Repository/${pascal_name}/UserRepository.php"
 
-  # ── Update the 3 framework entry-points ──────────────────────────────
-  local use_stmt_b64
-  use_stmt_b64=$(printf 'use App\\Entity\\%s\\User;' "$pascal_name" | base64 -w 0)
+  echo ""
+  echo "User entity created in App/Entity/${pascal_name}/User.php"
+  wire_user_entity_entrypoints "App/Entity/${pascal_name}/User.php"
+  echo "Use bin/console ${em_name}:make:entity to generate more entities in this connection."
+}
 
-  local php_script
+find_user_interface_files() {
+  grep -rl 'implements[^{]*UserInterface' App/Entity/ 2>/dev/null | grep '\.php$' || true
+}
+
+wire_user_entity_entrypoints() {
+  local file="$1"
+  local namespace class_name use_stmt use_stmt_b64 php_script
+
+  namespace=$(grep -m1 '^namespace ' "$file" | sed 's/^namespace //;s/;$//')
+  class_name=$(grep -m1 '^class ' "$file" | sed 's/^class \([A-Za-z_][A-Za-z0-9_]*\).*/\1/')
+
+  if [ -z "$namespace" ] || [ -z "$class_name" ]; then
+    echo "WARNING: Could not detect class info from $file — skipping entry-point wiring."
+    return
+  fi
+
+  use_stmt="use ${namespace}\\${class_name};"
+  use_stmt_b64=$(printf '%s' "$use_stmt" | base64 -w 0)
+
   php_script=$(mktemp /tmp/patch_entrypoints_XXXXXX.php)
-
   cat > "$php_script" << 'PHPEOF'
 <?php
 $use_stmt   = base64_decode($argv[1]);
-$set_method = '->setApplicationUserClassName( User::class )';
+$class_name = $argv[2];
+$set_method = "->setApplicationUserClassName( {$class_name}::class )";
 
 foreach (['bin/console', 'public/index.php', 'tests/bootstrap.php'] as $file) {
     if (!file_exists($file)) {
@@ -488,13 +509,9 @@ foreach (['bin/console', 'public/index.php', 'tests/bootstrap.php'] as $file) {
 }
 PHPEOF
 
-  php "$php_script" "$use_stmt_b64"
+  php "$php_script" "$use_stmt_b64" "$class_name"
   rm -f "$php_script"
-
   echo "Updated bin/console, public/index.php, tests/bootstrap.php"
-  echo ""
-  echo "User entity created in App/Entity/${pascal_name}/User.php"
-  echo "Use bin/console ${em_name}:make:entity to generate more entities in this connection."
 }
 
 # endregion
@@ -533,27 +550,34 @@ if $already_configured; then
     fi
   done
 
-  # Check whether the User entity is present and properly wired
+  # Check whether a class implementing UserInterface is present and properly wired
   echo ""
-  user_entity_file=""
-  for f in App/Entity/*/User.php; do
-    if [ -f "$f" ]; then
-      user_entity_file="$f"
-      break
-    fi
-  done
+  mapfile -t user_entity_files < <(find_user_interface_files)
 
-  if [ -n "$user_entity_file" ]; then
-    echo "User entity found at $user_entity_file."
+  if [ ${#user_entity_files[@]} -eq 1 ]; then
+    echo "User entity found at ${user_entity_files[0]}."
     if grep -q "setApplicationUserClassName" bin/console 2>/dev/null; then
       echo "Entry points are configured correctly with the User entity."
     else
-      echo "WARNING: Entry points (bin/console, public/index.php, tests/bootstrap.php) do not"
-      echo "         appear to have setApplicationUserClassName() configured."
-      echo "         Please add it manually, or re-run init.sh from scratch on a clean project."
+      echo "Entry points not yet wired — configuring now..."
+      wire_user_entity_entrypoints "${user_entity_files[0]}"
+    fi
+  elif [ ${#user_entity_files[@]} -gt 1 ]; then
+    echo "Multiple classes implementing UserInterface found:"
+    for i in "${!user_entity_files[@]}"; do
+      echo "  $((i+1)). ${user_entity_files[$i]}"
+    done
+    read -r -p "Which one should be used as the application User entity? [1]: " choice
+    [ -z "$choice" ] && choice=1
+    selected_user_file="${user_entity_files[$((choice-1))]}"
+    echo "Using $selected_user_file"
+    if grep -q "setApplicationUserClassName" bin/console 2>/dev/null; then
+      echo "Entry points already wired — skipping."
+    else
+      wire_user_entity_entrypoints "$selected_user_file"
     fi
   else
-    echo "No User entity found."
+    echo "No class implementing UserInterface found."
     echo "The User entity is required for the PHP_SF framework to function (authentication,"
     echo "session handling, and access control all depend on it)."
     echo ""
@@ -619,21 +643,39 @@ else
 
   # region User entity creation
 
-  user_em=""
-  if [ ${#configured_ems[@]} -eq 1 ]; then
-    user_em="${configured_ems[0]}"
-  elif [ ${#configured_ems[@]} -gt 1 ]; then
+  mapfile -t user_entity_files < <(find_user_interface_files)
+
+  if [ ${#user_entity_files[@]} -eq 1 ]; then
     echo ""
-    echo "The User entity is required by the PHP_SF framework — authentication, session"
-    echo "handling, and access control all depend on it. You must assign it to one EM."
-    echo "Which entity manager will contain the User entity? (${configured_ems[*]})"
-    read -r -p "Entity manager name: " user_em
-    if [ -z "$user_em" ]; then user_em="${configured_ems[0]}"; fi
+    echo "Existing User entity found at ${user_entity_files[0]} — skipping creation."
+    wire_user_entity_entrypoints "${user_entity_files[0]}"
+  elif [ ${#user_entity_files[@]} -gt 1 ]; then
+    echo ""
+    echo "Multiple classes implementing UserInterface found:"
+    for i in "${!user_entity_files[@]}"; do
+      echo "  $((i+1)). ${user_entity_files[$i]}"
+    done
+    read -r -p "Which one should be used as the application User entity? [1]: " choice
+    [ -z "$choice" ] && choice=1
+    selected_user_file="${user_entity_files[$((choice-1))]}"
+    echo "Using $selected_user_file"
+    wire_user_entity_entrypoints "$selected_user_file"
+  else
+    user_em=""
+    if [ ${#configured_ems[@]} -eq 1 ]; then
+      user_em="${configured_ems[0]}"
+    elif [ ${#configured_ems[@]} -gt 1 ]; then
+      echo ""
+      echo "The User entity is required by the PHP_SF framework — authentication, session"
+      echo "handling, and access control all depend on it. You must assign it to one EM."
+      echo "Which entity manager will contain the User entity? (${configured_ems[*]})"
+      read -r -p "Entity manager name: " user_em
+      if [ -z "$user_em" ]; then user_em="${configured_ems[0]}"; fi
+    fi
+
+    user_pascal=$(to_pascal_case "$user_em")
+    create_user_entity "$user_em" "$user_pascal" "${em_schemas[$user_em]}"
   fi
-
-  user_pascal=$(to_pascal_case "$user_em")
-
-  create_user_entity "$user_em" "$user_pascal" "${em_schemas[$user_em]}"
 
   # endregion
 
