@@ -113,5 +113,5 @@
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     }
   },
-  "type": "project"
+"type": "project"
 }
