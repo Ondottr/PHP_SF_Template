@@ -34,13 +34,6 @@ jobs:
       - name: Checkout PHP_SF_Template
         uses: actions/checkout@v4
 
-      - name: Checkout PHP_SF_Platform
-        uses: actions/checkout@v4
-        with:
-          repository: Ondottr/PHP_SF_Platform
-          ref: master
-          path: Platform
-
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 

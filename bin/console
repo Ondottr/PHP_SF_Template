@@ -7,7 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Dotenv\Dotenv;
 
 
-require_once __DIR__ . '/../Platform/vendor/autoload.php';
 require_once __DIR__ . '/../vendor/autoload_runtime.php';
 
 require_once __DIR__ . '/../functions/functions.php';
