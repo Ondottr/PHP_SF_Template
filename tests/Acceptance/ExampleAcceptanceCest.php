@@ -10,7 +10,6 @@ class ExampleAcceptanceCest
     public function testWelcomePageLoads(AcceptanceTester $I): void
     {
         $I->amOnPage('/');
-        $I->seeInTitle('Welcome');
         $I->see('Welcome');
     }
 

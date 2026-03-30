@@ -9,9 +9,9 @@ modules:
   enabled:
     - WebDriver:
         browser: firefox
-        host: '127.0.0.1'
+        host: '%WEBDRIVER_HOST%'
         port: 4444
-        url: 'https://host.docker.internal:7000/'
+        url: '%APP_URL%'
         window_size: 1280x1280
         capabilities:
           acceptInsecureCerts: true # allow self-signed certificates
