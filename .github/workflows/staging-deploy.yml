@@ -27,12 +27,12 @@ jobs:
           else
             docker run -d \
               --name nginx-proxy \
-              --network nginx-proxy \
               -p 127.0.0.1:1888:80 \
               -v /var/run/docker.sock:/tmp/docker.sock:ro \
               --restart unless-stopped \
               nginxproxy/nginx-proxy
           fi
+          docker network connect nginx-proxy nginx-proxy 2>/dev/null || true
 
       - name: Checkout PHP_SF_Template
         uses: actions/checkout@v4
