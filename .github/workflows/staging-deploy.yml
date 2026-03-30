@@ -182,7 +182,9 @@ jobs:
       - name: Codeception — Acceptance
         run: |
           docker exec -e APP_ENV=test pr-${{ env.PR_NUMBER }}-app-1 \
-            vendor/bin/codecept run Acceptance
+            vendor/bin/codecept run Acceptance \
+              --override "modules.config.WebDriver.host:selenium" \
+              --override "modules.config.WebDriver.url:http://app:8000/"
 
       - name: Stop Selenium
         if: always()

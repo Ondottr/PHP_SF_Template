@@ -25,7 +25,6 @@ jobs:
       - name: Remove maintainer-specific files
         run: |
           # CI/CD workflows
-          rm -f .github/workflows/ci.yml
           rm -f .github/workflows/build-image.yml
           rm -f .github/workflows/staging-deploy.yml
           rm -f .github/workflows/staging-cleanup.yml
@@ -37,6 +36,9 @@ jobs:
           rm -f docker/staging-entrypoint.sh
           rm -f docker/ci-init.sh
           rm -rf docker/staging
+
+          # Maintainer-specific GitHub config
+          rm -f .github/CODEOWNERS
 
           # Self-destruct
           rm -f .github/workflows/template-cleanup.yml

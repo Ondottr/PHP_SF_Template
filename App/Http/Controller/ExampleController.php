@@ -27,6 +27,7 @@ final class ExampleController extends AbstractController
     {
         return $this->render( welcome_page::class, [
             'framework_version' => InstalledVersions::getPrettyVersion( 'nations-original/php-simple-framework' ),
+            'symfony_version' => InstalledVersions::getPrettyVersion( 'symfony/framework-bundle' ),
         ] );
     }
 
