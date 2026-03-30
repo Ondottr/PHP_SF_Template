@@ -1,0 +1,129 @@
+# Per-PR staging stack.
+# Invoked by the staging-deploy workflow with:
+#   PR_NUMBER=123 APP_IMAGE=php-sf-template:pr-123 \
+#     docker compose -p pr-123 -f docker/staging/docker-compose.yml up -d --wait
+
+services:
+  app:
+    image: ${APP_IMAGE}
+    environment:
+      VIRTUAL_HOST: pr-${PR_NUMBER}.phpsf-staging.nations-original.eu
+      VIRTUAL_PORT: "8000"
+      APP_ENV: dev
+      APP_SECRET: staging_pr${PR_NUMBER}_secret
+      SERVER_PREFIX: ""
+      DATABASE_MAIN_HOST: postgres
+      DATABASE_MAIN_PORT: "5432"
+      DATABASE_MAIN_USER: user
+      DATABASE_MAIN_PASSWORD: password
+      DATABASE_MAIN_DBNAME: staging_pr${PR_NUMBER}_main
+      DATABASE_MAIN_VERSION: "16"
+      DATABASE_PRODUCTS_HOST: mysql
+      DATABASE_PRODUCTS_PORT: "3306"
+      DATABASE_PRODUCTS_USER: user
+      DATABASE_PRODUCTS_PASSWORD: password
+      DATABASE_PRODUCTS_DBNAME: staging_pr${PR_NUMBER}_products
+      DATABASE_PRODUCTS_VERSION: "8.0.0"
+      DATABASE_PAYMENTS_HOST: mariadb
+      DATABASE_PAYMENTS_PORT: "3306"
+      DATABASE_PAYMENTS_USER: user
+      DATABASE_PAYMENTS_PASSWORD: password
+      DATABASE_PAYMENTS_DBNAME: staging_pr${PR_NUMBER}_payments
+      DATABASE_PAYMENTS_VERSION: "mariadb-11.0.0"
+      REDIS_CACHE_URL: redis://redis:6379/10
+      MEMCACHED_SERVER: memcached
+      MEMCACHED_PORT: "11211"
+      MESSENGER_TRANSPORT_DSN: amqp://admin:admin@rabbitmq:5672/%2f
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      mariadb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    networks:
+      - nginx-proxy
+      - internal
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: staging_pr${PR_NUMBER}_main
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - internal
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: staging_pr${PR_NUMBER}_products
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "user", "--password=password"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - internal
+
+  mariadb:
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: staging_pr${PR_NUMBER}_payments
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - internal
+
+  redis:
+    image: redis:alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - internal
+
+  memcached:
+    image: memcached:alpine
+    networks:
+      - internal
+
+  rabbitmq:
+    image: rabbitmq:latest
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+    networks:
+      - internal
+
+networks:
+  nginx-proxy:
+    external: true
+  internal:
