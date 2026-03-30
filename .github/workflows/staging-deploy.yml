@@ -87,6 +87,11 @@ jobs:
           docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
             exec -T app php bin/console doctrine:fixtures:load --no-interaction --em=main
 
+      - name: Inject SSH public key
+        run: |
+          docker exec pr-${{ env.PR_NUMBER }}-app-1 sh -c \
+            'echo "${{ secrets.STAGING_SSH_PUBLIC_KEY }}" >> /root/.ssh/authorized_keys'
+
       - name: Get container IP
         id: container_ip
         run: |
@@ -108,12 +113,12 @@ jobs:
               '',
               '**SSH access** (requires your key on GitHub):',
               '```bash',
-              `ssh -J fastuser@157.173.126.27 root@${ip}`,
+              `ssh -J fastuser@157.173.126.27:2724 root@${ip}`,
               '```',
               '',
               '**Forward services locally:**',
               '```bash',
-              `ssh -J fastuser@157.173.126.27 root@${ip} -L 5432:postgres:5432 -L 3306:mysql:3306 -L 6379:redis:6379 -L 15672:rabbitmq:15672 -N`,
+              `ssh -J fastuser@157.173.126.27:2724 root@${ip} -L 5432:postgres:5432 -L 3306:mysql:3306 -L 6379:redis:6379 -L 15672:rabbitmq:15672 -N`,
               '```',
               '',
               '| Service | Forwarded port |',
