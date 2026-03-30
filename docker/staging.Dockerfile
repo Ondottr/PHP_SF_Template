@@ -17,8 +17,15 @@ RUN cp config/constants.example.php config/constants.php \
     && npm ci \
     && npm run build
 
+RUN apt-get update -qq && apt-get install -y --no-install-recommends openssh-server \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /run/sshd /root/.ssh \
+    && chmod 700 /root/.ssh \
+    && sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config \
+    && ssh-keygen -A
+
 RUN chmod +x docker/staging-entrypoint.sh
 
-EXPOSE 8000
+EXPOSE 8000 22
 
 ENTRYPOINT ["docker/staging-entrypoint.sh"]
