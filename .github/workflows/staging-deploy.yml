@@ -22,7 +22,7 @@ jobs:
       - name: Ensure nginx-proxy infrastructure is running
         run: |
           docker network create nginx-proxy 2>/dev/null || true
-          if docker inspect nginx-proxy >/dev/null 2>&1; then
+          if docker container inspect nginx-proxy >/dev/null 2>&1; then
             docker start nginx-proxy 2>/dev/null || true
           else
             docker run -d \
@@ -44,6 +44,7 @@ jobs:
         run: |
           docker build \
             -f docker/staging.Dockerfile \
+            --build-arg SERVER_IP=${{ secrets.CI_SERVER_PUBLIC_IP }} \
             -t ${{ env.APP_IMAGE }} \
             .
 
@@ -113,12 +114,12 @@ jobs:
               '',
               '**SSH access** (requires your key on GitHub):',
               '```bash',
-              `ssh -J fastuser@157.173.126.27:2724 root@${ip}`,
+              `ssh -J fastuser@${{ secrets.CI_SERVER_PUBLIC_IP }}:2724 root@${ip}`,
               '```',
               '',
               '**Forward services locally:**',
               '```bash',
-              `ssh -J fastuser@157.173.126.27:2724 root@${ip} -L 5432:postgres:5432 -L 3306:mysql:3306 -L 6379:redis:6379 -L 15672:rabbitmq:15672 -L 4444:selenium:4444 -N`,
+              `ssh -J fastuser@${{ secrets.CI_SERVER_PUBLIC_IP }}:2724 root@${ip} -L 5432:postgres:5432 -L 3306:mysql:3306 -L 6379:redis:6379 -L 15672:rabbitmq:15672 -L 4444:selenium:4444 -N`,
               '```',
               '',
               '| Service | Forwarded port |',
@@ -163,7 +164,10 @@ jobs:
       - name: PHPUnit
         run: |
           docker exec -e APP_ENV=test pr-${{ env.PR_NUMBER }}-app-1 \
-            php bin/phpunit --coverage-text
+            vendor/bin/phpunit \
+              --bootstrap tests/bootstrap.php \
+              --configuration phpunit.xml.dist \
+              vendor/nations-original/php-simple-framework/tests
 
       - name: Codeception — Unit
         run: |

@@ -1,10 +1,7 @@
 #!/bin/sh
 # ci-init.sh — Non-interactive bootstrap for CI and staging.
 #
-# init.sh is interactive and meant for one-time local setup.
 # This script creates only the generated artefacts that init.sh produces
-# but that are gitignored: entity/repository classes and empty mapping dirs.
-# Run it after checkout, before composer install.
 
 set -e
 

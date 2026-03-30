@@ -13,7 +13,7 @@ services:
 
   postgres:
     container_name: postgres_php_sf_playground_container
-    image: 'postgres:16-alpine'
+    image: 'postgres:16.10-alpine'
     working_dir: /application
     volumes:
       - '.:/application'
@@ -26,7 +26,7 @@ services:
 
   rabbitmq:
     container_name: rabbitmq_php_sf_playground_container
-    image: 'rabbitmq:latest'
+    image: 'rabbitmq:4.0'
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
@@ -35,7 +35,7 @@ services:
 
   mysql:
     container_name: mysql_php_sf_playground_container
-    image: 'mysql:latest'
+    image: 'mysql:9.4.0'
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_DATABASE=php_sf_playground_db_mysql
@@ -48,7 +48,7 @@ services:
 
   mariadb:
     container_name:    mariadb_php_sf_playground_container
-    image: 'mariadb:latest'
+    image: 'mariadb:12.2.2'
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_DATABASE=php_sf_playground_db_mariadb

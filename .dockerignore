@@ -7,7 +7,6 @@ public/CKEditor/node_modules
 vendor
 var/cache
 var/log
-public/build
 php-sf-ci-workflow
 wiki
 Platform

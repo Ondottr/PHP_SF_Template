@@ -17,19 +17,19 @@ services:
       DATABASE_MAIN_USER: user
       DATABASE_MAIN_PASSWORD: password
       DATABASE_MAIN_DBNAME: staging_pr${PR_NUMBER}_main
-      DATABASE_MAIN_VERSION: "16"
+      DATABASE_MAIN_VERSION: "16.10"
       DATABASE_PRODUCTS_HOST: mysql
       DATABASE_PRODUCTS_PORT: "3306"
       DATABASE_PRODUCTS_USER: user
       DATABASE_PRODUCTS_PASSWORD: password
       DATABASE_PRODUCTS_DBNAME: staging_pr${PR_NUMBER}_products
-      DATABASE_PRODUCTS_VERSION: "8.0.0"
+      DATABASE_PRODUCTS_VERSION: "9.4.0"
       DATABASE_PAYMENTS_HOST: mariadb
       DATABASE_PAYMENTS_PORT: "3306"
       DATABASE_PAYMENTS_USER: user
       DATABASE_PAYMENTS_PASSWORD: password
       DATABASE_PAYMENTS_DBNAME: staging_pr${PR_NUMBER}_payments
-      DATABASE_PAYMENTS_VERSION: "mariadb-11.0.0"
+      DATABASE_PAYMENTS_VERSION: "mariadb-12.2.2"
       REDIS_CACHE_URL: redis://redis:6379/10
       MEMCACHED_SERVER: memcached
       MEMCACHED_PORT: "11211"
@@ -55,7 +55,7 @@ services:
       - internal
 
   postgres:
-    image: postgres:16-alpine
+    image: postgres:16.10-alpine
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
@@ -70,7 +70,7 @@ services:
       - internal
 
   mysql:
-    image: mysql:latest
+    image: mysql:9.4.0
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: staging_pr${PR_NUMBER}_products
@@ -87,7 +87,7 @@ services:
       - internal
 
   mariadb:
-    image: mariadb:latest
+    image: mariadb:12.2.2
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: staging_pr${PR_NUMBER}_payments
@@ -123,7 +123,7 @@ services:
       - internal
 
   rabbitmq:
-    image: rabbitmq:latest
+    image: rabbitmq:4.0
     environment:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
