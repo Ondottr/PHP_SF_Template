@@ -8,7 +8,6 @@ use PHP_SF\Templates\Layout\header;
 use Symfony\Component\Dotenv\Dotenv;
 
 
-require_once __DIR__ . '/../Platform/vendor/autoload.php';
 require_once __DIR__ . '/../functions/functions.php';
 require_once __DIR__ . '/../config/constants.php';
 require_once __DIR__ . '/../vendor/autoload.php';
