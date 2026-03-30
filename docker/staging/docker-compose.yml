@@ -41,6 +41,8 @@ services:
         condition: service_healthy
       mariadb:
         condition: service_healthy
+      selenium:
+        condition: service_started
     mem_limit: 512m
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:8000/ || exit 1"]
@@ -131,6 +133,13 @@ services:
       timeout: 10s
       retries: 20
     mem_limit: 256m
+    networks:
+      - internal
+
+  selenium:
+    image: selenium/standalone-firefox:latest
+    shm_size: 2g
+    mem_limit: 512m
     networks:
       - internal
 
