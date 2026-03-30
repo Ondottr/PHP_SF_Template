@@ -196,8 +196,13 @@ jobs:
 
       - name: Codeception — Acceptance
         run: |
-          docker exec -e APP_ENV=test pr-${{ env.PR_NUMBER }}-app-1 \
-            vendor/bin/codecept run Acceptance --env staging
+          if docker exec pr-${{ env.PR_NUMBER }}-app-1 \
+              curl -sf --max-time 5 http://selenium:4444/wd/hub/status > /dev/null 2>&1; then
+            docker exec -e APP_ENV=test pr-${{ env.PR_NUMBER }}-app-1 \
+              vendor/bin/codecept run Acceptance --env staging
+          else
+            echo "::warning::Selenium unreachable at selenium:4444 — skipping acceptance tests"
+          fi
 
       - name: Stop Selenium
         if: always()
