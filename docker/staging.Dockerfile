@@ -7,6 +7,14 @@ FROM ghcr.io/ondottr/php-sf-ci:latest
 
 ARG SERVER_IP=127.0.0.1
 
+# Install SSH early — stable layer, cached unless base image changes
+RUN apt-get update -qq && apt-get install -y --no-install-recommends openssh-server \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /run/sshd /root/.ssh \
+    && chmod 700 /root/.ssh \
+    && sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config \
+    && ssh-keygen -A
+
 WORKDIR /app
 
 COPY . .
@@ -14,17 +22,13 @@ COPY . .
 RUN cp config/constants.example.php config/constants.php \
     && sed -i "s/const SERVER_IP = '127.0.0.1'/const SERVER_IP = '${SERVER_IP}'/" config/constants.php \
     && cp .env.example .env \
-    && sh docker/ci-init.sh \
-    && composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts \
-    && npm ci \
-    && npm run build
+    && sh docker/ci-init.sh
 
-RUN apt-get update -qq && apt-get install -y --no-install-recommends openssh-server \
-    && rm -rf /var/lib/apt/lists/* \
-    && mkdir -p /run/sshd /root/.ssh \
-    && chmod 700 /root/.ssh \
-    && sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config \
-    && ssh-keygen -A
+RUN --mount=type=cache,target=/root/.composer/cache \
+    composer install --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci && npm run build
 
 RUN chmod +x docker/staging-entrypoint.sh
 

@@ -41,6 +41,8 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build staging image
+        env:
+          DOCKER_BUILDKIT: "1"
         run: |
           docker build \
             -f docker/staging.Dockerfile \
@@ -50,11 +52,19 @@ jobs:
 
       - name: Tear down previous deployment
         run: |
-          PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
-          docker compose \
-            -p pr-${{ env.PR_NUMBER }} \
-            -f docker/staging/docker-compose.yml \
-            down -v --remove-orphans 2>/dev/null || true
+          # If DBs are already healthy, only stop the app container so DBs don't need to reinitialise.
+          # Full teardown (with volume wipe) only happens on the very first deploy for this PR.
+          if PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
+              docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
+              ps -q postgres 2>/dev/null | grep -q .; then
+            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
+            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
+              stop app 2>/dev/null || true
+          else
+            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
+            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
+              down -v --remove-orphans 2>/dev/null || true
+          fi
 
       - name: Deploy
         run: |
