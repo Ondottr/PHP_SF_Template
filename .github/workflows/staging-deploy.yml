@@ -67,6 +67,13 @@ jobs:
             -f docker/staging/docker-compose.yml \
             up -d --wait
 
+      - name: Dump app logs on failure
+        if: failure()
+        run: |
+          PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
+          docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
+            logs app
+
       - name: Create databases and schemas
         run: |
           for em in main products payments; do
