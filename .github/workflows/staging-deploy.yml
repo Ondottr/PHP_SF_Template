@@ -72,7 +72,7 @@ jobs:
           for em in main products payments; do
             PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
             docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-              exec -T app php bin/console doctrine:database:create --if-not-exists --em=$em
+              exec -T app php bin/console doctrine:database:create --if-not-exists --connection=$em
             PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
             docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
               exec -T app php bin/console doctrine:schema:create --em=$em

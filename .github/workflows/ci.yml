@@ -175,9 +175,9 @@ jobs:
       # ── Database setup ────────────────────────────────────────────────────────
       - name: Create databases
         run: |
-          bin/console doctrine:database:create --if-not-exists --em=main
-          bin/console doctrine:database:create --if-not-exists --em=products
-          bin/console doctrine:database:create --if-not-exists --em=payments
+          bin/console doctrine:database:create --if-not-exists --connection=main
+          bin/console doctrine:database:create --if-not-exists --connection=products
+          bin/console doctrine:database:create --if-not-exists --connection=payments
 
       - name: Create schemas
         run: |
