@@ -8,22 +8,19 @@
 #   em('main'), em('blog'), em('payments')
 #
 # Run init.sh to add real connections and generate entity/repository directories.
-# If not, DO NOT change the default_connection or default_entity_manager.
+# If not, DO NOT change the default_connection or default_entity_manager, that WILL NOT WORK and will cause failures.
 
 doctrine:
     dbal:
         default_connection: dummy
         connections:
-            # Intentionally non-functional — fail-fast guard against accidental default usage
             dummy:
-                driver_class: 'PHP_SF\System\Doctrine\ForbiddenDriver'
-
+                driver_class: PHP_SF\System\Doctrine\ForbiddenDriver
     orm:
         default_entity_manager: dummy
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
         proxy_namespace: Proxies
-
         entity_managers:
             dummy:
                 connection: dummy
@@ -32,14 +29,8 @@ doctrine:
                         is_bundle: false
                         type: attribute
                         dir: '%kernel.project_dir%/App/Entity/Dummy'
-                        prefix: 'App\Entity\Dummy'
+                        prefix: App\Entity\Dummy
                         alias: Dummy
-
-when@test:
-    doctrine:
-        dbal:
-            connections:
-
 when@prod:
     doctrine:
         orm:

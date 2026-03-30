@@ -6,7 +6,6 @@ use PHP_SF\System\Router;
 use PHP_SF\Templates\Layout\footer;
 use PHP_SF\Templates\Layout\header;
 use Symfony\Component\Dotenv\Dotenv;
-use App\Entity\Main\User;
 
 
 require_once __DIR__ . '/../Platform/vendor/autoload.php';
@@ -30,7 +29,6 @@ $kernel = ( new PHP_SF\Kernel() )
     ->setHeaderTemplateClassName( header::class )
     ->setFooterTemplateClassName( footer::class )
     ->addTemplatesDirectory( 'templates', 'App\View' )
-    ->setApplicationUserClassName( User::class )
 ;
 
 Router::loadRoutesOnly( $kernel );

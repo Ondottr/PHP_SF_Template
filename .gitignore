@@ -1,7 +1,6 @@
 ###> symfony/framework-bundle ###
 /.env
 /.env.local
-/.env.test
 /.env.local.php
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
@@ -11,12 +10,14 @@
 /vendor/
 ###< symfony/framework-bundle ###
 /Platform/
-./wiki
+/php-sf-ci-workflow
+/wiki
 /node_modules/
 /public/js/app.js
 /.idea
 /public/images/ci/minimaps/*
 /config/constants.php
+/config/packages/doctrine.staging.yaml
 /config/reference.php
 /public/build/*
 
@@ -28,3 +29,4 @@
 /.phpunit.cache/
 /.phpunit.result.cache
 ###< phpunit/phpunit ###
+

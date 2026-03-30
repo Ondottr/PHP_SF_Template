@@ -20,7 +20,7 @@ services:
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=php-sf-playground-db-postgresql
+      - POSTGRES_DB=php_sf_playground_db_postgresql
     ports:
       - '7003:5432'
 
@@ -38,7 +38,7 @@ services:
     image: 'mysql:latest'
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=php-sf-playground-db-mysql
+      - MYSQL_DATABASE=php_sf_playground_db_mysql
       - MYSQL_USER=user
       - MYSQL_PASSWORD=password
     volumes:
@@ -51,7 +51,7 @@ services:
     image: 'mariadb:latest'
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=php-sf-playground-db-mariadb
+      - MYSQL_DATABASE=php_sf_playground_db_mariadb
       - MYSQL_USER=user
       - MYSQL_PASSWORD=password
     volumes:
