@@ -130,13 +130,6 @@ jobs:
           repository: Ondottr/PHP_SF_Template
           ref: master
 
-      - name: Checkout PHP_SF_Platform
-        uses: actions/checkout@v4
-        with:
-          repository: Ondottr/PHP_SF_Platform
-          ref: master
-          path: Platform
-
       # ── Bootstrap config files ────────────────────────────────────────────────
       # constants.php is required by bin/console at bootstrap time.
       # .env must exist for Symfony Dotenv bootEnv(); workflow env vars override values inside it.
