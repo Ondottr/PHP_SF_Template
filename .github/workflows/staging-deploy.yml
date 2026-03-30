@@ -191,12 +191,8 @@ jobs:
 
       - name: Codeception — Acceptance
         run: |
-          docker exec \
-            -e APP_ENV=test \
-            -e WEBDRIVER_HOST=selenium \
-            -e APP_URL=http://app:8000/ \
-            pr-${{ env.PR_NUMBER }}-app-1 \
-            vendor/bin/codecept run Acceptance
+          docker exec -e APP_ENV=test pr-${{ env.PR_NUMBER }}-app-1 \
+            vendor/bin/codecept run Acceptance --env staging
 
       - name: Stop Selenium
         if: always()
