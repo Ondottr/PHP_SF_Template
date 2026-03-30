@@ -2,8 +2,8 @@
 
 use PHP_SF\System\Classes\Helpers\TimeZone;
 
-#const DEV_MODE = true;
-#const TEMPLATES_CACHE_ENABLED = true;
+const DEV_MODE = false;
+const TEMPLATES_CACHE_ENABLED = false;
 
 const DEFAULT_TIMEZONE = TimeZone::ETC_UTC;
 
