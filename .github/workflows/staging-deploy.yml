@@ -91,7 +91,7 @@ jobs:
         id: container_ip
         run: |
           IP=$(docker inspect pr-${{ env.PR_NUMBER }}-app-1 \
-            --format '{{.NetworkSettings.Networks.nginx-proxy.IPAddress}}')
+            --format '{{index .NetworkSettings.Networks "nginx-proxy" "IPAddress"}}')
           echo "ip=$IP" >> $GITHUB_OUTPUT
 
       - name: Post staging URL comment
