@@ -58,7 +58,7 @@
     "ext-zend-opcache": "*",
     "ext-zlib": "*",
     "nations-original/php-simple-framework": "~1.1.0",
-    "composer/package-versions-deprecated": "1.11.99.4",
+    "composer/package-versions-deprecated": "1.11.99.5",
     "nelmio/api-doc-bundle": "^4.16",
     "php-amqplib/php-amqplib": "^3.6",
     "phpdocumentor/reflection-docblock": "^5.3",
