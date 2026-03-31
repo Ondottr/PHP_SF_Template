@@ -94,7 +94,7 @@
     "codeception/module-asserts": "^3.3",
     "codeception/module-symfony": "^3.8",
     "codeception/module-webdriver": "^4.0",
-    "doctrine/doctrine-fixtures-bundle": "^3.4",
+    "doctrine/doctrine-fixtures-bundle": "^4.3",
     "phpunit/php-code-coverage": "^12",
     "phpunit/phpunit": "^12",
     "roave/security-advisories": "dev-latest",
