@@ -35,7 +35,7 @@ jobs:
           docker network connect nginx-proxy nginx-proxy 2>/dev/null || true
 
       - name: Checkout PHP_SF_Template
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -116,7 +116,7 @@ jobs:
           echo "ip=$IP" >> $GITHUB_OUTPUT
 
       - name: Post staging URL comment
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const marker = '<!-- staging-deploy -->';
