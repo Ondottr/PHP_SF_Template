@@ -59,7 +59,7 @@
     "ext-zlib": "*",
     "nations-original/php-simple-framework": "~1.1.0",
     "composer/package-versions-deprecated": "1.11.99.4",
-    "nelmio/api-doc-bundle": "^4.16",
+    "nelmio/api-doc-bundle": "^5.9",
     "php-amqplib/php-amqplib": "^3.6",
     "phpdocumentor/reflection-docblock": "^5.3",
     "predis/predis": "^3.4",
