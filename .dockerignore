@@ -1,0 +1,12 @@
+.git
+.github
+public/build
+node_modules
+public/CKEditor/build
+public/CKEditor/node_modules
+vendor
+var/cache
+var/log
+php-sf-ci-workflow
+wiki
+Platform

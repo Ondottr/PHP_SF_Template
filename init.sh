@@ -161,7 +161,7 @@ declare -a configured_ems=()
 declare -A em_schemas=()
 
 declare -A db_default_ports=( [postgresql]=5432 [mysql]=3306 [mariadb]=3306 )
-declare -A db_default_versions=( [postgresql]=16 [mysql]=8.0.0 [mariadb]=11.0.0 )
+declare -A db_default_versions=( [postgresql]=16.10 [mysql]=9.4.0 [mariadb]=12.2.2 )
 
 configure_db_connection() {
   local em_name="$1"
@@ -722,28 +722,28 @@ else
 
   # region Configure config/constants.php
 
-  if grep -q "^#const SERVER_IP" config/constants.php; then
+  if grep -q "^const SERVER_IP" config/constants.php; then
     echo "Set server IP (default 127.0.0.1):"
     read -r server_ip; [ -z "$server_ip" ] && server_ip="127.0.0.1"
-    php -r "file_put_contents('config/constants.php', preg_replace('/^#const SERVER_IP.*/m', 'const SERVER_IP = \"$server_ip\";', file_get_contents('config/constants.php')));"
+    php -r "file_put_contents('config/constants.php', preg_replace('/^const SERVER_IP\s*=\s*.*/m', 'const SERVER_IP = \"$server_ip\";', file_get_contents('config/constants.php')));"
   fi
 
-  if grep -q "^#const DEV_MODE" config/constants.php; then
+  if grep -q "^const DEV_MODE" config/constants.php; then
     echo "Enable templates cache? Y|n"
     read -r templates_cache_enabled
     if [ "$templates_cache_enabled" = "n" ] || [ "$templates_cache_enabled" = "N" ]; then templates_cache_enabled="false"; else templates_cache_enabled="true"; fi
-    php -r "file_put_contents('config/constants.php', preg_replace('/^#const TEMPLATES_CACHE_ENABLED.*/m', 'const TEMPLATES_CACHE_ENABLED = $templates_cache_enabled;', file_get_contents('config/constants.php')));"
+    php -r "file_put_contents('config/constants.php', preg_replace('/^const TEMPLATES_CACHE_ENABLED\s*=\s*.*/m', 'const TEMPLATES_CACHE_ENABLED = $templates_cache_enabled;', file_get_contents('config/constants.php')));"
 
     echo "Enable dev mode? y|N"
     read -r dev_mode
     if [ "$dev_mode" = "y" ] || [ "$dev_mode" = "Y" ]; then dev_mode="true"; else dev_mode="false"; fi
-    php -r "file_put_contents('config/constants.php', preg_replace('/^#const DEV_MODE.*/m', 'const DEV_MODE = $dev_mode;', file_get_contents('config/constants.php')));"
+    php -r "file_put_contents('config/constants.php', preg_replace('/^const DEV_MODE\s*=\s*.*/m', 'const DEV_MODE = $dev_mode;', file_get_contents('config/constants.php')));"
   fi
 
-  if grep -q "^#const APPLICATION_NAME" config/constants.php; then
+  if grep -q "^const APPLICATION_NAME" config/constants.php; then
     echo "Set application name (default Platform):"
     read -r application_name; [ -z "$application_name" ] && application_name="Platform"
-    php -r "file_put_contents('config/constants.php', preg_replace('/^#const APPLICATION_NAME.*/m', 'const APPLICATION_NAME = \"$application_name\";', file_get_contents('config/constants.php')));"
+    php -r "file_put_contents('config/constants.php', preg_replace('/^const APPLICATION_NAME\s*=\s*.*/m', 'const APPLICATION_NAME = \"$application_name\";', file_get_contents('config/constants.php')));"
   fi
 
   if grep -q "^//define('LANGUAGES_LIST" config/constants.php; then

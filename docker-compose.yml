@@ -13,20 +13,20 @@ services:
 
   postgres:
     container_name: postgres_php_sf_playground_container
-    image: 'postgres:16-alpine'
+    image: 'postgres:16.10-alpine'
     working_dir: /application
     volumes:
       - '.:/application'
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=php-sf-playground-db-postgresql
+      - POSTGRES_DB=php_sf_playground_db_postgresql
     ports:
       - '7003:5432'
 
   rabbitmq:
     container_name: rabbitmq_php_sf_playground_container
-    image: 'rabbitmq:latest'
+    image: 'rabbitmq:4.0'
     environment:
       - RABBITMQ_DEFAULT_USER=admin
       - RABBITMQ_DEFAULT_PASS=admin
@@ -35,10 +35,10 @@ services:
 
   mysql:
     container_name: mysql_php_sf_playground_container
-    image: 'mysql:latest'
+    image: 'mysql:9.4.0'
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=php-sf-playground-db-mysql
+      - MYSQL_DATABASE=php_sf_playground_db_mysql
       - MYSQL_USER=user
       - MYSQL_PASSWORD=password
     volumes:
@@ -48,10 +48,10 @@ services:
 
   mariadb:
     container_name:    mariadb_php_sf_playground_container
-    image: 'mariadb:latest'
+    image: 'mariadb:12.2.2'
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=php-sf-playground-db-mariadb
+      - MYSQL_DATABASE=php_sf_playground_db_mariadb
       - MYSQL_USER=user
       - MYSQL_PASSWORD=password
     volumes:
@@ -62,9 +62,5 @@ services:
   selenium:
     container_name: selenium_php_sf_playground_container
     image: 'selenium/standalone-firefox:latest'
-    ports:
-      - '4444:4444'
-      - '7900:7900'
+    network_mode: host  # shares host network stack; Firefox reaches 127.0.0.1:7000 directly
     shm_size: '2gb'
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'

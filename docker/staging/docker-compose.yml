@@ -1,0 +1,149 @@
+# Per-PR staging stack.
+# Invoked by the staging-deploy workflow with:
+#   PR_NUMBER=123 APP_IMAGE=php-sf-template:pr-123 \
+#     docker compose -p pr-123 -f docker/staging/docker-compose.yml up -d --wait
+
+services:
+  app:
+    image: ${APP_IMAGE}
+    environment:
+      VIRTUAL_HOST: pr-${PR_NUMBER}.phpsf-staging.nations-original.eu
+      VIRTUAL_PORT: "8000"
+      APP_ENV: dev
+      APP_SECRET: staging_pr${PR_NUMBER}_secret
+      SERVER_PREFIX: ""
+      DATABASE_MAIN_HOST: postgres
+      DATABASE_MAIN_PORT: "5432"
+      DATABASE_MAIN_USER: user
+      DATABASE_MAIN_PASSWORD: password
+      DATABASE_MAIN_DBNAME: staging_pr${PR_NUMBER}_main
+      DATABASE_MAIN_VERSION: "16.10"
+      DATABASE_PRODUCTS_HOST: mysql
+      DATABASE_PRODUCTS_PORT: "3306"
+      DATABASE_PRODUCTS_USER: user
+      DATABASE_PRODUCTS_PASSWORD: password
+      DATABASE_PRODUCTS_DBNAME: staging_pr${PR_NUMBER}_products
+      DATABASE_PRODUCTS_VERSION: "9.4.0"
+      DATABASE_PAYMENTS_HOST: mariadb
+      DATABASE_PAYMENTS_PORT: "3306"
+      DATABASE_PAYMENTS_USER: user
+      DATABASE_PAYMENTS_PASSWORD: password
+      DATABASE_PAYMENTS_DBNAME: staging_pr${PR_NUMBER}_payments
+      DATABASE_PAYMENTS_VERSION: "mariadb-12.2.2"
+      REDIS_CACHE_URL: redis://redis:6379/10
+      MEMCACHED_SERVER: memcached
+      MEMCACHED_PORT: "11211"
+      MESSENGER_TRANSPORT_DSN: amqp://admin:admin@rabbitmq:5672/%2f
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      mariadb:
+        condition: service_healthy
+      selenium:
+        condition: service_started
+    mem_limit: 512m
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8000/ || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+      start_period: 10s
+    networks:
+      - nginx-proxy
+      - internal
+
+  postgres:
+    image: postgres:16.10-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: staging_pr${PR_NUMBER}_main
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 256m
+    networks:
+      - internal
+
+  mysql:
+    image: mysql:9.4.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: staging_pr${PR_NUMBER}_products
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    command: --innodb-buffer-pool-size=64M --performance-schema=OFF
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "user", "--password=password"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 256m
+    networks:
+      - internal
+
+  mariadb:
+    image: mariadb:12.2.2
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: staging_pr${PR_NUMBER}_payments
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    command: --innodb-buffer-pool-size=64M --performance-schema=OFF
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    mem_limit: 256m
+    networks:
+      - internal
+
+  redis:
+    image: redis:alpine
+    command: redis-server --maxmemory 64mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    mem_limit: 96m
+    networks:
+      - internal
+
+  memcached:
+    image: memcached:alpine
+    command: memcached -m 64
+    mem_limit: 96m
+    networks:
+      - internal
+
+  rabbitmq:
+    image: rabbitmq:4.0
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+    mem_limit: 256m
+    networks:
+      - internal
+
+  selenium:
+    image: selenium/standalone-firefox:latest
+    shm_size: 2g
+    mem_limit: 512m
+    networks:
+      - internal
+
+networks:
+  nginx-proxy:
+    external: true
+  internal:

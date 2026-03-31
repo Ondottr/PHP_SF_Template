@@ -11,7 +11,7 @@ modules:
         browser: firefox
         host: '127.0.0.1'
         port: 4444
-        url: 'https://host.docker.internal:7000/'
+        url: 'https://127.0.0.1:7000/'
         window_size: 1280x1280
         capabilities:
           acceptInsecureCerts: true # allow self-signed certificates

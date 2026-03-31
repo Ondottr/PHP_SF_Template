@@ -1,0 +1,27 @@
+name: Staging Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  cleanup:
+    name: Cleanup pr-${{ github.event.pull_request.number }}
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout (for compose file)
+        uses: actions/checkout@v4
+
+      - name: Tear down stack
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }} \
+          APP_IMAGE=php-sf-template:pr-${{ github.event.pull_request.number }} \
+          docker compose \
+            -p pr-${{ github.event.pull_request.number }} \
+            -f docker/staging/docker-compose.yml \
+            down -v --remove-orphans
+
+      - name: Remove staging image
+        run: |
+          docker rmi php-sf-template:pr-${{ github.event.pull_request.number }} 2>/dev/null || true

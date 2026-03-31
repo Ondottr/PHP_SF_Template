@@ -1,29 +1,29 @@
 /* TEAM */
 Lead Developer: Dmytro Dyvulskyi
-   - Lead architect and developer responsible for building the main game engine, designing, and implementing microservices using RabbitMQ, Rust, and Go. Shapes the technical foundation of our project. Connect with Dmytro on LinkedIn: [Dmytro's LinkedIn Profile](https://www.linkedin.com/in/dmytro-dyvulskyi/).
+   — CEO & Lead Developer at Nations Original. Architect and author of the PHP Simple Framework.
 
 /* THANKS */
 We extend our gratitude to the following individuals and organizations for their invaluable contributions:
-— The PHP_SF community for creating a powerful and flexible web application framework.
+— The Symfony and Doctrine teams for their exceptional open-source work this project builds on.
 — FASTPANEL.DIRECT for their exceptional server management panel.
 — Our families and friends for unwavering support.
 
 /* TECHNOLOGIES */
 This website was built using the following technologies:
-— PHP_SF framework with Symfony and Doctrine ORM
+— PHP Simple Framework with Symfony and Doctrine ORM
+— Codeception and PHPUnit for testing
 — HTML5 and CSS3
 — JavaScript, jQuery, and WebPack
-— PostgreSQL and MySQL databases
+— PostgreSQL and MySQL/MariaDB databases
 — FASTPANEL server management panel
-— Microservices implemented in Rust and Go
-— Debian 12 used on both servers and as a desktop OS for work
+— Debian 11 to 13 used on all servers and as a desktop OS for work
 — Servers hosted on Contabo
 
 For more information about these technologies, please visit:
-- [PHP_SF](https://github.com/Ondottr/PHP_SF_Platform)
+- [PHP Simple Framework](https://github.com/Ondottr/PHP_SF_Template)
 - [Symfony](https://symfony.com/)
 - [Doctrine ORM](https://www.doctrine-project.org/)
 - [FASTPANEL](https://fastpanel.direct/)
 
 /* COPYRIGHT */
-Copyright © 2018-2026 Nations Original sp. z o.o. All rights reserved.
+Copyright © 2018-2026 Nations Original Sp. z o.o. All rights reserved.
