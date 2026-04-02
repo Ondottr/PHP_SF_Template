@@ -18,12 +18,12 @@ services:
       DATABASE_MAIN_PASSWORD: password
       DATABASE_MAIN_DBNAME: staging_pr${PR_NUMBER}_main
       DATABASE_MAIN_VERSION: "16.10"
-      DATABASE_PRODUCTS_HOST: mysql
-      DATABASE_PRODUCTS_PORT: "3306"
-      DATABASE_PRODUCTS_USER: user
-      DATABASE_PRODUCTS_PASSWORD: password
-      DATABASE_PRODUCTS_DBNAME: staging_pr${PR_NUMBER}_products
-      DATABASE_PRODUCTS_VERSION: "9.4.0"
+      DATABASE_BLOG_HOST: mysql
+      DATABASE_BLOG_PORT: "3306"
+      DATABASE_BLOG_USER: user
+      DATABASE_BLOG_PASSWORD: password
+      DATABASE_BLOG_DBNAME: staging_pr${PR_NUMBER}_blog
+      DATABASE_BLOG_VERSION: "9.4.0"
       DATABASE_PAYMENTS_HOST: mariadb
       DATABASE_PAYMENTS_PORT: "3306"
       DATABASE_PAYMENTS_USER: user
@@ -71,7 +71,7 @@ services:
     image: mysql:9.4.0
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: staging_pr${PR_NUMBER}_products
+      MYSQL_DATABASE: staging_pr${PR_NUMBER}_blog
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     command: --innodb-buffer-pool-size=64M --performance-schema=OFF

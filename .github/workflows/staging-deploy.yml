@@ -87,7 +87,7 @@ jobs:
       - name: Create databases and schemas
         if: steps.teardown.outputs.fresh == 'true'
         run: |
-          for em in main products payments; do
+          for em in main blog payments; do
             PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
             docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
               exec -T app php bin/console doctrine:database:create --if-not-exists --connection=$em
@@ -99,9 +99,11 @@ jobs:
       - name: Load fixtures
         if: steps.teardown.outputs.fresh == 'true'
         run: |
-          PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
-          docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-            exec -T app php bin/console doctrine:fixtures:load --no-interaction --em=main
+          for em in main blog payments; do
+            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
+            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
+              exec -T app php bin/console doctrine:fixtures:custom-loader --no-interaction --em=$em --group=$em
+          done
 
       - name: Inject SSH public key
         run: |
