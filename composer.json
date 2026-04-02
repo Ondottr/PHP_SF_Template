@@ -71,6 +71,7 @@
     "symfony/dotenv": "^7.4",
     "symfony/expression-language": "^7.4",
     "symfony/flex": "^1.17|^2",
+    "symfony/form": "^7.4",
     "symfony/framework-bundle": "^7.4",
     "symfony/http-client": "^7.4",
     "symfony/intl": "^7.4",
@@ -81,9 +82,11 @@
     "symfony/property-info": "^7.4",
     "symfony/proxy-manager-bridge": "*",
     "symfony/runtime": "^7.4",
+    "symfony/security-csrf": "^7.0",
     "symfony/serializer": "^7.4",
     "symfony/string": "^7.4",
     "symfony/twig-bundle": "^7.4",
+    "symfony/validator": "^7.4",
     "symfony/web-link": "^7.4",
     "symfony/yaml": "^7.4",
     "twig/extra-bundle": "^2.12|^3.0",
@@ -95,6 +98,7 @@
     "codeception/module-symfony": "^3.8",
     "codeception/module-webdriver": "^4.0",
     "doctrine/doctrine-fixtures-bundle": "^3.4",
+    "friendsofphp/php-cs-fixer": "^3.94",
     "phpunit/php-code-coverage": "^12",
     "phpunit/phpunit": "^12",
     "roave/security-advisories": "dev-latest",
@@ -105,7 +109,8 @@
     "symfony/phpunit-bridge": "^6.2",
     "symfony/stopwatch": "^7.4",
     "symfony/thanks": "^1.2",
-    "symfony/web-profiler-bundle": "^7.4"
+    "symfony/web-profiler-bundle": "^7.4",
+    "zenstruck/foundry": "^2.9"
   },
   "scripts": {
     "auto-scripts": {
@@ -113,5 +118,5 @@
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     }
   },
-"type": "project"
+  "type": "project"
 }
