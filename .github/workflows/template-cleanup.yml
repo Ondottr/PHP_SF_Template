@@ -40,6 +40,10 @@ jobs:
           # Maintainer-specific GitHub config
           rm -f .github/CODEOWNERS
 
+          # Staging example overlay and gitignore entries
+          rm -rf staging/overlay
+          sed -i '/^# Staging example content — BEGIN/,/^# Staging example content — END/d' .gitignore
+
           # Self-destruct
           rm -f .github/workflows/template-cleanup.yml
 

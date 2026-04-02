@@ -34,3 +34,28 @@
 /.php-cs-fixer.php
 /.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
+
+# Staging example content — BEGIN (removed by template-cleanup.yml)
+/App/Entity/Main/
+/App/Entity/Blog/
+/App/Entity/Payments/
+/App/Repository/
+/App/Http/Controller/CrudHomeController.php
+/App/Http/Controller/*CrudController.php
+/App/Http/SymfonyControllers/*CrudSymfonyController.php
+/App/Http/Middleware/crud.php
+/App/Maker/MakeMainEntity.php
+/App/Maker/MakeBlogEntity.php
+/App/Maker/MakePaymentsEntity.php
+/App/DataFixtures/PostFixtures.php
+/App/DataFixtures/PaymentFixtures.php
+/App/DataFixtures/SampleUsersFixtures.php
+/App/DataFixtures/FakerFactory/
+/App/DataFixtures/Purgers/PostPurger.php
+/App/DataFixtures/Purgers/PaymentPurger.php
+/templates/Crud/
+/templates/crud_home.php
+/templates_twig/crud/
+/tests/Functional/Crud/
+/tests/Unit/Entity/
+# Staging example content — END

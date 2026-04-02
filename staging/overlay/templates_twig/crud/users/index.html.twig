@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+
+    {% for msg in app.flashes('success') %}
+        <div class="alert alert-success">{{ msg }}</div>
+    {% endfor %}
+    {% for msg in app.flashes('danger') %}
+        <div class="alert alert-danger">{{ msg }}</div>
+    {% endfor %}
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Users</h1>
+        <a href="{{ path('symfony_crud_user_create') }}" class="btn btn-primary">New User</a>
+    </div>
+
+    <style>.cell-trunc { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }</style>
+
+    <div class="table-responsive">
+    <table class="table table-bordered table-hover table-sm" style="min-width: 1400px;">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>colText</th>
+                <th>colInteger</th>
+                <th>colSmallint</th>
+                <th>colBigint</th>
+                <th>colBoolean</th>
+                <th>colDecimal</th>
+                <th>colFloat</th>
+                <th>colDatetimetz</th>
+                <th>colDate</th>
+                <th>colTime</th>
+                <th>colGuid</th>
+                <th>colJson</th>
+                <th>colArray</th>
+                <th>colSimpleArray</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td class="cell-trunc" title="{{ user.email }}">{{ user.email }}</td>
+                <td class="cell-trunc" title="{{ user.colText }}">{{ user.colText }}</td>
+                <td>{{ user.colInteger }}</td>
+                <td>{{ user.colSmallint }}</td>
+                <td>{{ user.colBigint }}</td>
+                <td>{{ user.colBoolean is null ? '' : (user.colBoolean ? 'true' : 'false') }}</td>
+                <td>{{ user.colDecimal }}</td>
+                <td>{{ user.colFloat }}</td>
+                <td>{{ user.colDatetimetz ? user.colDatetimetz|date('Y-m-d H:i') : '' }}</td>
+                <td>{{ user.colDate ? user.colDate|date('Y-m-d') : '' }}</td>
+                <td>{{ user.colTime ? user.colTime|date('H:i') : '' }}</td>
+                <td class="cell-trunc" title="{{ user.colGuid }}">{{ user.colGuid }}</td>
+                <td class="cell-trunc" title="{{ user.colJson ? user.colJson|json_encode : '' }}">{{ user.colJson ? user.colJson|json_encode : '' }}</td>
+                <td class="cell-trunc" title="{{ user.colArray ? user.colArray|json_encode : '' }}">{{ user.colArray ? user.colArray|json_encode : '' }}</td>
+                <td class="cell-trunc" title="{{ user.colSimpleArray ? user.colSimpleArray|join(', ') : '' }}">{{ user.colSimpleArray ? user.colSimpleArray|join(', ') : '' }}</td>
+                <td>{{ user.createdAt|date('Y-m-d H:i') }}</td>
+                <td class="text-nowrap">
+                    <a href="{{ path('symfony_crud_user_edit', {id: user.id}) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form method="POST" action="{{ path('symfony_crud_user_delete', {id: user.id}) }}" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('submit') }}">
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Delete this user?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="18" class="text-center text-muted">No users found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Payments{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+
+    {% for msg in app.flashes('success') %}
+        <div class="alert alert-success">{{ msg }}</div>
+    {% endfor %}
+    {% for msg in app.flashes('danger') %}
+        <div class="alert alert-danger">{{ msg }}</div>
+    {% endfor %}
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Payments</h1>
+        <a href="{{ path('symfony_crud_payment_create') }}" class="btn btn-primary">New Payment</a>
+    </div>
+
+    <style>.cell-trunc { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }</style>
+
+    <div class="table-responsive">
+    <table class="table table-bordered table-hover table-sm" style="min-width: 1700px;">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>Status</th>
+                <th>colText</th>
+                <th>colInteger</th>
+                <th>colSmallint</th>
+                <th>colBigint</th>
+                <th>colBoolean</th>
+                <th>colDecimal</th>
+                <th>colFloat</th>
+                <th>colDate</th>
+                <th>colTime</th>
+                <th>colGuid</th>
+                <th>colJson</th>
+                <th>colArray</th>
+                <th>colSimpleArray</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.id }}</td>
+                <td>{{ payment.amount|number_format(2) }}</td>
+                <td>{{ payment.currency }}</td>
+                <td>
+                    <span class="badge bg-{{ payment.status == 'completed' ? 'success' : (payment.status == 'failed' ? 'danger' : (payment.status == 'refunded' ? 'secondary' : 'warning text-dark')) }}">
+                        {{ payment.status }}
+                    </span>
+                </td>
+                <td class="cell-trunc" title="{{ payment.colText }}">{{ payment.colText }}</td>
+                <td>{{ payment.colInteger }}</td>
+                <td>{{ payment.colSmallint }}</td>
+                <td>{{ payment.colBigint }}</td>
+                <td>{{ payment.colBoolean is null ? '' : (payment.colBoolean ? 'true' : 'false') }}</td>
+                <td>{{ payment.colDecimal }}</td>
+                <td>{{ payment.colFloat }}</td>
+                <td>{{ payment.colDate ? payment.colDate|date('Y-m-d') : '' }}</td>
+                <td>{{ payment.colTime ? payment.colTime|date('H:i') : '' }}</td>
+                <td class="cell-trunc" title="{{ payment.colGuid }}">{{ payment.colGuid }}</td>
+                <td class="cell-trunc" title="{{ payment.colJson ? payment.colJson|json_encode : '' }}">{{ payment.colJson ? payment.colJson|json_encode : '' }}</td>
+                <td class="cell-trunc" title="{{ payment.colArray ? payment.colArray|json_encode : '' }}">{{ payment.colArray ? payment.colArray|json_encode : '' }}</td>
+                <td class="cell-trunc" title="{{ payment.colSimpleArray ? payment.colSimpleArray|join(', ') : '' }}">{{ payment.colSimpleArray ? payment.colSimpleArray|join(', ') : '' }}</td>
+                <td>{{ payment.createdAt|date('Y-m-d H:i') }}</td>
+                <td class="text-nowrap">
+                    <a href="{{ path('symfony_crud_payment_edit', {id: payment.id}) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form method="POST" action="{{ path('symfony_crud_payment_delete', {id: payment.id}) }}" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('submit') }}">
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Delete this payment?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="19" class="text-center text-muted">No payments found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+</div>
+{% endblock %}

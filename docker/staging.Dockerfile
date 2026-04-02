@@ -19,6 +19,10 @@ WORKDIR /app
 
 COPY . .
 
+# Overlay staging example content (entities, CRUD, templates, tests, etc.)
+# These files live in staging/overlay/ to keep master clean.
+RUN cp -r staging/overlay/. .
+
 RUN cp config/constants.example.php config/constants.php \
     && sed -i "s/const SERVER_IP = '127.0.0.1'/const SERVER_IP = '${SERVER_IP}'/" config/constants.php \
     && cp .env.example .env \
