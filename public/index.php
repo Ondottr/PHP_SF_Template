@@ -34,12 +34,6 @@ require_once __DIR__ . '/../config/eventListeners.php';
 
 (new Dotenv())->bootEnv(__DIR__ . '/../.env');
 
-$kernel = ( new PHP_SF\Kernel() )
-    ->addTranslationFiles( __DIR__ . '/../lang' )
-    ->addControllers( __DIR__ . '/../App/Http/Controller' )
-    ->setHeaderTemplateClassName( header::class )
-    ->setFooterTemplateClassName( footer::class )
-    ->addTemplatesDirectory( 'templates', 'App\View' )
 $kernel = (new PHP_SF\Kernel())
     ->addTranslationFiles(__DIR__ . '/../lang')
     ->addControllers(__DIR__ . '/../App/Http/Controller')
