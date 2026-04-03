@@ -50,30 +50,30 @@ final class user_form extends AbstractView { public function show(): void {
         <div class="mb-3">
             <label for="colText" class="form-label">colText <small class="text-muted">(text)</small></label>
             <?php formTextarea( 'colText', [ 0, 65535 ], 3, null, 'soft', false,
-                $fv( 'colText', $user?->getColText() ), null, [ 'form-control' ] ) ?>
+                $fv( 'colText', $user?->getColText() ), 'column text', [ 'form-control' ] ) ?>
         </div>
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="colInteger" class="form-label">colInteger</label>
-                <?= input( 'colInteger', [ 1, 11 ], 'number', false, [], $fv( 'colInteger', $user?->getColInteger() ), null, 1, [ 'form-control' ] ) ?>
+                <?= input( 'colInteger', [ 1, 11 ], 'number', false, [], $fv( 'colInteger', $user?->getColInteger() ), '1234567', 1, [ 'form-control' ] ) ?>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="colSmallint" class="form-label">colSmallint</label>
-                <?= input( 'colSmallint', [ 1, 6 ], 'number', false, [], $fv( 'colSmallint', $user?->getColSmallint() ), null, 1, [ 'form-control' ] ) ?>
+                <?= input( 'colSmallint', [ 1, 6 ], 'number', false, [], $fv( 'colSmallint', $user?->getColSmallint() ), '12345', 1, [ 'form-control' ] ) ?>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="colBigint" class="form-label">colBigint</label>
-                <?= input( 'colBigint', [ 1, 20 ], 'number', false, [], $fv( 'colBigint', $user?->getColBigint() ), null, 1, [ 'form-control' ] ) ?>
+                <?= input( 'colBigint', [ 1, 20 ], 'number', false, [], $fv( 'colBigint', $user?->getColBigint() ), '1234567890', 1, [ 'form-control' ] ) ?>
             </div>
         </div>
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="colDecimal" class="form-label">colDecimal <small class="text-muted">(15,4)</small></label>
-                <?= input( 'colDecimal', [ 1, 20 ], 'number', false, [], $fv( 'colDecimal', $user?->getColDecimal() ), null, 0.0001, [ 'form-control' ] ) ?>
+                <?= input( 'colDecimal', [ 1, 20 ], 'number', false, [], $fv( 'colDecimal', $user?->getColDecimal() ), '1234.567', 0.0001, [ 'form-control' ] ) ?>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="colFloat" class="form-label">colFloat</label>
-                <?= input( 'colFloat', [ 1, 20 ], 'number', false, [], $fv( 'colFloat', $user?->getColFloat() ), null, 0.000001, [ 'form-control' ] ) ?>
+                <?= input( 'colFloat', [ 1, 20 ], 'number', false, [], $fv( 'colFloat', $user?->getColFloat() ), '1234.456', 0.000001, [ 'form-control' ] ) ?>
             </div>
             <div class="col-md-4 mb-3">
                 <label for="colBoolean" class="form-label">colBoolean</label>
