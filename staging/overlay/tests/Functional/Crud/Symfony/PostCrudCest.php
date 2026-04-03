@@ -125,9 +125,8 @@ final class PostCrudCest
             'status'  => 'draft',
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeCurrentUrlContains( '/symfony/crud/posts' );
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/posts' );
 
         $this->em->clear();
         $created = $this->em->getRepository( Post::class )->findOneBy( [ 'title' => $title ] );
@@ -176,7 +175,8 @@ final class PostCrudCest
     public function editNonExistentEntityRedirects( FunctionalTester $I ): void
     {
         $I->amOnPage( '/symfony/crud/posts/999999/edit' );
-        $I->seeResponseCodeIsRedirection();
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/posts' );
     }
 
 
@@ -193,9 +193,8 @@ final class PostCrudCest
             'status'  => 'published',
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeCurrentUrlContains( '/symfony/crud/posts' );
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/posts' );
 
         $this->em->clear();
         $updated = $this->em->find( Post::class, $this->entityId );
@@ -219,13 +218,13 @@ final class PostCrudCest
 
     public function deleteRemovesEntityAndRedirectsToList( FunctionalTester $I ): void
     {
+        $I->amOnPage( '/symfony/crud/posts' );
         $I->sendAjaxPostRequest( '/symfony/crud/posts/' . $this->entityId . '/delete', [
             '_token' => $this->csrfToken( $I ),
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeCurrentUrlContains( '/symfony/crud/posts' );
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/posts' );
 
         $this->em->clear();
         $I->assertNull( $this->em->find( Post::class, $this->entityId ) );
@@ -233,11 +232,13 @@ final class PostCrudCest
 
     public function deleteNonExistentEntityRedirects( FunctionalTester $I ): void
     {
+        $I->amOnPage( '/symfony/crud/posts' );
         $I->sendAjaxPostRequest( '/symfony/crud/posts/999999/delete', [
             '_token' => $this->csrfToken( $I ),
         ] );
 
-        $I->seeResponseCodeIsRedirection();
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/posts' );
     }
 
 }

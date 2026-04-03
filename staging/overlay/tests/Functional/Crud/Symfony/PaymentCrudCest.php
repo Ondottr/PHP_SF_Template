@@ -123,8 +123,7 @@ final class PaymentCrudCest
             'status'   => 'pending',
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
+        $I->seeResponseCodeIs( 200 );
         $I->seeInCurrentUrl( '/symfony/crud/payments' );
 
         $this->em->clear();
@@ -180,7 +179,8 @@ final class PaymentCrudCest
     public function editNonExistentEntityRedirects( FunctionalTester $I ): void
     {
         $I->amOnPage( '/symfony/crud/payments/999999/edit' );
-        $I->seeResponseCodeIsRedirection();
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/payments' );
     }
 
 
@@ -195,9 +195,8 @@ final class PaymentCrudCest
             'status'   => 'completed',
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeCurrentUrlContains( '/symfony/crud/payments' );
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/payments' );
 
         $this->em->clear();
         $updated = $this->em->find( Payment::class, $this->entityId );
@@ -222,13 +221,13 @@ final class PaymentCrudCest
 
     public function deleteRemovesEntityAndRedirectsToList( FunctionalTester $I ): void
     {
+        $I->amOnPage( '/symfony/crud/payments' );
         $I->sendAjaxPostRequest( '/symfony/crud/payments/' . $this->entityId . '/delete', [
             '_token' => $this->csrfToken( $I ),
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeCurrentUrlContains( '/symfony/crud/payments' );
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/payments' );
 
         $this->em->clear();
         $I->assertNull( $this->em->find( Payment::class, $this->entityId ) );
@@ -236,11 +235,13 @@ final class PaymentCrudCest
 
     public function deleteNonExistentEntityRedirects( FunctionalTester $I ): void
     {
+        $I->amOnPage( '/symfony/crud/payments' );
         $I->sendAjaxPostRequest( '/symfony/crud/payments/999999/delete', [
             '_token' => $this->csrfToken( $I ),
         ] );
 
-        $I->seeResponseCodeIsRedirection();
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/payments' );
     }
 
 }

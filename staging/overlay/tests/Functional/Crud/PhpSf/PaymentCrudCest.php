@@ -1,7 +1,5 @@
 <?php declare( strict_types=1 );
 
-/** @noinspection PhpUnhandledExceptionInspection */
-
 namespace Tests\Functional\Crud\PhpSf;
 
 use App\Entity\Payments\Payment;

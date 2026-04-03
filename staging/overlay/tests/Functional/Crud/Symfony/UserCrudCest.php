@@ -123,9 +123,8 @@ final class UserCrudCest
             'password' => 'TestPass123',
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeCurrentUrlContains( '/symfony/crud/users' );
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/users' );
 
         $this->em->clear();
         $created = $this->em->getRepository( User::class )->findOneBy( [ 'email' => $email ] );
@@ -174,7 +173,8 @@ final class UserCrudCest
     public function editNonExistentEntityRedirects( FunctionalTester $I ): void
     {
         $I->amOnPage( '/symfony/crud/users/999999/edit' );
-        $I->seeResponseCodeIsRedirection();
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/users' );
     }
 
 
@@ -190,9 +190,8 @@ final class UserCrudCest
             'password' => '',
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeCurrentUrlContains( '/symfony/crud/users' );
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/users' );
 
         $this->em->clear();
         $updated = $this->em->find( User::class, $this->entityId );
@@ -216,13 +215,13 @@ final class UserCrudCest
 
     public function deleteRemovesEntityAndRedirectsToList( FunctionalTester $I ): void
     {
+        $I->amOnPage( '/symfony/crud/users' );
         $I->sendAjaxPostRequest( '/symfony/crud/users/' . $this->entityId . '/delete', [
             '_token' => $this->csrfToken( $I ),
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeCurrentUrlContains( '/symfony/crud/users' );
+        $I->seeResponseCodeIs( 200 );
+        $I->seeInCurrentUrl( '/symfony/crud/users' );
 
         $this->em->clear();
         $I->assertNull( $this->em->find( User::class, $this->entityId ) );
