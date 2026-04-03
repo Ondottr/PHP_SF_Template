@@ -20,10 +20,8 @@ use Throwable;
  *   POST /crud/posts/{id}/edit       → update
  *   POST /crud/posts/{id}/delete     → delete
  *
- * PHP_SF controllers never call setContent(), so Response content is always
- * empty in the functional test context. All responses (including redirects)
- * return HTTP 200 — PHP_SF uses an in-process redirect via Router::init(),
- * not an HTTP 302. Tests therefore assert only status codes and DB side effects.
+ *  All responses (including redirects) return HTTP 200 — PHP_SF uses an in-process redirect via Router::init(),
+ *  not an HTTP 302. Tests therefore assert only status codes and DB side effects.
  */
 final class PostCrudCest
 {

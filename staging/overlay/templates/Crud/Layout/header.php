@@ -13,7 +13,7 @@ final class header extends AbstractView { public function show(): void {
     <head>
         <meta charset="UTF-8">
         <title><?= pageTitle() ?></title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     </head>
     <body>
     <!--@formatter:off-->

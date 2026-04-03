@@ -20,8 +20,6 @@ use Throwable;
  *   GET  /symfony/crud/users/{id}/edit       → edit form
  *   POST /symfony/crud/users/{id}/edit       → update
  *   POST /symfony/crud/users/{id}/delete     → delete
- *
- * Invalid POST re-renders the form (200), unlike PHP_SF which redirects (302).
  */
 final class UserCrudCest
 {

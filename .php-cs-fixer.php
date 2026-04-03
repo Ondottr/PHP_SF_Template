@@ -5,7 +5,15 @@ use PhpCsFixer\Finder;
 
 $finder = Finder::create()
     ->in([
+        __DIR__ . '/Platform/app',
+        __DIR__ . '/Platform/src',
+        __DIR__ . '/Platform/tests',
+        __DIR__ . '/Platform/functions',
+        __DIR__ . '/App',
         __DIR__ . '/src',
+        __DIR__ . '/config',
+        __DIR__ . '/Doctrine',
+        __DIR__ . '/functions',
         __DIR__ . '/tests',
     ])
     ->exclude([
