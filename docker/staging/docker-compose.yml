@@ -43,7 +43,7 @@ services:
         condition: service_healthy
     mem_limit: 512m
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8000/ || exit 1"]
+      test: ["CMD-SHELL", "curl -s http://localhost:8000/ -o /dev/null || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 24
@@ -76,7 +76,7 @@ services:
       MYSQL_PASSWORD: password
     command: --innodb-buffer-pool-size=64M --performance-schema=OFF
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "user", "--password=password"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "user", "--password=password"]
       interval: 5s
       timeout: 5s
       retries: 20

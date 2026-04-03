@@ -81,11 +81,11 @@ jobs:
         run: |
           PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
           docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-            exec -T mysql mysql -uroot -prootpassword \
+            exec -T mysql mysql -h 127.0.0.1 -uroot -prootpassword \
             -e "CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_main\`; CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_blog\`; CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_payments\`; GRANT ALL PRIVILEGES ON \`staging_pr${{ env.PR_NUMBER }}\\_%\`.* TO 'user'@'%'; FLUSH PRIVILEGES;"
           PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
           docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-            exec -T mariadb mariadb -uroot -prootpassword \
+            exec -T mariadb mariadb -h 127.0.0.1 -uroot -prootpassword \
             -e "CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_main\`; CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_blog\`; CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_payments\`; GRANT ALL PRIVILEGES ON \`staging_pr${{ env.PR_NUMBER }}\\_%\`.* TO 'user'@'%'; FLUSH PRIVILEGES;"
 
       - name: Dump app logs on failure
