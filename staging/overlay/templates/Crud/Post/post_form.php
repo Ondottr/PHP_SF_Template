@@ -115,7 +115,7 @@ final class post_form extends AbstractView { public function show(): void {
             <label for="colArray" class="form-label">colArray <small class="text-muted">(JSON array)</small></label>
             <?php formTextarea( 'colArray', [ 0, 65535 ], 3, null, 'soft', false,
                 $fv( 'colArray', $post?->getColArray() !== null ? json_encode( $post->getColArray(), JSON_PRETTY_PRINT ) : null ),
-                '["item1", "item2"]', [ 'form-control', 'font-monospace' ] ) ?>
+                htmlspecialchars('["item1", "item2"]'), [ 'form-control', 'font-monospace' ] ) ?>
         </div>
         <div class="mb-3">
             <label for="colSimpleArray" class="form-label">colSimpleArray <small class="text-muted">(comma-separated)</small></label>
