@@ -43,7 +43,7 @@ services:
         condition: service_healthy
     mem_limit: 512m
     healthcheck:
-      test: ["CMD-SHELL", "curl -s http://localhost:8000/ -o /dev/null || exit 1"]
+      test: ["CMD-SHELL", "curl -fs http://localhost:8000/ -o /dev/null || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 24
