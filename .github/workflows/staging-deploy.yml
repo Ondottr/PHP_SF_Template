@@ -102,15 +102,15 @@ jobs:
             PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
             docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
               exec -T app php bin/console doctrine:database:create --if-not-exists --connection=$em
-            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} APP_ENV=test \
+            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
             docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-              exec -T app php bin/console doctrine:database:create --if-not-exists --connection=$em
+              exec -T -e APP_ENV=test app php bin/console doctrine:database:create --if-not-exists --connection=$em
             PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
             docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
               exec -T app php bin/console doctrine:schema:create --em=$em
-            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} APP_ENV=test \
+            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
             docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-              exec -T app php bin/console doctrine:schema:create --em=$em
+              exec -T -e APP_ENV=test app php bin/console doctrine:schema:create --em=$em
           done
 
       - name: Load fixtures
@@ -120,30 +120,6 @@ jobs:
             PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
             docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
               exec -T app php bin/console doctrine:fixtures:custom-loader --no-interaction --em=$em --group=$em
-            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} APP_ENV=test \
-            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-              exec -T app php bin/console doctrine:fixtures:custom-loader --no-interaction --em=$em --group=$em
-          done
-
-      - name: Set up test databases
-        if: steps.teardown.outputs.fresh == 'true'
-        run: |
-          for em in main blog payments; do
-            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
-            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-              exec -T -e app php bin/console doctrine:database:create --if-not-exists --connection=$em
-            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
-            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-              exec -T -e APP_ENV=test app php bin/console doctrine:database:create --if-not-exists --connection=$em
-            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
-            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-              exec -T -e app php bin/console doctrine:schema:create --em=$em
-            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
-            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-              exec -T -e APP_ENV=test app php bin/console doctrine:schema:create --em=$em
-            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
-            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-              exec -T -e app php bin/console doctrine:fixtures:custom-loader --no-interaction --em=$em --group=$em
             PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
             docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
               exec -T -e APP_ENV=test app php bin/console doctrine:fixtures:custom-loader --no-interaction --em=$em --group=$em

@@ -59,7 +59,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: staging_pr${PR_NUMBER}_main
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready -U user"]
       interval: 5s
       timeout: 5s
       retries: 20
