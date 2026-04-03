@@ -27,34 +27,48 @@ final class PaymentCrudSymfonyController
         private readonly RequestStack $requestStack
     ) {}
 
-    private function fill( Payment $payment, Request $request ): void
+    /** @return string[] */
+    private function fill( Payment $payment, Request $request ): array
     {
-        $r    = $request->request;
-        $str  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? $v : null;
-        $int  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (int) $v : null;
-        $flt  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (float) $v : null;
-        $bool = static fn( string $k ) => match ( $r->get( $k ) ) { '1' => true, '0' => false, default => null };
-        $dt   = static fn( string $k ) => ( $v = $r->get( $k ) ) ? new DateTime( $v ) : null;
+        $r           = $request->request;
+        $parseErrors = [];
+        $str         = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? $v : null;
+        $int         = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (int) $v : null;
+        $flt         = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (float) $v : null;
+        $bool        = static fn( string $k ) => match ( $r->get( $k ) ) { '1' => true, '0' => false, default => null };
+        $dt          = function( string $k ) use ( $r, &$parseErrors ): ?DateTime {
+            if ( !( $v = $r->get( $k ) ) ) return null;
+            try { return new DateTime( $v ); }
+            catch ( \Exception ) { $parseErrors[ $k ] = sprintf( 'Invalid date/time value for "%s".', $k ); return null; }
+        };
         $json = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? ( json_decode( $v, true ) ?: null ) : null;
         $csv  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null
             ? array_values( array_filter( array_map( 'trim', explode( ',', $v ) ) ) ) : null;
 
+        $colTime = null;
+        if ( $v = $r->get( 'colTime' ) ) {
+            try { $colTime = new DateTime( '1970-01-01 ' . $v ); }
+            catch ( \Exception ) { $parseErrors['colTime'] = 'Invalid time value for "colTime".'; }
+        }
+
         $payment->setAmount( $str( 'amount' ) )
-                ->setCurrency( strtoupper( $r->get( 'currency', 'USD' ) ) )
-                ->setStatus( $r->get( 'status', 'pending' ) )
-                ->setColText( $str( 'colText' ) )
-                ->setColInteger( $int( 'colInteger' ) )
-                ->setColSmallint( $int( 'colSmallint' ) )
-                ->setColBigint( $str( 'colBigint' ) )
-                ->setColBoolean( $bool( 'colBoolean' ) )
-                ->setColDecimal( $str( 'colDecimal' ) )
-                ->setColFloat( $flt( 'colFloat' ) )
-                ->setColDate( $dt( 'colDate' ) )
-                ->setColTime( ( $v = $r->get( 'colTime' ) ) ? new DateTime( '1970-01-01 ' . $v ) : null )
-                ->setColJson( $json( 'colJson' ) )
-                ->setColGuid( $str( 'colGuid' ) )
-                ->setColArray( $json( 'colArray' ) )
-                ->setColSimpleArray( $csv( 'colSimpleArray' ) );
+            ->setCurrency( strtoupper( $r->get( 'currency', 'USD' ) ) )
+            ->setStatus( $r->get( 'status', 'pending' ) )
+            ->setColText( $str( 'colText' ) )
+            ->setColInteger( $int( 'colInteger' ) )
+            ->setColSmallint( $int( 'colSmallint' ) )
+            ->setColBigint( $str( 'colBigint' ) )
+            ->setColBoolean( $bool( 'colBoolean' ) )
+            ->setColDecimal( $str( 'colDecimal' ) )
+            ->setColFloat( $flt( 'colFloat' ) )
+            ->setColDate( $dt( 'colDate' ) )
+            ->setColTime( $colTime )
+            ->setColJson( $json( 'colJson' ) )
+            ->setColGuid( $str( 'colGuid' ) )
+            ->setColArray( $json( 'colArray' ) )
+            ->setColSimpleArray( $csv( 'colSimpleArray' ) );
+
+        return $parseErrors;
     }
 
 
@@ -87,13 +101,13 @@ final class PaymentCrudSymfonyController
             ] ) );
         }
 
-        $payment = new Payment();
-        $this->fill( $payment, $request );
+        $payment     = new Payment();
+        $parseErrors = $this->fill( $payment, $request );
 
-        if ( $payment->validate() === false ) {
+        if ( $parseErrors !== [] || $payment->validate() === false ) {
             return new Response( $this->twig->render( 'crud/payments/form.html.twig', [
                 'payment'   => null,
-                'errors'    => array_values( $payment->getValidationErrors() ),
+                'errors'    => array_values( array_merge( $parseErrors, $payment->getValidationErrors() ) ),
                 'form_data' => $request->request->all(),
             ] ) );
         }
@@ -137,12 +151,12 @@ final class PaymentCrudSymfonyController
             ] ) );
         }
 
-        $this->fill( $payment, $request );
+        $parseErrors = $this->fill( $payment, $request );
 
-        if ( $payment->validate() === false ) {
+        if ( $parseErrors !== [] || $payment->validate() === false ) {
             return new Response( $this->twig->render( 'crud/payments/form.html.twig', [
                 'payment'   => $payment,
-                'errors'    => array_values( $payment->getValidationErrors() ),
+                'errors'    => array_values( array_merge( $parseErrors, $payment->getValidationErrors() ) ),
                 'form_data' => $request->request->all(),
             ] ) );
         }

@@ -27,33 +27,47 @@ final class UserCrudSymfonyController
         private readonly RequestStack $requestStack
     ) {}
 
-    private function fill( User $user, Request $request ): void
+    /** @return string[] */
+    private function fill( User $user, Request $request ): array
     {
-        $r    = $request->request;
-        $str  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? $v : null;
-        $int  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (int) $v : null;
-        $flt  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (float) $v : null;
-        $bool = static fn( string $k ) => match ( $r->get( $k ) ) { '1' => true, '0' => false, default => null };
-        $dt   = static fn( string $k ) => ( $v = $r->get( $k ) ) ? new DateTime( $v ) : null;
+        $r           = $request->request;
+        $parseErrors = [];
+        $str         = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? $v : null;
+        $int         = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (int) $v : null;
+        $flt         = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (float) $v : null;
+        $bool        = static fn( string $k ) => match ( $r->get( $k ) ) { '1' => true, '0' => false, default => null };
+        $dt          = function( string $k ) use ( $r, &$parseErrors ): ?DateTime {
+            if ( !( $v = $r->get( $k ) ) ) return null;
+            try { return new DateTime( $v ); }
+            catch ( \Exception ) { $parseErrors[ $k ] = sprintf( 'Invalid date/time value for "%s".', $k ); return null; }
+        };
         $json = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? ( json_decode( $v, true ) ?: null ) : null;
         $csv  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null
             ? array_values( array_filter( array_map( 'trim', explode( ',', $v ) ) ) ) : null;
 
+        $colTime = null;
+        if ( $v = $r->get( 'colTime' ) ) {
+            try { $colTime = new DateTime( '1970-01-01 ' . $v ); }
+            catch ( \Exception ) { $parseErrors['colTime'] = 'Invalid time value for "colTime".'; }
+        }
+
         $user->setEmail( $r->get( 'email' ) )
-             ->setColText( $str( 'colText' ) )
-             ->setColInteger( $int( 'colInteger' ) )
-             ->setColSmallint( $int( 'colSmallint' ) )
-             ->setColBigint( $str( 'colBigint' ) )
-             ->setColBoolean( $bool( 'colBoolean' ) )
-             ->setColDecimal( $str( 'colDecimal' ) )
-             ->setColFloat( $flt( 'colFloat' ) )
-             ->setColDatetimetz( $dt( 'colDatetimetz' ) )
-             ->setColDate( $dt( 'colDate' ) )
-             ->setColTime( ( $v = $r->get( 'colTime' ) ) ? new DateTime( '1970-01-01 ' . $v ) : null )
-             ->setColJson( $json( 'colJson' ) )
-             ->setColGuid( $str( 'colGuid' ) )
-             ->setColArray( $json( 'colArray' ) )
-             ->setColSimpleArray( $csv( 'colSimpleArray' ) );
+            ->setColText( $str( 'colText' ) )
+            ->setColInteger( $int( 'colInteger' ) )
+            ->setColSmallint( $int( 'colSmallint' ) )
+            ->setColBigint( $str( 'colBigint' ) )
+            ->setColBoolean( $bool( 'colBoolean' ) )
+            ->setColDecimal( $str( 'colDecimal' ) )
+            ->setColFloat( $flt( 'colFloat' ) )
+            ->setColDatetimetz( $dt( 'colDatetimetz' ) )
+            ->setColDate( $dt( 'colDate' ) )
+            ->setColTime( $colTime )
+            ->setColJson( $json( 'colJson' ) )
+            ->setColGuid( $str( 'colGuid' ) )
+            ->setColArray( $json( 'colArray' ) )
+            ->setColSimpleArray( $csv( 'colSimpleArray' ) );
+
+        return $parseErrors;
     }
 
 
@@ -97,12 +111,12 @@ final class UserCrudSymfonyController
 
         $user = new User();
         $user->setPassword( $rawPassword );
-        $this->fill( $user, $request );
+        $parseErrors = $this->fill( $user, $request );
 
-        if ( $user->validate() === false ) {
+        if ( $parseErrors !== [] || $user->validate() === false ) {
             return new Response( $this->twig->render( 'crud/users/form.html.twig', [
                 'user'      => null,
-                'errors'    => array_values( $user->getValidationErrors() ),
+                'errors'    => array_values( array_merge( $parseErrors, $user->getValidationErrors() ) ),
                 'form_data' => $request->request->all(),
             ] ) );
         }
@@ -151,12 +165,12 @@ final class UserCrudSymfonyController
             $user->setPassword( $rawPassword );
         }
 
-        $this->fill( $user, $request );
+        $parseErrors = $this->fill( $user, $request );
 
-        if ( $user->validate() === false ) {
+        if ( $parseErrors !== [] || $user->validate() === false ) {
             return new Response( $this->twig->render( 'crud/users/form.html.twig', [
                 'user'      => $user,
-                'errors'    => array_values( $user->getValidationErrors() ),
+                'errors'    => array_values( array_merge( $parseErrors, $user->getValidationErrors() ) ),
                 'form_data' => $request->request->all(),
             ] ) );
         }

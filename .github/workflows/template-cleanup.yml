@@ -31,6 +31,7 @@ jobs:
 
           # Docker / staging infrastructure
           rm -f .dockerignore
+          rm -f staging-local.sh
           rm -f docker/Dockerfile
           rm -f docker/staging.Dockerfile
           rm -f docker/staging-entrypoint.sh
