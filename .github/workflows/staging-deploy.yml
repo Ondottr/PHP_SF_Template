@@ -77,16 +77,16 @@ jobs:
             -f docker/staging/docker-compose.yml \
             up -d --wait
 
-      - name: Grant MySQL/MariaDB user permission to create databases
+      - name: Create PR databases and grant scoped MySQL/MariaDB privileges
         run: |
           PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
           docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
             exec -T mysql mysql -uroot -prootpassword \
-            -e "GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+            -e "CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_main\`; CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_blog\`; CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_payments\`; GRANT ALL PRIVILEGES ON \`staging_pr${{ env.PR_NUMBER }}\\_%\`.* TO 'user'@'%'; FLUSH PRIVILEGES;"
           PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
           docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
             exec -T mariadb mariadb -uroot -prootpassword \
-            -e "GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+            -e "CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_main\`; CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_blog\`; CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_payments\`; GRANT ALL PRIVILEGES ON \`staging_pr${{ env.PR_NUMBER }}\\_%\`.* TO 'user'@'%'; FLUSH PRIVILEGES;"
 
       - name: Dump app logs on failure
         if: failure()
