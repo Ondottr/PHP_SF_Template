@@ -118,7 +118,7 @@ final class payment_form extends AbstractView { public function show(): void {
             <label for="colJson" class="form-label">colJson <small class="text-muted">(JSON)</small></label>
             <?php formTextarea( 'colJson', [ 0, 65535 ], 3, null, 'soft', false,
                 $fv( 'colJson', $payment?->getColJson() !== null ? json_encode( $payment->getColJson(), JSON_PRETTY_PRINT ) : null ),
-                '{"key": "value"}', [ 'form-control', 'font-monospace' ] ) ?>
+                htmlspecialchars('{"key": "value"}'), [ 'form-control', 'font-monospace' ] ) ?>
         </div>
         <div class="mb-3">
             <label for="colArray" class="form-label">colArray <small class="text-muted">(JSON array)</small></label>
