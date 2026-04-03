@@ -31,7 +31,7 @@ final class PostFactory extends PersistentObjectFactory
             'colFloat' => $faker->optional()->randomFloat(4, -1000, 1000),
             'colDate' => $faker->optional()->dateTimeBetween('-5 years', 'now'),
             'colTime' => $faker->optional(0.8)->dateTime(),
-            'colJson' => $faker->optional()->randomElements(['key' => $faker->word(), 'count' => $faker->randomDigit()]),
+            'colJson' => $faker->boolean() ? ['key' => $faker->word(), 'count' => $faker->randomDigit()] : null,
             'colBlob' => $faker->optional(0.5)->text(50),
             'colGuid' => $faker->optional()->uuid(),
             'colArray' => $faker->optional()->words(3),
