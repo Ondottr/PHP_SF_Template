@@ -16,7 +16,7 @@ jobs:
     env:
       PR_NUMBER: ${{ github.event.pull_request.number }}
       APP_IMAGE: php-sf-template:pr-${{ github.event.pull_request.number }}
-      STAGING_URL: https://pr-${{ github.event.pull_request.number }}.phpsf-staging.nations-original.eu
+      STAGING_URL: https://pr-${{ github.event.pull_request.number }}.phpsf-staging.nations-original.com
 
     steps:
       - name: Ensure nginx-proxy infrastructure is running
@@ -77,6 +77,17 @@ jobs:
             -f docker/staging/docker-compose.yml \
             up -d --wait
 
+      - name: Create PR databases and grant scoped MySQL/MariaDB privileges
+        run: |
+          PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
+          docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
+            exec -T mysql mysql -h 127.0.0.1 -uroot -prootpassword \
+            -e "CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_main\`; CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_blog\`; CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_payments\`; GRANT ALL PRIVILEGES ON \`staging_pr${{ env.PR_NUMBER }}\\_%\`.* TO 'user'@'%'; FLUSH PRIVILEGES;"
+          PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
+          docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
+            exec -T mariadb mariadb -h 127.0.0.1 -uroot -prootpassword \
+            -e "CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_main\`; CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_blog\`; CREATE DATABASE IF NOT EXISTS \`staging_pr${{ env.PR_NUMBER }}_payments\`; GRANT ALL PRIVILEGES ON \`staging_pr${{ env.PR_NUMBER }}\\_%\`.* TO 'user'@'%'; FLUSH PRIVILEGES;"
+
       - name: Dump app logs on failure
         if: failure()
         run: |
@@ -87,21 +98,32 @@ jobs:
       - name: Create databases and schemas
         if: steps.teardown.outputs.fresh == 'true'
         run: |
-          for em in main products payments; do
+          for em in main blog payments; do
             PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
             docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
               exec -T app php bin/console doctrine:database:create --if-not-exists --connection=$em
             PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
             docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
+              exec -T -e APP_ENV=test app php bin/console doctrine:database:create --if-not-exists --connection=$em
+            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
+            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
               exec -T app php bin/console doctrine:schema:create --em=$em
+            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
+            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
+              exec -T -e APP_ENV=test app php bin/console doctrine:schema:create --em=$em
           done
 
       - name: Load fixtures
         if: steps.teardown.outputs.fresh == 'true'
         run: |
-          PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
-          docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
-            exec -T app php bin/console doctrine:fixtures:load --no-interaction --em=main
+          for em in main blog payments; do
+            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
+            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
+              exec -T app php bin/console doctrine:fixtures:custom-loader --no-interaction --em=$em --group=$em
+            PR_NUMBER=${{ env.PR_NUMBER }} APP_IMAGE=${{ env.APP_IMAGE }} \
+            docker compose -p pr-${{ env.PR_NUMBER }} -f docker/staging/docker-compose.yml \
+              exec -T -e APP_ENV=test app php bin/console doctrine:fixtures:custom-loader --no-interaction --em=$em --group=$em
+          done
 
       - name: Inject SSH public key
         run: |
@@ -186,9 +208,9 @@ jobs:
       - name: Codeception — Unit
         run: |
           docker exec -e APP_ENV=test pr-${{ env.PR_NUMBER }}-app-1 \
-            vendor/bin/codecept run Unit
+            vendor/bin/codecept run Unit -v
 
       - name: Codeception — Functional
         run: |
           docker exec -e APP_ENV=test pr-${{ env.PR_NUMBER }}-app-1 \
-            vendor/bin/codecept run Functional
+            vendor/bin/codecept run Functional -v

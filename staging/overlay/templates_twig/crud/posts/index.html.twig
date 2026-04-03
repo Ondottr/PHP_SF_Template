@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Posts{% endblock %}
+
+{% block body %}
+<div class="container-fluid mt-4">
+
+    {% for msg in app.flashes('success') %}
+        <div class="alert alert-success">{{ msg }}</div>
+    {% endfor %}
+    {% for msg in app.flashes('danger') %}
+        <div class="alert alert-danger">{{ msg }}</div>
+    {% endfor %}
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Posts</h1>
+        <a href="{{ path('symfony_crud_post_create') }}" class="btn btn-primary">New Post</a>
+    </div>
+
+    <style>.cell-trunc { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }</style>
+
+    <div class="table-responsive">
+    <table class="table table-bordered table-hover table-sm" style="min-width: 1600px;">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Status</th>
+                <th>colInteger</th>
+                <th>colSmallint</th>
+                <th>colBigint</th>
+                <th>colBoolean</th>
+                <th>colDecimal</th>
+                <th>colFloat</th>
+                <th>colDate</th>
+                <th>colTime</th>
+                <th>colGuid</th>
+                <th>colJson</th>
+                <th>colArray</th>
+                <th>colSimpleArray</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+            <tr>
+                <td>{{ post.id }}</td>
+                <td class="cell-trunc" title="{{ post.title }}">{{ post.title }}</td>
+                <td class="cell-trunc" title="{{ post.content }}">{{ post.content }}</td>
+                <td>
+                    <span class="badge bg-{{ post.status == 'published' ? 'success' : (post.status == 'archived' ? 'secondary' : 'warning text-dark') }}">
+                        {{ post.status }}
+                    </span>
+                </td>
+                <td>{{ post.colInteger }}</td>
+                <td>{{ post.colSmallint }}</td>
+                <td>{{ post.colBigint }}</td>
+                <td>{{ post.colBoolean is null ? '' : (post.colBoolean ? 'true' : 'false') }}</td>
+                <td>{{ post.colDecimal }}</td>
+                <td>{{ post.colFloat }}</td>
+                <td>{{ post.colDate ? post.colDate|date('Y-m-d') : '' }}</td>
+                <td>{{ post.colTime ? post.colTime|date('H:i') : '' }}</td>
+                <td class="cell-trunc" title="{{ post.colGuid }}">{{ post.colGuid }}</td>
+                <td class="cell-trunc" title="{{ post.colJson ? post.colJson|json_encode : '' }}">{{ post.colJson ? post.colJson|json_encode : '' }}</td>
+                <td class="cell-trunc" title="{{ post.colArray ? post.colArray|json_encode : '' }}">{{ post.colArray ? post.colArray|json_encode : '' }}</td>
+                <td class="cell-trunc" title="{{ post.colSimpleArray ? post.colSimpleArray|join(', ') : '' }}">{{ post.colSimpleArray ? post.colSimpleArray|join(', ') : '' }}</td>
+                <td>{{ post.createdAt|date('Y-m-d H:i') }}</td>
+                <td class="text-nowrap">
+                    <a href="{{ path('symfony_crud_post_edit', {id: post.id}) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form method="POST" action="{{ path('symfony_crud_post_delete', {id: post.id}) }}" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('submit') }}">
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Delete this post?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="18" class="text-center text-muted">No posts found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+</div>
+{% endblock %}

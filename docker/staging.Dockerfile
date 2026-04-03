@@ -30,6 +30,10 @@ RUN --mount=type=cache,target=/root/.composer/cache \
 RUN --mount=type=cache,target=/root/.npm \
     npm ci && npm run build
 
+# Overlay staging example content (entities, CRUD, templates, tests, etc.) after
+# composer/npm so vendor patches in staging/overlay/vendor/ take effect last.
+RUN cp -r staging/overlay/. .
+
 RUN chmod +x docker/staging-entrypoint.sh
 
 EXPOSE 8000 22

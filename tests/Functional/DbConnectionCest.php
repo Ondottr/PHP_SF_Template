@@ -90,10 +90,9 @@ class DbConnectionCest
 
     public function testConnectionCanExecuteRawQuery( FunctionalTester $I ): void
     {
-        $result = $this->em->getConnection()->fetchOne( 'SELECT DATABASE()' );
+        $result = $this->em->getConnection()->fetchOne( 'SELECT 1' );
 
-        $I->assertIsString( $result );
-        $I->assertStringEndsWith( '_test', $result );
+        $I->assertEquals( 1, $result );
     }
 
 

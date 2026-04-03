@@ -7,7 +7,7 @@ services:
   app:
     image: ${APP_IMAGE}
     environment:
-      VIRTUAL_HOST: pr-${PR_NUMBER}.phpsf-staging.nations-original.eu
+      VIRTUAL_HOST: pr-${PR_NUMBER}.phpsf-staging.nations-original.com
       VIRTUAL_PORT: "8000"
       APP_ENV: dev
       APP_SECRET: staging_pr${PR_NUMBER}_secret
@@ -18,12 +18,12 @@ services:
       DATABASE_MAIN_PASSWORD: password
       DATABASE_MAIN_DBNAME: staging_pr${PR_NUMBER}_main
       DATABASE_MAIN_VERSION: "16.10"
-      DATABASE_PRODUCTS_HOST: mysql
-      DATABASE_PRODUCTS_PORT: "3306"
-      DATABASE_PRODUCTS_USER: user
-      DATABASE_PRODUCTS_PASSWORD: password
-      DATABASE_PRODUCTS_DBNAME: staging_pr${PR_NUMBER}_products
-      DATABASE_PRODUCTS_VERSION: "9.4.0"
+      DATABASE_BLOG_HOST: mysql
+      DATABASE_BLOG_PORT: "3306"
+      DATABASE_BLOG_USER: user
+      DATABASE_BLOG_PASSWORD: password
+      DATABASE_BLOG_DBNAME: staging_pr${PR_NUMBER}_blog
+      DATABASE_BLOG_VERSION: "9.4.0"
       DATABASE_PAYMENTS_HOST: mariadb
       DATABASE_PAYMENTS_PORT: "3306"
       DATABASE_PAYMENTS_USER: user
@@ -41,11 +41,9 @@ services:
         condition: service_healthy
       mariadb:
         condition: service_healthy
-      selenium:
-        condition: service_started
     mem_limit: 512m
     healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8000/ || exit 1"]
+      test: ["CMD-SHELL", "curl -fs http://localhost:8000/ -o /dev/null || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 24
@@ -73,12 +71,12 @@ services:
     image: mysql:9.4.0
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: staging_pr${PR_NUMBER}_products
+      MYSQL_DATABASE: staging_pr${PR_NUMBER}_blog
       MYSQL_USER: user
       MYSQL_PASSWORD: password
     command: --innodb-buffer-pool-size=64M --performance-schema=OFF
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "user", "--password=password"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "user", "--password=password"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -133,13 +131,6 @@ services:
       timeout: 10s
       retries: 20
     mem_limit: 256m
-    networks:
-      - internal
-
-  selenium:
-    image: selenium/standalone-firefox:latest
-    shm_size: 2g
-    mem_limit: 512m
     networks:
       - internal
 

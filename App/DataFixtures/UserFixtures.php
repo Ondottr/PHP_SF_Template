@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use PHP_SF\System\Interface\UserInterface;
 use PHP_SF\System\Kernel;
@@ -16,8 +17,11 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  * as long as it implements UserInterface.  Silently skips when the given ObjectManager
  * does not manage the User class (allows running --em for any connection without errors).
  */
-final class UserFixtures extends Fixture
+final class UserFixtures extends Fixture implements FixtureGroupInterface
 {
+
+    public static function getGroups(): array { return [ 'main' ]; }
+
 
     public function load( ObjectManager $manager ): void
     {

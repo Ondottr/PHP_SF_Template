@@ -11,6 +11,7 @@ modules:
         - Symfony:
             app_path: 'App'
             environment: 'test'
+            follow_redirects: false
 #        - Doctrine2:
 #            depends: Symfony
 #            cleanup: true
