@@ -1,0 +1,115 @@
+# Doctrine configuration
+#
+# WARNING: The default connection and entity manager are deliberately set to a non-functional
+# "dummy" placeholder. Any code that accidentally uses the default connection will fail fast
+# and loudly, forcing explicit use of the named connections.
+#
+# All database access MUST use explicitly named entity managers, e.g.:
+#   em('main'), em('blog'), em('payments')
+#
+# Run init.sh to add real connections and generate entity/repository directories.
+# If not, DO NOT change the default_connection or default_entity_manager, that WILL NOT WORK and will cause failures.
+
+doctrine:
+  dbal:
+    default_connection: dummy
+    connections:
+      dummy:
+        driver_class: PHP_SF\System\Doctrine\ForbiddenDriver
+      main:
+        driver: pdo_pgsql
+        host: '%env(DATABASE_MAIN_HOST)%'
+        port: '%env(int:DATABASE_MAIN_PORT)%'
+        user: '%env(DATABASE_MAIN_USER)%'
+        password: '%env(DATABASE_MAIN_PASSWORD)%'
+        dbname: '%env(DATABASE_MAIN_DBNAME)%'
+        server_version: '%env(DATABASE_MAIN_VERSION)%'
+        charset: utf8
+      blog:
+        driver: pdo_mysql
+        host: '%env(DATABASE_BLOG_HOST)%'
+        port: '%env(int:DATABASE_BLOG_PORT)%'
+        user: '%env(DATABASE_BLOG_USER)%'
+        password: '%env(DATABASE_BLOG_PASSWORD)%'
+        dbname: '%env(DATABASE_BLOG_DBNAME)%'
+        server_version: '%env(DATABASE_BLOG_VERSION)%'
+        charset: utf8
+        mapping_types:
+          enum: string
+      payments:
+        driver: pdo_mysql
+        host: '%env(DATABASE_PAYMENTS_HOST)%'
+        port: '%env(int:DATABASE_PAYMENTS_PORT)%'
+        user: '%env(DATABASE_PAYMENTS_USER)%'
+        password: '%env(DATABASE_PAYMENTS_PASSWORD)%'
+        dbname: '%env(DATABASE_PAYMENTS_DBNAME)%'
+        server_version: '%env(DATABASE_PAYMENTS_VERSION)%'
+        charset: utf8
+        mapping_types:
+          enum: string
+  orm:
+    default_entity_manager: dummy
+    auto_generate_proxy_classes: true
+    enable_lazy_ghost_objects: true
+    proxy_namespace: Proxies
+    entity_managers:
+      dummy:
+        connection: dummy
+        mappings:
+          Dummy:
+            is_bundle: false
+            type: attribute
+            dir: '%kernel.project_dir%/App/Entity/Dummy'
+            prefix: App\Entity\Dummy
+            alias: Dummy
+      main:
+        connection: main
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        mappings:
+          Main:
+            is_bundle: false
+            type: attribute
+            dir: '%kernel.project_dir%/App/Entity/Main'
+            prefix: App\Entity\Main
+            alias: Main
+      blog:
+        connection: blog
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        mappings:
+          Blog:
+            is_bundle: false
+            type: attribute
+            dir: '%kernel.project_dir%/App/Entity/Blog'
+            prefix: App\Entity\Blog
+            alias: Blog
+        quote_strategy: App\Doctrine\UnqualifiedTableQuoteStrategy
+      payments:
+        connection: payments
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        mappings:
+          Payments:
+            is_bundle: false
+            type: attribute
+            dir: '%kernel.project_dir%/App/Entity/Payments'
+            prefix: App\Entity\Payments
+            alias: Payments
+        quote_strategy: App\Doctrine\UnqualifiedTableQuoteStrategy
+when@prod:
+  doctrine:
+    orm:
+      auto_generate_proxy_classes: false
+      proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
+parameters:
+  app.db_main_test_dbname: '%env(DATABASE_MAIN_DBNAME)%_test'
+  app.db_blog_test_dbname: '%env(DATABASE_BLOG_DBNAME)%_test'
+  app.db_payments_test_dbname: '%env(DATABASE_PAYMENTS_DBNAME)%_test'
+when@test:
+  doctrine:
+    dbal:
+      connections:
+        main:
+          dbname: '%env(default:app.db_main_test_dbname:DATABASE_MAIN_DBNAME_TEST)%'
+        blog:
+          dbname: '%env(default:app.db_blog_test_dbname:DATABASE_BLOG_DBNAME_TEST)%'
+        payments:
+          dbname: '%env(default:app.db_payments_test_dbname:DATABASE_PAYMENTS_DBNAME_TEST)%'
