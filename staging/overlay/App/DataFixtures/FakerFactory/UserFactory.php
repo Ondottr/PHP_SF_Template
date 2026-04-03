@@ -32,7 +32,10 @@ final class UserFactory extends PersistentObjectFactory
             'colDatetimetz' => $faker->optional()->dateTimeBetween('-5 years', 'now'),
             'colDate' => $faker->optional()->dateTimeBetween('-5 years', 'now'),
             'colTime' => $faker->optional(0.8)->dateTime(),
-            'colJson' => $faker->optional()->randomElements(['role' => $faker->word(), 'theme' => $faker->colorName()]),
+            'colJson' => $faker->boolean() ? [
+                'role' => $faker->word(),
+                'theme' => $faker->colorName(),
+            ] : null,
             'colBlob' => $faker->optional(0.5)->text(50),
             'colGuid' => $faker->optional()->uuid(),
             'colArray' => $faker->optional()->words(3),
