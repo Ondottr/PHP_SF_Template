@@ -116,8 +116,8 @@ final class PaymentCrudCest
 
     public function storeCreatesEntityAndRedirectsToList( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/payments/create', [
-            '_token'   => $this->csrfToken( $I ),
+        $I->amOnPage( '/symfony/crud/payments/create' );
+        $I->submitForm( 'form', [
             'amount'   => '99.99',
             'currency' => 'EUR',
             'status'   => 'pending',
@@ -141,8 +141,8 @@ final class PaymentCrudCest
 
     public function storeInvalidDataRendersFormWithErrors( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/payments/create', [
-            '_token'   => $this->csrfToken( $I ),
+        $I->amOnPage( '/symfony/crud/payments/create' );
+        $I->submitForm( 'form', [
             'amount'   => '-5',
             'currency' => 'TOOLONG',
             'status'   => 'pending',
@@ -154,7 +154,8 @@ final class PaymentCrudCest
 
     public function storeWithInvalidCsrfTokenShowsError( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/payments/create', [
+        $I->amOnPage( '/symfony/crud/payments/create' );
+        $I->submitForm( 'form', [
             '_token'   => 'invalid-csrf-token',
             'amount'   => '99.99',
             'currency' => 'USD',
@@ -187,8 +188,8 @@ final class PaymentCrudCest
 
     public function updateSavesChangesAndRedirectsToList( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/payments/' . $this->entityId . '/edit', [
-            '_token'   => $this->csrfToken( $I ),
+        $I->amOnPage( '/symfony/crud/payments/' . $this->entityId . '/edit' );
+        $I->submitForm( 'form', [
             'amount'   => '149.99',
             'currency' => 'USD',
             'status'   => 'completed',
@@ -205,8 +206,8 @@ final class PaymentCrudCest
 
     public function updateInvalidDataRendersFormWithErrors( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/payments/' . $this->entityId . '/edit', [
-            '_token'   => $this->csrfToken( $I ),
+        $I->amOnPage( '/symfony/crud/payments/' . $this->entityId . '/edit' );
+        $I->submitForm( 'form', [
             'amount'   => '-1',
             'currency' => 'USD',
             'status'   => 'pending',
@@ -221,7 +222,7 @@ final class PaymentCrudCest
 
     public function deleteRemovesEntityAndRedirectsToList( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/payments/' . $this->entityId . '/delete', [
+        $I->sendAjaxPostRequest( '/symfony/crud/payments/' . $this->entityId . '/delete', [
             '_token' => $this->csrfToken( $I ),
         ] );
 
@@ -235,7 +236,7 @@ final class PaymentCrudCest
 
     public function deleteNonExistentEntityRedirects( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/payments/999999/delete', [
+        $I->sendAjaxPostRequest( '/symfony/crud/payments/999999/delete', [
             '_token' => $this->csrfToken( $I ),
         ] );
 

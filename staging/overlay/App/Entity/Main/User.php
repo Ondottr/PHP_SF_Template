@@ -49,7 +49,7 @@ class User extends AbstractEntity implements UserInterface
     protected ?int $colSmallint = null;
 
     /** @var int|string|null Doctrine returns bigint as string to avoid overflow */
-    #[Assert\Type( type: 'numeric' )]
+    #[Assert\Regex( pattern: '/^-?\d+$/' )]
     #[TranslatablePropertyName( 'Big Integer' )]
     #[ORM\Column( type: 'bigint', nullable: true )]
     protected int|string|null $colBigint = null;

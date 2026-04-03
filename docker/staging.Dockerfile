@@ -19,10 +19,6 @@ WORKDIR /app
 
 COPY . .
 
-# Overlay staging example content (entities, CRUD, templates, tests, etc.)
-# These files live in staging/overlay/ to keep master clean.
-RUN cp -r staging/overlay/. .
-
 RUN cp config/constants.example.php config/constants.php \
     && sed -i "s/const SERVER_IP = '127.0.0.1'/const SERVER_IP = '${SERVER_IP}'/" config/constants.php \
     && cp .env.example .env \
@@ -33,6 +29,10 @@ RUN --mount=type=cache,target=/root/.composer/cache \
 
 RUN --mount=type=cache,target=/root/.npm \
     npm ci && npm run build
+
+# Overlay staging example content (entities, CRUD, templates, tests, etc.) after
+# composer/npm so vendor patches in staging/overlay/vendor/ take effect last.
+RUN cp -r staging/overlay/. .
 
 RUN chmod +x docker/staging-entrypoint.sh
 

@@ -117,8 +117,8 @@ final class UserCrudCest
     {
         $email = 'symcreate-' . uniqid() . '@example.com';
 
-        $I->sendPost( '/symfony/crud/users/create', [
-            '_token'   => $this->csrfToken( $I ),
+        $I->amOnPage( '/symfony/crud/users/create' );
+        $I->submitForm( 'form', [
             'email'    => $email,
             'password' => 'TestPass123',
         ] );
@@ -137,8 +137,8 @@ final class UserCrudCest
 
     public function storeInvalidDataRendersFormWithErrors( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/users/create', [
-            '_token'   => $this->csrfToken( $I ),
+        $I->amOnPage( '/symfony/crud/users/create' );
+        $I->submitForm( 'form', [
             'email'    => 'not-a-valid-email',
             'password' => 'TestPass123',
         ] );
@@ -149,7 +149,8 @@ final class UserCrudCest
 
     public function storeWithInvalidCsrfTokenShowsError( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/users/create', [
+        $I->amOnPage( '/symfony/crud/users/create' );
+        $I->submitForm( 'form', [
             '_token'   => 'invalid-csrf-token',
             'email'    => 'valid@example.com',
             'password' => 'TestPass123',
@@ -183,8 +184,8 @@ final class UserCrudCest
     {
         $newEmail = 'symupdated-' . uniqid() . '@example.com';
 
-        $I->sendPost( '/symfony/crud/users/' . $this->entityId . '/edit', [
-            '_token'   => $this->csrfToken( $I ),
+        $I->amOnPage( '/symfony/crud/users/' . $this->entityId . '/edit' );
+        $I->submitForm( 'form', [
             'email'    => $newEmail,
             'password' => '',
         ] );
@@ -200,8 +201,8 @@ final class UserCrudCest
 
     public function updateInvalidDataRendersFormWithErrors( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/users/' . $this->entityId . '/edit', [
-            '_token'   => $this->csrfToken( $I ),
+        $I->amOnPage( '/symfony/crud/users/' . $this->entityId . '/edit' );
+        $I->submitForm( 'form', [
             'email'    => 'not-a-valid-email',
             'password' => '',
         ] );
@@ -219,10 +220,12 @@ final class UserCrudCest
             '_token' => $this->csrfToken( $I ),
         ] );
 
-        $I->seeInCurrentUrl( '/symfony/crud/users' );
+        $I->seeResponseCodeIsRedirection();
+        $I->followRedirect();
+        $I->seeCurrentUrlContains( '/symfony/crud/users' );
 
         $this->em->clear();
-        $I->assertNull($this->em->find(User::class, $this->entityId));
+        $I->assertNull( $this->em->find( User::class, $this->entityId ) );
     }
 
 }

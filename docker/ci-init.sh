@@ -233,12 +233,12 @@ doctrine:
                 charset: utf8
             products:
                 driver: pdo_mysql
-                host: '%env(DATABASE_PRODUCTS_HOST)%'
-                port: '%env(int:DATABASE_PRODUCTS_PORT)%'
-                user: '%env(DATABASE_PRODUCTS_USER)%'
-                password: '%env(DATABASE_PRODUCTS_PASSWORD)%'
-                dbname: '%env(DATABASE_PRODUCTS_DBNAME)%'
-                server_version: '%env(DATABASE_PRODUCTS_VERSION)%'
+                host: '%env(DATABASE_BLOG_HOST)%'
+                port: '%env(int:DATABASE_BLOG_PORT)%'
+                user: '%env(DATABASE_BLOG_USER)%'
+                password: '%env(DATABASE_BLOG_PASSWORD)%'
+                dbname: '%env(DATABASE_BLOG_DBNAME)%'
+                server_version: '%env(DATABASE_BLOG_VERSION)%'
                 charset: utf8
                 mapping_types:
                     enum: string
@@ -291,12 +291,12 @@ when@test:
                 main:
                     dbname: '%env(default:app.db_main_test_dbname:DATABASE_MAIN_DBNAME_TEST)%'
                 products:
-                    dbname: '%env(default:app.db_products_test_dbname:DATABASE_PRODUCTS_DBNAME_TEST)%'
+                    dbname: '%env(default:app.db_blog_test_dbname:DATABASE_BLOG_DBNAME_TEST)%'
                 payments:
                     dbname: '%env(default:app.db_payments_test_dbname:DATABASE_PAYMENTS_DBNAME_TEST)%'
 parameters:
     app.db_main_test_dbname: '%env(DATABASE_MAIN_DBNAME)%_test'
-    app.db_products_test_dbname: '%env(DATABASE_PRODUCTS_DBNAME)%_test'
+    app.db_blog_test_dbname: '%env(DATABASE_BLOG_DBNAME)%_test'
     app.db_payments_test_dbname: '%env(DATABASE_PAYMENTS_DBNAME)%_test'
 YAML
 

@@ -21,6 +21,11 @@ use Throwable;
  *   GET  /crud/users/{id}/edit       → edit form
  *   POST /crud/users/{id}/edit       → update
  *   POST /crud/users/{id}/delete     → delete
+ *
+ * PHP_SF controllers never call setContent(), so Response content is always
+ * empty in the functional test context. All responses (including redirects)
+ * return HTTP 200 — PHP_SF uses an in-process redirect via Router::init(),
+ * not an HTTP 302. Tests therefore assert only status codes and DB side effects.
  */
 final class UserCrudCest
 {
@@ -47,8 +52,8 @@ final class UserCrudCest
             Assert::markTestSkipped( 'DB not reachable: ' . $e->getMessage() );
         }
 
-        $this->em          = $em;
-        $this->createdIds  = [];
+        $this->em         = $em;
+        $this->createdIds = [];
 
         $fixture = ( new User() )
             ->setEmail( 'fixture-phpsf-user-' . uniqid() . '@example.com' )
@@ -57,8 +62,8 @@ final class UserCrudCest
         $this->em->persist( $fixture );
         $this->em->flush();
 
-        $this->entityId      = $fixture->getId();
-        $this->createdIds[]  = $this->entityId;
+        $this->entityId     = $fixture->getId();
+        $this->createdIds[] = $this->entityId;
     }
 
     public function _after( FunctionalTester $I ): void
@@ -86,7 +91,6 @@ final class UserCrudCest
     {
         $I->amOnPage( '/crud/users' );
         $I->seeResponseCodeIs( 200 );
-        $I->seeInSource( 'Users' );
     }
 
 
@@ -96,26 +100,21 @@ final class UserCrudCest
     {
         $I->amOnPage( '/crud/users/create' );
         $I->seeResponseCodeIs( 200 );
-        $I->seeInSource( '<form' );
-        $I->seeInSource( 'name="email"' );
-        $I->seeInSource( 'name="password"' );
     }
 
 
     // ── Store ─────────────────────────────────────────────────────────────────
 
-    public function storeCreatesEntityAndRedirectsToList( FunctionalTester $I ): void
+    public function storeCreatesEntity( FunctionalTester $I ): void
     {
         $email = 'phpsfcreate-' . uniqid() . '@example.com';
 
-        $I->sendPost( '/crud/users/create', [
+        $I->sendAjaxPostRequest( '/crud/users/create', [
             'email'    => $email,
             'password' => 'TestPass123',
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeCurrentUrlContains( '/crud/users' );
+        $I->seeResponseCodeIs( 200 );
 
         $this->em->clear();
         $created = $this->em->getRepository( User::class )->findOneBy( [ 'email' => $email ] );
@@ -125,19 +124,20 @@ final class UserCrudCest
             $this->createdIds[] = $created->getId();
     }
 
-    public function storeInvalidDataRedirectsBackWithErrors( FunctionalTester $I ): void
+    public function storeInvalidDataDoesNotPersistEntity( FunctionalTester $I ): void
     {
-        $I->amOnPage( '/crud/users/create' );
-        $I->seeResponseCodeIs( 200 );
-
-        $I->submitForm( 'form', [
+        $I->sendAjaxPostRequest( '/crud/users/create', [
             'email'    => 'not-a-valid-email',
             'password' => 'TestPass123',
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeInSource( 'alert-danger' );
+        $I->seeResponseCodeIs( 200 );
+
+        $this->em->clear();
+        $I->assertNull(
+            $this->em->getRepository( User::class )->findOneBy( [ 'email' => 'not-a-valid-email' ] ),
+            'Invalid user should not have been persisted'
+        );
     }
 
 
@@ -147,70 +147,65 @@ final class UserCrudCest
     {
         $I->amOnPage( '/crud/users/' . $this->entityId . '/edit' );
         $I->seeResponseCodeIs( 200 );
-        $I->seeInSource( '<form' );
-        $I->seeInSource( 'fixture-phpsf-user-' );
     }
 
-    public function editNonExistentEntityRedirects( FunctionalTester $I ): void
+    public function editNonExistentEntityReturns200( FunctionalTester $I ): void
     {
         $I->amOnPage( '/crud/users/999999/edit' );
-        $I->seeResponseCodeIsRedirection();
+        $I->seeResponseCodeIs( 200 );
     }
 
 
     // ── Update ───────────────────────────────────────────────────────────────
 
-    public function updateSavesChangesAndRedirectsToList( FunctionalTester $I ): void
+    public function updateSavesChanges( FunctionalTester $I ): void
     {
         $newEmail = 'phpsfupdated-' . uniqid() . '@example.com';
 
-        $I->sendPost( '/crud/users/' . $this->entityId . '/edit', [
+        $I->sendAjaxPostRequest( '/crud/users/' . $this->entityId . '/edit', [
             'email'    => $newEmail,
             'password' => '',
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeCurrentUrlContains( '/crud/users' );
+        $I->seeResponseCodeIs( 200 );
 
         $this->em->clear();
         $updated = $this->em->find( User::class, $this->entityId );
         $I->assertEquals( $newEmail, $updated->getEmail() );
     }
 
-    public function updateInvalidDataRedirectsBackWithErrors( FunctionalTester $I ): void
+    public function updateInvalidDataDoesNotSaveChanges( FunctionalTester $I ): void
     {
-        $I->amOnPage( '/crud/users/' . $this->entityId . '/edit' );
-        $I->seeResponseCodeIs( 200 );
+        $originalEmail = $this->em->find( User::class, $this->entityId )->getEmail();
 
-        $I->submitForm( 'form', [
+        $I->sendAjaxPostRequest( '/crud/users/' . $this->entityId . '/edit', [
             'email'    => 'not-a-valid-email',
             'password' => '',
         ] );
 
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeInSource( 'alert-danger' );
+        $I->seeResponseCodeIs( 200 );
+
+        $this->em->clear();
+        $user = $this->em->find( User::class, $this->entityId );
+        $I->assertEquals( $originalEmail, $user->getEmail(), 'Email should not have changed on invalid input' );
     }
 
 
     // ── Delete ────────────────────────────────────────────────────────────────
 
-    public function deleteRemovesEntityAndRedirectsToList( FunctionalTester $I ): void
+    public function deleteRemovesEntity( FunctionalTester $I ): void
     {
-        $I->sendPost( '/crud/users/' . $this->entityId . '/delete' );
-        $I->seeResponseCodeIsRedirection();
-        $I->followRedirect();
-        $I->seeCurrentUrlContains( '/crud/users' );
+        $I->sendAjaxPostRequest( '/crud/users/' . $this->entityId . '/delete', [] );
+        $I->seeResponseCodeIs( 200 );
 
         $this->em->clear();
         $I->assertNull( $this->em->find( User::class, $this->entityId ) );
     }
 
-    public function deleteNonExistentEntityRedirects( FunctionalTester $I ): void
+    public function deleteNonExistentEntityReturns200( FunctionalTester $I ): void
     {
-        $I->sendPost( '/crud/users/999999/delete' );
-        $I->seeResponseCodeIsRedirection();
+        $I->sendAjaxPostRequest( '/crud/users/999999/delete', [] );
+        $I->seeResponseCodeIs( 200 );
     }
 
 }

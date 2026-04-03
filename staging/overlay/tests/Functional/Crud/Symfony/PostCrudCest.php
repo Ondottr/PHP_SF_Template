@@ -118,8 +118,8 @@ final class PostCrudCest
     {
         $title = 'symcreate-' . uniqid();
 
-        $I->sendPost( '/symfony/crud/posts/create', [
-            '_token'  => $this->csrfToken( $I ),
+        $I->amOnPage( '/symfony/crud/posts/create' );
+        $I->submitForm( 'form', [
             'title'   => $title,
             'content' => 'Test body',
             'status'  => 'draft',
@@ -139,8 +139,8 @@ final class PostCrudCest
 
     public function storeInvalidDataRendersFormWithErrors( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/posts/create', [
-            '_token' => $this->csrfToken( $I ),
+        $I->amOnPage( '/symfony/crud/posts/create' );
+        $I->submitForm( 'form', [
             'title'  => '',
             'status' => 'invalid-status',
         ] );
@@ -151,7 +151,8 @@ final class PostCrudCest
 
     public function storeWithInvalidCsrfTokenShowsError( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/posts/create', [
+        $I->amOnPage( '/symfony/crud/posts/create' );
+        $I->submitForm( 'form', [
             '_token' => 'invalid-csrf-token',
             'title'  => 'Valid Title',
             'status' => 'draft',
@@ -185,8 +186,8 @@ final class PostCrudCest
     {
         $newTitle = 'symupdated-' . uniqid();
 
-        $I->sendPost( '/symfony/crud/posts/' . $this->entityId . '/edit', [
-            '_token'  => $this->csrfToken( $I ),
+        $I->amOnPage( '/symfony/crud/posts/' . $this->entityId . '/edit' );
+        $I->submitForm( 'form', [
             'title'   => $newTitle,
             'content' => 'Updated content',
             'status'  => 'published',
@@ -203,8 +204,8 @@ final class PostCrudCest
 
     public function updateInvalidDataRendersFormWithErrors( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/posts/' . $this->entityId . '/edit', [
-            '_token' => $this->csrfToken( $I ),
+        $I->amOnPage( '/symfony/crud/posts/' . $this->entityId . '/edit' );
+        $I->submitForm( 'form', [
             'title'  => '',
             'status' => 'draft',
         ] );
@@ -218,7 +219,7 @@ final class PostCrudCest
 
     public function deleteRemovesEntityAndRedirectsToList( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/posts/' . $this->entityId . '/delete', [
+        $I->sendAjaxPostRequest( '/symfony/crud/posts/' . $this->entityId . '/delete', [
             '_token' => $this->csrfToken( $I ),
         ] );
 
@@ -232,7 +233,7 @@ final class PostCrudCest
 
     public function deleteNonExistentEntityRedirects( FunctionalTester $I ): void
     {
-        $I->sendPost( '/symfony/crud/posts/999999/delete', [
+        $I->sendAjaxPostRequest( '/symfony/crud/posts/999999/delete', [
             '_token' => $this->csrfToken( $I ),
         ] );
 

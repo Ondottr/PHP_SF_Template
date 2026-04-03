@@ -13,8 +13,8 @@ final class crud extends Middleware
 
     protected function result(): bool|JsonResponse|RedirectResponse
     {
-        $this->changeFooterTemplateClassName( header::class );
-        $this->changeHeaderTemplateClassName( footer::class );
+        $this->changeHeaderTemplateClassName( header::class );
+        $this->changeFooterTemplateClassName( footer::class );
 
         return true;
     }

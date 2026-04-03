@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ebf3a71ed88b3d7a625dd0fddd87439",
+    "content-hash": "c64518bcd1a4848f5c45902a3548e19e",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -274,16 +274,16 @@
         },
         {
             "name": "nations-original/php-simple-framework",
-            "version": "v1.1.6",
+            "version": "dev-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ondottr/PHP_SF_Platform.git",
-                "reference": "0a01d333416ca93c983d93d6904456ec56e5747c"
+                "reference": "f6a40f78d67b2981ba2447f17af4699912916167"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/0a01d333416ca93c983d93d6904456ec56e5747c",
-                "reference": "0a01d333416ca93c983d93d6904456ec56e5747c",
+                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/f6a40f78d67b2981ba2447f17af4699912916167",
+                "reference": "f6a40f78d67b2981ba2447f17af4699912916167",
                 "shasum": ""
             },
             "require": {
@@ -315,9 +315,9 @@
             "description": "A simple PHP framework for Nations Original.",
             "support": {
                 "issues": "https://github.com/Ondottr/PHP_SF_Platform/issues",
-                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v1.1.6"
+                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/dev"
             },
-            "time": "2026-04-02T08:45:07+00:00"
+            "time": "2026-04-03T09:14:18+00:00"
         },
         {
             "name": "nelmio/api-doc-bundle",
@@ -9567,16 +9567,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "12.5.15",
+            "version": "12.5.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "aeb6899ffdbbf4b4ff5e6b6ebb77b35c51bb6d9a"
+                "reference": "b2429f58ae75cae980b5bb9873abe4de6aac8b58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/aeb6899ffdbbf4b4ff5e6b6ebb77b35c51bb6d9a",
-                "reference": "aeb6899ffdbbf4b4ff5e6b6ebb77b35c51bb6d9a",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b2429f58ae75cae980b5bb9873abe4de6aac8b58",
+                "reference": "b2429f58ae75cae980b5bb9873abe4de6aac8b58",
                 "shasum": ""
             },
             "require": {
@@ -9645,7 +9645,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.15"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/12.5.16"
             },
             "funding": [
                 {
@@ -9653,7 +9653,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-03-31T06:41:33+00:00"
+            "time": "2026-04-03T05:26:42+00:00"
         },
         {
             "name": "psr/http-factory",
@@ -10418,12 +10418,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "61130731cdf896e60028ed82193a1bc3c50d032a"
+                "reference": "958bc6ccdb194912236265e4f36256e55bb0c9da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/61130731cdf896e60028ed82193a1bc3c50d032a",
-                "reference": "61130731cdf896e60028ed82193a1bc3c50d032a",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/958bc6ccdb194912236265e4f36256e55bb0c9da",
+                "reference": "958bc6ccdb194912236265e4f36256e55bb0c9da",
                 "shasum": ""
             },
             "conflict": {
@@ -10474,9 +10474,9 @@
                 "aureuserp/aureuserp": "<1.3.0.0-beta1",
                 "austintoddj/canvas": "<=3.4.2",
                 "auth0/auth0-php": ">=3.3,<=8.18",
-                "auth0/login": "<7.20",
-                "auth0/symfony": "<=5.5",
-                "auth0/wordpress": "<=5.4",
+                "auth0/login": "<=7.20",
+                "auth0/symfony": "<=5.7",
+                "auth0/wordpress": "<=5.5",
                 "automad/automad": "<2.0.0.0-alpha5",
                 "automattic/jetpack": "<9.8",
                 "avideo/avideo": "<=26",
@@ -11460,7 +11460,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-02T00:32:12+00:00"
+            "time": "2026-04-03T04:48:53+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -13625,8 +13625,9 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
+        "nations-original/php-simple-framework": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": true,
