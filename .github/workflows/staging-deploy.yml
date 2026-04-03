@@ -16,7 +16,7 @@ jobs:
     env:
       PR_NUMBER: ${{ github.event.pull_request.number }}
       APP_IMAGE: php-sf-template:pr-${{ github.event.pull_request.number }}
-      STAGING_URL: https://pr-${{ github.event.pull_request.number }}.phpsf-staging.nations-original.eu
+      STAGING_URL: https://pr-${{ github.event.pull_request.number }}.phpsf-staging.nations-original.com
 
     steps:
       - name: Ensure nginx-proxy infrastructure is running

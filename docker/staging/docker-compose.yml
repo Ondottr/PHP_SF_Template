@@ -7,7 +7,7 @@ services:
   app:
     image: ${APP_IMAGE}
     environment:
-      VIRTUAL_HOST: pr-${PR_NUMBER}.phpsf-staging.nations-original.eu
+      VIRTUAL_HOST: pr-${PR_NUMBER}.phpsf-staging.nations-original.com
       VIRTUAL_PORT: "8000"
       APP_ENV: dev
       APP_SECRET: staging_pr${PR_NUMBER}_secret
