@@ -21,11 +21,11 @@ PR_NUMBER=$PR_NUMBER APP_IMAGE=$APP_IMAGE $COMPOSE down -v --remove-orphans 2>/d
 echo "==> Starting stack"
 PR_NUMBER=$PR_NUMBER APP_IMAGE=$APP_IMAGE $COMPOSE up -d --wait
 
-echo "==> Granting MySQL/MariaDB user permission to create databases"
+echo "==> Granting MySQL/MariaDB user access to staging_pr${PR_NUMBER}_% databases"
 docker exec pr-$PR_NUMBER-mysql-1 mysql -uroot -prootpassword \
-  -e "GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+  -e "GRANT ALL PRIVILEGES ON \`staging_pr${PR_NUMBER}\\_%\`.* TO 'user'@'%'; FLUSH PRIVILEGES;"
 docker exec pr-$PR_NUMBER-mariadb-1 mariadb -uroot -prootpassword \
-  -e "GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+  -e "GRANT ALL PRIVILEGES ON \`staging_pr${PR_NUMBER}\\_%\`.* TO 'user'@'%'; FLUSH PRIVILEGES;"
 
 echo "==> Creating databases and schemas"
 for em in main blog payments; do
