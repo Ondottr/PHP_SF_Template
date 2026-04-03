@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2d84c1e7072a891d5d9939724a1d5bdd",
+    "content-hash": "e2c90201d4c8de24cca5e90145bb1661",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -274,16 +274,16 @@
         },
         {
             "name": "nations-original/php-simple-framework",
-            "version": "dev-dev",
+            "version": "v1.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ondottr/PHP_SF_Platform.git",
-                "reference": "f6a40f78d67b2981ba2447f17af4699912916167"
+                "reference": "c07cedf9cd3fd8548da5050602f9159311c09f9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/f6a40f78d67b2981ba2447f17af4699912916167",
-                "reference": "f6a40f78d67b2981ba2447f17af4699912916167",
+                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/c07cedf9cd3fd8548da5050602f9159311c09f9a",
+                "reference": "c07cedf9cd3fd8548da5050602f9159311c09f9a",
                 "shasum": ""
             },
             "require": {
@@ -315,9 +315,9 @@
             "description": "A simple PHP framework for Nations Original.",
             "support": {
                 "issues": "https://github.com/Ondottr/PHP_SF_Platform/issues",
-                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/dev"
+                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v1.1.8"
             },
-            "time": "2026-04-03T09:14:18+00:00"
+            "time": "2026-04-03T18:06:11+00:00"
         },
         {
             "name": "nelmio/api-doc-bundle",
@@ -13630,9 +13630,8 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": {
-        "nations-original/php-simple-framework": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": true,
