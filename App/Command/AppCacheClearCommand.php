@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use Memcached;
+use PHP_SF\System\Core\TemplatesCache;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,6 +45,8 @@ final class AppCacheClearCommand extends Command
             mca()->clear();
 
         rca()->clear();
+
+        TemplatesCache::clearCompiledFiles();
 
         s()->clear();
     }
