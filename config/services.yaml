@@ -31,12 +31,11 @@ services:
   App\:
     resource: '../App/'
     exclude:
-      - '../App/Http/Controllers'
-      - '../App/Http/Middlewares'
+      - '../App/Http/Controller'
+      - '../App/Http/Middleware'
       - '../App/DoctrineLifecycleCallbacks/'
       - '../App/DependencyInjection/'
       - '../App/Entity/'
-      - '../App/Router.php'
       - '../App/Kernel.php'
       - '../App/Helpers/'
       - '../App/EventListeners/'
