@@ -15,8 +15,7 @@ use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
  * makes doctrine:schema:update generate spurious CREATE + DROP pairs.
  *
  * This strategy omits the schema qualifier from generated DDL, relying on the
- * DBAL connection's dbname setting to target the correct database. The schema:
- * attribute is still required by EntityAttributesListener for validation purposes.
+ * DBAL connection's dbname setting to target the correct database.
  */
 final class UnqualifiedTableQuoteStrategy extends DefaultQuoteStrategy
 {
