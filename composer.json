@@ -119,14 +119,5 @@
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     }
   },
-  "type": "project",
-  "repositories": [
-    {
-      "type": "path",
-      "url": "./Platform",
-      "options": {
-        "symlink": true
-      }
-    }
-  ]
+  "type": "project"
 }
