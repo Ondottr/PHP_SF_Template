@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fa0f6a4616d82dc45d0d4cebe42f3d1e",
+    "content-hash": "2a32ef3a6d1528d74133b6106241da2e",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -274,11 +274,11 @@
         },
         {
             "name": "nations-original/php-simple-framework",
-            "version": "dev-master",
+            "version": "dev-dev",
             "dist": {
                 "type": "path",
                 "url": "./Platform",
-                "reference": "289c481277b42ecd259a058ae4d2937f4b07b624"
+                "reference": "adf7ed6bda5b7752aa7710586bbc729fa74f8c06"
             },
             "require": {
                 "php": "8.3.*"
@@ -13725,6 +13725,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "nations-original/php-simple-framework": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": true,
