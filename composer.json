@@ -32,7 +32,7 @@
     }
   },
   "license": "ISC",
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "name": "nations-original/php-simple-framework-template",
   "prefer-stable": true,
   "replace": {
@@ -57,7 +57,7 @@
     "ext-yaml": "*",
     "ext-zend-opcache": "*",
     "ext-zlib": "*",
-    "nations-original/php-simple-framework": "^1.1.0",
+    "nations-original/php-simple-framework": "dev-dev",
     "nelmio/api-doc-bundle": "^5.9",
     "composer/package-versions-deprecated": "1.11.99.5",
     "php-amqplib/php-amqplib": "^3.6",
@@ -85,6 +85,7 @@
     "symfony/security-csrf": "^7.0",
     "symfony/serializer": "^7.4",
     "symfony/string": "^7.4",
+    "symfony/translation": "^7.0",
     "symfony/twig-bundle": "^7.4",
     "symfony/validator": "^7.4",
     "symfony/web-link": "^7.4",
@@ -118,5 +119,14 @@
       "assets:install %PUBLIC_DIR%": "symfony-cmd"
     }
   },
-  "type": "project"
+  "type": "project",
+  "repositories": [
+    {
+      "type": "path",
+      "url": "./Platform",
+      "options": {
+        "symlink": true
+      }
+    }
+  ]
 }

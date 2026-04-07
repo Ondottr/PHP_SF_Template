@@ -16,7 +16,6 @@ use Symfony\Component\ErrorHandler\Debug;
  * @url https://www.php.net/manual/en/function.uopz-allow-exit
  */
 if (function_exists('uopz_allow_exit')) {
-    /* @noinspection PhpUndefinedFunctionInspection */
     uopz_allow_exit( /* Whether to allow the execution of exit opcodes or not. */ true);
 }
 
@@ -35,7 +34,7 @@ require_once __DIR__ . '/../config/eventListeners.php';
 (new Dotenv())->bootEnv(__DIR__ . '/../.env');
 
 $kernel = (new PHP_SF\Kernel())
-    ->addTranslationFiles(__DIR__ . '/../lang')
+    ->addTranslationFiles(__DIR__ . '/../translations')
     ->addControllers(__DIR__ . '/../App/Http/Controller')
     ->setHeaderTemplateClassName(header::class)
     ->setFooterTemplateClassName(footer::class)
