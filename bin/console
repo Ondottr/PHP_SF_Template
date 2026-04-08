@@ -33,10 +33,9 @@ foreach ($_SERVER['argv'] ?? [] as $i => $v) {
 // which re-loads .env and overwrites APP_ENV back to the value in that file.
 $_SERVER['APP_RUNTIME_OPTIONS']['disable_dotenv'] = true;
 
-$kernel = ( new PHP_SF\Kernel() )
-  ->addTranslationFiles( __DIR__ . '/../lang' )
-  ->addControllers( __DIR__ . '/../App/Http/Controller' )
-;
+$kernel = (new PHP_SF\Kernel())
+    ->addTranslationFiles(__DIR__.'/../translations')
+    ->addControllers(__DIR__.'/../App/Http/Controller');
 
 return function () {
     $kernel = Kernel::getInstance();
