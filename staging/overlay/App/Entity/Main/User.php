@@ -6,7 +6,6 @@ use App\Repository\Main\UserRepository;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
-use PHP_SF\System\Attributes\Validator\TranslatablePropertyName;
 use PHP_SF\System\Classes\Abstracts\AbstractEntity;
 use PHP_SF\System\Interface\UserInterface;
 use PHP_SF\System\Traits\ModelProperty\ModelPropertyCreatedAtTrait;
@@ -23,98 +22,80 @@ class User extends AbstractEntity implements UserInterface
     #[Assert\NotBlank]
     #[Assert\Email]
     #[Assert\Length( min: 6, max: 50 )]
-    #[TranslatablePropertyName( 'Email' )]
     #[ORM\Column( type: 'string', unique: true )]
     protected ?string $email = null;
 
     #[Assert\NotBlank]
-    #[TranslatablePropertyName( 'Password' )]
     #[ORM\Column( type: 'string' )]
     protected ?string $password = null;
 
     // --- PostgreSQL type coverage ---
 
-    #[TranslatablePropertyName( 'Text' )]
     #[ORM\Column( type: 'text', nullable: true )]
     protected ?string $colText = null;
 
     #[Assert\Range( min: -2147483648, max: 2147483647 )]
-    #[TranslatablePropertyName( 'Integer' )]
     #[ORM\Column( type: 'integer', nullable: true )]
     protected ?int $colInteger = null;
 
     #[Assert\Range( min: -32768, max: 32767 )]
-    #[TranslatablePropertyName( 'Small Integer' )]
     #[ORM\Column( type: 'smallint', nullable: true )]
     protected ?int $colSmallint = null;
 
     /** @var int|string|null Doctrine returns bigint as string to avoid overflow */
     #[Assert\Regex( pattern: '/^-?\d+$/' )]
-    #[TranslatablePropertyName( 'Big Integer' )]
     #[ORM\Column( type: 'bigint', nullable: true )]
     protected int|string|null $colBigint = null;
 
-    #[TranslatablePropertyName( 'Boolean' )]
     #[ORM\Column( type: 'boolean', nullable: true )]
     protected ?bool $colBoolean = null;
 
     /** @var string|null Returned as string to preserve decimal precision */
     #[Assert\Regex( pattern: '/^-?\d+(\.\d{1,4})?$/' )]
-    #[TranslatablePropertyName( 'Decimal' )]
     #[ORM\Column( type: 'decimal', precision: 15, scale: 4, nullable: true )]
     protected ?string $colDecimal = null;
 
     #[Assert\Type( type: 'float' )]
-    #[TranslatablePropertyName( 'Float' )]
     #[ORM\Column( type: 'float', nullable: true )]
     protected ?float $colFloat = null;
 
     /** PostgreSQL-only: TIMESTAMP WITH TIME ZONE */
     #[Assert\Type( type: DateTimeInterface::class )]
-    #[TranslatablePropertyName( 'Datetime with Timezone' )]
     #[ORM\Column( type: 'datetimetz', nullable: true )]
     protected ?DateTimeInterface $colDatetimetz = null;
 
     #[Assert\Type( type: DateTimeInterface::class )]
-    #[TranslatablePropertyName( 'Date' )]
     #[ORM\Column( type: 'date', nullable: true )]
     protected ?DateTimeInterface $colDate = null;
 
     #[Assert\Type( type: DateTimeInterface::class )]
-    #[TranslatablePropertyName( 'Time' )]
     #[ORM\Column( type: 'time', nullable: true )]
     protected ?DateTimeInterface $colTime = null;
 
     #[Assert\Type( type: 'array' )]
-    #[TranslatablePropertyName( 'JSON' )]
     #[ORM\Column( type: 'json', nullable: true )]
     protected ?array $colJson = null;
 
     /** PostgreSQL: BYTEA */
-    #[TranslatablePropertyName( 'Blob' )]
     #[ORM\Column( type: 'blob', nullable: true )]
     protected mixed $colBlob = null;
 
     /** PostgreSQL: UUID (native) */
     #[Assert\Uuid]
-    #[TranslatablePropertyName( 'GUID' )]
     #[ORM\Column( type: 'guid', nullable: true )]
     protected ?string $colGuid = null;
 
     /** PHP-serialized TEXT */
     #[Assert\Type( type: 'array' )]
-    #[TranslatablePropertyName( 'Array' )]
     #[ORM\Column( type: 'json', nullable: true )]
     protected ?array $colArray = null;
 
     /** Comma-separated TEXT */
     #[Assert\Type( type: 'array' )]
-    #[TranslatablePropertyName( 'Simple Array' )]
     #[ORM\Column( type: 'simple_array', nullable: true )]
     protected ?array $colSimpleArray = null;
 
     /** PostgreSQL: BYTEA (same underlying type as blob) */
-    #[TranslatablePropertyName( 'Binary' )]
     #[ORM\Column( type: 'binary', nullable: true )]
     protected mixed $colBinary = null;
 

@@ -25,7 +25,7 @@ $_ENV['APP_ENV']    ??= 'test';
 ( new Dotenv() )->bootEnv( __DIR__ . '/../.env' );
 
 $kernel = ( new PHP_SF\Kernel() )
-    ->addTranslationFiles( __DIR__ . '/../lang' )
+    ->addTranslationFiles( __DIR__ . '/../translations' )
     ->addControllers( __DIR__ . '/../App/Http/Controller' )
     ->setHeaderTemplateClassName( header::class )
     ->setFooterTemplateClassName( footer::class )
