@@ -32,7 +32,7 @@
     }
   },
   "license": "ISC",
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "name": "nations-original/php-simple-framework-template",
   "prefer-stable": true,
   "replace": {
