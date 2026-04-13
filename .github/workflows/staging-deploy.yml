@@ -138,7 +138,7 @@ jobs:
           echo "ip=$IP" >> $GITHUB_OUTPUT
 
       - name: Post staging URL comment
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const marker = '<!-- staging-deploy -->';
