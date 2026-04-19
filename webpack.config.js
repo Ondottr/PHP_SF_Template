@@ -79,7 +79,11 @@ module.exports = ( env ) => {
       } ),
       isProduction && new PurgeCSSPlugin( {
         paths: glob.sync(
-          [ `${__dirname}/templates/**/*.php`, `${__dirname}/src/**/*.js` ],
+          [
+            `${__dirname}/templates/**/*.php`,
+            `${__dirname}/templates_twig/**/*.twig`,
+            `${__dirname}/src/**/*.js`,
+          ],
           { nodir: true }
         ),
         safelist: {
