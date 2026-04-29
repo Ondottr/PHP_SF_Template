@@ -1,6 +1,5 @@
 <?php declare( strict_types=1 );
 
-use App\Entity\Main\User;
 use App\Kernel;
 use PHP_SF\Framework\Http\Middleware\auth;
 use PHP_SF\Framework\Http\Middleware\csrf;
@@ -39,7 +38,6 @@ $kernel = (new PHP_SF\Kernel())
     ->addEventSubscriberDirectory(__DIR__ . '/../App/EventSubscriber')
     ->setHeaderTemplateClassName(header::class)
     ->setFooterTemplateClassName(footer::class)
-    ->setApplicationUserClassName(User::class)
     ->addTemplatesDirectory('templates', 'App\View')
 ;
 
