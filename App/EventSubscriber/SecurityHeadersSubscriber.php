@@ -15,8 +15,9 @@ final class SecurityHeadersSubscriber implements EventSubscriberInterface
 
     public function onKernelResponse( ResponseEvent $event ): void
     {
-        if ( !$event->isMainRequest() )
+        if ( !$event->isMainRequest() ) {
             return;
+        }
 
         $response = $event->getResponse();
         $response->headers->set( 'X-Frame-Options', 'DENY' );
