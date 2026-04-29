@@ -1,5 +1,6 @@
 <?php declare( strict_types=1 );
 
+use App\Entity\Main\User;
 use PHP_SF\Framework\Http\Middleware\auth;
 use PHP_SF\System as PHP_SF;
 use PHP_SF\System\Router;
@@ -13,7 +14,6 @@ defined( 'start_time' ) || define( 'start_time', microtime( true ) );
 require_once __DIR__ . '/../functions/functions.php';
 require_once __DIR__ . '/../config/constants.php';
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../config/eventListeners.php';
 
 // PHPUnit sets APP_ENV=test via phpunit.xml.dist <server> before this runs.
 // Codeception does not, so we default it here so bootEnv('.env') picks up .env.test.
@@ -29,6 +29,7 @@ $kernel = ( new PHP_SF\Kernel() )
     ->addControllers( __DIR__ . '/../App/Http/Controller' )
     ->setHeaderTemplateClassName( header::class )
     ->setFooterTemplateClassName( footer::class )
+    ->setApplicationUserClassName( User::class )
     ->addTemplatesDirectory( 'templates', 'App\View' )
 ;
 

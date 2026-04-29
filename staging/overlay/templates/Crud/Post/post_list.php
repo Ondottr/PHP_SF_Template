@@ -81,6 +81,7 @@ final class post_list extends AbstractView { public function show(): void { ?>
                 <td class="text-nowrap">
                     <a href="<?= routeLink( 'crud_post_edit', [ 'id' => $post->getId() ] ) ?>" class="btn btn-sm btn-warning">Edit</a>
                     <form method="POST" action="<?= routeLink( 'crud_post_delete', [ 'id' => $post->getId() ] ) ?>" class="d-inline">
+                        <?= csrf_token( asInput: true ) ?>
                         <button type="submit" class="btn btn-sm btn-danger"
                                 onclick="return confirm( 'Delete this post?' )">Delete</button>
                     </form>

@@ -15,6 +15,12 @@ framework:
 
     #esi: true
     #fragments: true
+when@prod:
+  framework:
+    session:
+      cookie_secure: true
+      cookie_samesite: strict
+
 when@test:
   framework:
     csrf_protection: true

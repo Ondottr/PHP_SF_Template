@@ -9,6 +9,7 @@
 /var/log/*
 /vendor/
 ###< symfony/framework-bundle ###
+CLAUDE.md
 /Platform/
 /php-sf-ci-workflow
 /wiki

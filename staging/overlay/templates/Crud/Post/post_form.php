@@ -31,6 +31,7 @@ final class post_form extends AbstractView { public function show(): void {
     <?php endforeach; ?>
 
     <form method="POST" action="<?= $action ?>">
+        <?= csrf_token( asInput: true ) ?>
 
         <h5 class="mt-3 mb-2 text-muted">Business Fields</h5>
 

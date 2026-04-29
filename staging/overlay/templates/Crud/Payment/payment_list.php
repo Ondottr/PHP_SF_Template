@@ -84,6 +84,7 @@ final class payment_list extends AbstractView { public function show(): void { ?
                 <td class="text-nowrap">
                     <a href="<?= routeLink( 'crud_payment_edit', [ 'id' => $payment->getId() ] ) ?>" class="btn btn-sm btn-warning">Edit</a>
                     <form method="POST" action="<?= routeLink( 'crud_payment_delete', [ 'id' => $payment->getId() ] ) ?>" class="d-inline">
+                        <?= csrf_token( asInput: true ) ?>
                         <button type="submit" class="btn btn-sm btn-danger"
                                 onclick="return confirm( 'Delete this payment?' )">Delete</button>
                     </form>
