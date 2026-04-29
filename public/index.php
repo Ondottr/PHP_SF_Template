@@ -2,6 +2,7 @@
 
 use App\Kernel;
 use PHP_SF\Framework\Http\Middleware\auth;
+use PHP_SF\Framework\Http\Middleware\csrf;
 use PHP_SF\System as PHP_SF;
 use PHP_SF\System\Router;
 use PHP_SF\Templates\Layout\footer;
@@ -29,21 +30,19 @@ if (DEV_MODE) {
     Debug::enable();
 }
 
-require_once __DIR__ . '/../config/eventListeners.php';
-
 (new Dotenv())->bootEnv(__DIR__ . '/../.env');
 
 $kernel = (new PHP_SF\Kernel())
     ->addTranslationFiles(__DIR__ . '/../translations')
     ->addControllers(__DIR__ . '/../App/Http/Controller')
+    ->addEventSubscriberDirectory(__DIR__ . '/../App/EventSubscriber')
     ->setHeaderTemplateClassName(header::class)
     ->setFooterTemplateClassName(footer::class)
     ->addTemplatesDirectory('templates', 'App\View')
 ;
 
-require_once __DIR__ . '/testing.php';
-
 auth::logInUser();
+Router::addGlobalMiddleware( csrf::class );
 Router::init($kernel);
 
 Kernel::addRoutesToSymfony();

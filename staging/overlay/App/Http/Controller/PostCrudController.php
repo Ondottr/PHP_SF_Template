@@ -64,9 +64,8 @@ final class PostCrudController extends AbstractController
     }
 
     #[Route( url: 'crud/posts/{id}/edit', httpMethod: 'GET', name: 'crud_post_edit', middleware: [ crud::class ] )]
-    public function edit( int $id ): Response|RedirectResponse
+    public function edit( ?Post $post ): Response|RedirectResponse
     {
-        $post = Post::find( $id );
         if ( $post === null ) {
             return $this->redirectTo( 'crud_post_list', errors: [ RedirectResponse::ALERT_DANGER => 'Post not found.' ] );
         }
@@ -77,9 +76,8 @@ final class PostCrudController extends AbstractController
     }
 
     #[Route( url: 'crud/posts/{id}/edit', httpMethod: 'POST', name: 'crud_post_update', middleware: [ crud::class ] )]
-    public function update( int $id ): RedirectResponse
+    public function update( ?Post $post ): RedirectResponse
     {
-        $post = Post::find( $id );
         if ( $post === null ) {
             return $this->redirectTo( 'crud_post_list', errors: [ RedirectResponse::ALERT_DANGER => 'Post not found.' ] );
         }
@@ -96,9 +94,8 @@ final class PostCrudController extends AbstractController
     }
 
     #[Route( url: 'crud/posts/{id}/delete', httpMethod: 'POST', name: 'crud_post_delete', middleware: [ crud::class ] )]
-    public function delete( int $id ): RedirectResponse
+    public function delete( ?Post $post ): RedirectResponse
     {
-        $post = Post::find( $id );
         if ( $post === null ) {
             return $this->redirectTo( 'crud_post_list', errors: [ RedirectResponse::ALERT_DANGER => 'Post not found.' ] );
         }

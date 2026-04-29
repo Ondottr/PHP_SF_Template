@@ -73,6 +73,7 @@ final class user_list extends AbstractView { public function show(): void { ?>
                 <td class="text-nowrap">
                     <a href="<?= routeLink( 'crud_user_edit', [ 'id' => $user->getId() ] ) ?>" class="btn btn-sm btn-warning">Edit</a>
                     <form method="POST" action="<?= routeLink( 'crud_user_delete', [ 'id' => $user->getId() ] ) ?>" class="d-inline">
+                        <?= csrf_token( asInput: true ) ?>
                         <button type="submit" class="btn btn-sm btn-danger"
                                 onclick="return confirm( 'Delete this user?' )">Delete</button>
                     </form>

@@ -1,6 +1,8 @@
 <?php declare( strict_types=1 );
 
+use App\Entity\Main\User;
 use PHP_SF\Framework\Http\Middleware\auth;
+use PHP_SF\Framework\Http\Middleware\csrf;
 use PHP_SF\System as PHP_SF;
 use PHP_SF\System\Router;
 use PHP_SF\Templates\Layout\footer;
@@ -13,7 +15,6 @@ defined( 'start_time' ) || define( 'start_time', microtime( true ) );
 require_once __DIR__ . '/../functions/functions.php';
 require_once __DIR__ . '/../config/constants.php';
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../config/eventListeners.php';
 
 // PHPUnit sets APP_ENV=test via phpunit.xml.dist <server> before this runs.
 // Codeception does not, so we default it here so bootEnv('.env') picks up .env.test.
@@ -27,6 +28,7 @@ $_ENV['APP_ENV']    ??= 'test';
 $kernel = ( new PHP_SF\Kernel() )
     ->addTranslationFiles( __DIR__ . '/../translations' )
     ->addControllers( __DIR__ . '/../App/Http/Controller' )
+    ->addEventSubscriberDirectory( __DIR__ . '/../App/EventSubscriber' )
     ->setHeaderTemplateClassName( header::class )
     ->setFooterTemplateClassName( footer::class )
     ->addTemplatesDirectory( 'templates', 'App\View' )
@@ -35,6 +37,7 @@ $kernel = ( new PHP_SF\Kernel() )
 Router::loadRoutesOnly( $kernel );
 
 auth::logInUser();
+Router::addGlobalMiddleware( csrf::class );
 
 /** @noinspection GlobalVariableUsageInspection */
 $GLOBALS['kernel'] = $kernel;

@@ -72,9 +72,8 @@ final class UserCrudController extends AbstractController
     }
 
     #[Route( url: 'crud/users/{id}/edit', httpMethod: 'GET', name: 'crud_user_edit', middleware: [ crud::class ] )]
-    public function edit( int $id ): Response|RedirectResponse
+    public function edit( ?User $user ): Response|RedirectResponse
     {
-        $user = User::find( $id );
         if ( $user === null ) {
             return $this->redirectTo( 'crud_user_list', errors: [ RedirectResponse::ALERT_DANGER => 'User not found.' ] );
         }
@@ -85,9 +84,8 @@ final class UserCrudController extends AbstractController
     }
 
     #[Route( url: 'crud/users/{id}/edit', httpMethod: 'POST', name: 'crud_user_update', middleware: [ crud::class ] )]
-    public function update( int $id ): RedirectResponse
+    public function update( ?User $user ): RedirectResponse
     {
-        $user = User::find( $id );
         if ( $user === null ) {
             return $this->redirectTo( 'crud_user_list', errors: [ RedirectResponse::ALERT_DANGER => 'User not found.' ] );
         }
@@ -109,9 +107,8 @@ final class UserCrudController extends AbstractController
     }
 
     #[Route( url: 'crud/users/{id}/delete', httpMethod: 'POST', name: 'crud_user_delete', middleware: [ crud::class ] )]
-    public function delete( int $id ): RedirectResponse
+    public function delete( ?User $user ): RedirectResponse
     {
-        $user = User::find( $id );
         if ( $user === null ) {
             return $this->redirectTo( 'crud_user_list', errors: [ RedirectResponse::ALERT_DANGER => 'User not found.' ] );
         }

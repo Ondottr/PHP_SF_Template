@@ -64,9 +64,8 @@ final class PaymentCrudController extends AbstractController
     }
 
     #[Route( url: 'crud/payments/{id}/edit', httpMethod: 'GET', name: 'crud_payment_edit', middleware: [ crud::class ] )]
-    public function edit( int $id ): Response|RedirectResponse
+    public function edit( ?Payment $payment ): Response|RedirectResponse
     {
-        $payment = Payment::find( $id );
         if ( $payment === null ) {
             return $this->redirectTo( 'crud_payment_list', errors: [ RedirectResponse::ALERT_DANGER => 'Payment not found.' ] );
         }
@@ -77,9 +76,8 @@ final class PaymentCrudController extends AbstractController
     }
 
     #[Route( url: 'crud/payments/{id}/edit', httpMethod: 'POST', name: 'crud_payment_update', middleware: [ crud::class ] )]
-    public function update( int $id ): RedirectResponse
+    public function update( ?Payment $payment ): RedirectResponse
     {
-        $payment = Payment::find( $id );
         if ( $payment === null ) {
             return $this->redirectTo( 'crud_payment_list', errors: [ RedirectResponse::ALERT_DANGER => 'Payment not found.' ] );
         }
@@ -96,9 +94,8 @@ final class PaymentCrudController extends AbstractController
     }
 
     #[Route( url: 'crud/payments/{id}/delete', httpMethod: 'POST', name: 'crud_payment_delete', middleware: [ crud::class ] )]
-    public function delete( int $id ): RedirectResponse
+    public function delete( ?Payment $payment ): RedirectResponse
     {
-        $payment = Payment::find( $id );
         if ( $payment === null ) {
             return $this->redirectTo( 'crud_payment_list', errors: [ RedirectResponse::ALERT_DANGER => 'Payment not found.' ] );
         }

@@ -56,6 +56,12 @@ services:
     tags:
       - { name: routing.loader }
 
+when@dev:
+  services:
+    PHP_SF\System\Debug\QueryCounterMiddleware:
+      tags:
+        - { name: doctrine.middleware }
+
 when@test:
   services:
     PHP_SF\Framework\EventListener\PhpSfControllerListener:

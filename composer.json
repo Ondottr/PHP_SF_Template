@@ -57,7 +57,7 @@
     "ext-yaml": "*",
     "ext-zend-opcache": "*",
     "ext-zlib": "*",
-    "nations-original/php-simple-framework": ">=1.2.0 <1.3.0",
+    "nations-original/php-simple-framework": "^2.0.0",
     "nelmio/api-doc-bundle": "^5.9",
     "composer/package-versions-deprecated": "1.11.99.5",
     "php-amqplib/php-amqplib": "^3.6",

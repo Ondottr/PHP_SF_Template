@@ -35,7 +35,8 @@ $_SERVER['APP_RUNTIME_OPTIONS']['disable_dotenv'] = true;
 
 $kernel = (new PHP_SF\Kernel())
     ->addTranslationFiles(__DIR__.'/../translations')
-    ->addControllers(__DIR__.'/../App/Http/Controller');
+    ->addControllers(__DIR__.'/../App/Http/Controller')
+;
 
 return function () {
     $kernel = Kernel::getInstance();

@@ -10,6 +10,7 @@ final class footer extends AbstractView { public function show(): void {
     <!--@formatter:on-->
 
     <script src="<?= asset( 'js/bootstrap.min.js' ) ?>"></script>
+    <?php $this->import(\PHP_SF\Templates\Layout\footer::class) ?>
     </body>
     </html>
 <?php } }
