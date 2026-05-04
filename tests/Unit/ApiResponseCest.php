@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Unit;
 
 use PHP_SF\System\Classes\Helpers\CursorPaginationResult;
+use PHP_SF\System\Classes\Helpers\PaginationCursor;
 use PHP_SF\System\Core\ApiResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Tests\Support\Uni2Tester;
@@ -40,10 +41,16 @@ class ApiResponseCest
 
     public function testPaginatedResponseContainsMeta(Uni2Tester $I): void
     {
+        $entity = new class {
+            public function getCreatedAt(): int { return 1700000000; }
+            public function getId(): int { return 21; }
+        };
+
+        $next   = PaginationCursor::after($entity, 'createdAt');
         $result = new CursorPaginationResult(
             items:      [['id' => 1], ['id' => 2]],
             cursor:     null,
-            nextCursor: 'eyJpZCI6Mn0=',
+            nextCursor: $next,
             prevCursor: null,
             perPage:    20,
             hasMore:    true,
@@ -53,7 +60,7 @@ class ApiResponseCest
         $body = json_decode($r->getContent(), associative: true);
 
         $I->assertNotNull($body['meta']['pagination']);
-        $I->assertSame('eyJpZCI6Mn0=', $body['meta']['pagination']['next_cursor']);
+        $I->assertSame($next->toString(), $body['meta']['pagination']['next_cursor']);
         $I->assertTrue($body['meta']['pagination']['has_more']);
         $I->assertSame(20, $body['meta']['pagination']['per_page']);
     }
