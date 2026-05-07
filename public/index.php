@@ -23,8 +23,6 @@ if (function_exists('uopz_allow_exit')) {
 define('start_time', microtime(true));
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../functions/functions.php';
-require_once __DIR__ . '/../config/constants.php';
 
 if (DEV_MODE) {
     Debug::enable();
