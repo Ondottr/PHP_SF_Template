@@ -9,9 +9,6 @@ use Symfony\Component\Dotenv\Dotenv;
 
 require_once __DIR__.'/../vendor/autoload_runtime.php';
 
-require_once __DIR__.'/../functions/functions.php';
-require_once __DIR__.'/../config/constants.php';
-
 // Pre-detect --env / -e CLI option so bootEnv loads the correct .env.{env} file
 // (SymfonyRuntime processes --env after bootEnv runs, which would otherwise undo it)
 foreach ($_SERVER['argv'] ?? [] as $i => $v) {

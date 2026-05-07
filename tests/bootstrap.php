@@ -12,8 +12,6 @@ use Symfony\Component\Dotenv\Dotenv;
 
 defined( 'start_time' ) || define( 'start_time', microtime( true ) );
 
-require_once __DIR__ . '/../functions/functions.php';
-require_once __DIR__ . '/../config/constants.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // PHPUnit sets APP_ENV=test via phpunit.xml.dist <server> before this runs.
