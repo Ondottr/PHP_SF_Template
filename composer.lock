@@ -343,19 +343,20 @@
         },
         {
             "name": "nations-original/php-simple-framework",
-            "version": "v2.1.1",
+            "version": "v2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ondottr/PHP_SF_Platform.git",
-                "reference": "b17fbb09165c86004068d057e3aaf6f72dc50102"
+                "reference": "65e8a23548142a9b014aed7a3f214d1dbe1f7d74"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/b17fbb09165c86004068d057e3aaf6f72dc50102",
-                "reference": "b17fbb09165c86004068d057e3aaf6f72dc50102",
+                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/65e8a23548142a9b014aed7a3f214d1dbe1f7d74",
+                "reference": "65e8a23548142a9b014aed7a3f214d1dbe1f7d74",
                 "shasum": ""
             },
             "require": {
+                "nations-original/php-sf-cache": "^2.0",
                 "php": "8.3.*"
             },
             "require-dev": {
@@ -363,6 +364,11 @@
             },
             "type": "library",
             "autoload": {
+                "files": [
+                    "functions/functions.php",
+                    "functions/time_functions.php",
+                    "functions/view_functions.php"
+                ],
                 "psr-4": {
                     "PHP_SF\\Tests\\": "tests/",
                     "PHP_SF\\System\\": "src/",
@@ -384,9 +390,9 @@
             "description": "A simple PHP framework for Nations Original.",
             "support": {
                 "issues": "https://github.com/Ondottr/PHP_SF_Platform/issues",
-                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v2.1.1"
+                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v2.2.0"
             },
-            "time": "2026-05-07T15:29:59+00:00"
+            "time": "2026-05-07T17:27:40+00:00"
         },
         {
             "name": "nelmio/api-doc-bundle",
@@ -10741,12 +10747,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "515c293bfd8f02861b1a4cae4ad32894d929782f"
+                "reference": "f3943d33e450b3bc6070ce562563a289c67413f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/515c293bfd8f02861b1a4cae4ad32894d929782f",
-                "reference": "515c293bfd8f02861b1a4cae4ad32894d929782f",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/f3943d33e450b3bc6070ce562563a289c67413f7",
+                "reference": "f3943d33e450b3bc6070ce562563a289c67413f7",
                 "shasum": ""
             },
             "conflict": {
@@ -11129,6 +11135,7 @@
                 "innologi/typo3-appointments": "<2.0.6",
                 "intelliants/subrion": "<4.2.2",
                 "inter-mediator/inter-mediator": "==5.5",
+                "intercom/intercom-php": "==5.0.2",
                 "invoiceninja/invoiceninja": "<5.13.4",
                 "ipl/web": "<=0.13",
                 "islandora/crayfish": "<4.1",
@@ -11261,6 +11268,7 @@
                 "miniorange/miniorange-saml": "<1.4.3",
                 "miraheze/ts-portal": "<=33",
                 "mittwald/typo3_forum": "<1.2.1",
+                "mix/mix": ">=2,<=2.2.17",
                 "mobiledetect/mobiledetectlib": "<2.8.32",
                 "modx/revolution": "<=3.1",
                 "mojo42/jirafeau": "<4.4",
@@ -11797,7 +11805,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-06T23:20:48+00:00"
+            "time": "2026-05-07T17:36:29+00:00"
         },
         {
             "name": "sebastian/cli-parser",
