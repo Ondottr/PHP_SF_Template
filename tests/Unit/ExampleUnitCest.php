@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use PHP_SF\System\Core\Cache\RedisCacheAdapter;
+use PHP_SF\Cache\Adapter\RedisCacheAdapter;
 use Tests\Support\Uni2Tester;
 
 class ExampleUnitCest

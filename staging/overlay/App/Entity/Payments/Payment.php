@@ -22,7 +22,7 @@ class Payment extends AbstractEntity
     #[Assert\Positive]
     #[Assert\Regex( pattern: '/^\d+(\.\d{1,2})?$/' )]
     #[ORM\Column( type: 'decimal', precision: 10, scale: 2 )]
-    protected string $amount;
+    protected ?string $amount = null;
 
     #[Assert\NotBlank]
     #[Assert\Length( exactly: 3 )]

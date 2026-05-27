@@ -23,11 +23,11 @@ class User extends AbstractEntity implements UserInterface
     #[Assert\Email]
     #[Assert\Length( min: 6, max: 50 )]
     #[ORM\Column( type: 'string', unique: true )]
-    protected string $email;
+    protected ?string $email = null;
 
     #[Assert\NotBlank]
     #[ORM\Column( type: 'string' )]
-    protected string $password;
+    protected ?string $password = null;
 
     // --- PostgreSQL type coverage ---
 

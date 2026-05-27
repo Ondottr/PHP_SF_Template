@@ -14,7 +14,6 @@ use PHP_SF\System\Attributes\Route;
 use PHP_SF\System\Classes\Abstracts\AbstractController;
 use PHP_SF\System\Core\RedirectResponse;
 use PHP_SF\System\Core\Response;
-use Symfony\Component\HttpFoundation\Request;
 
 final class PaymentCrudController extends AbstractController
 {
@@ -22,11 +21,8 @@ final class PaymentCrudController extends AbstractController
     private readonly PaymentRepository $paymentRepository;
 
 
-    public function __construct(
-        protected Request|null $request,
-    ) {
-        parent::__construct( $request );
-
+    public function __construct()
+    {
         /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $this->paymentRepository = Payment::rep();
     }
