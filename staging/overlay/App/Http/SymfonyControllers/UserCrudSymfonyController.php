@@ -122,7 +122,7 @@ final class UserCrudSymfonyController
         }
 
         $this->userRepository->persist( $user );
-        $this->requestStack->getSession()->getFlashBag()->add( 'success', 'User created successfully.' );
+        s()->getFlashBag()->add( 'success', 'User created successfully.' );
 
         return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_user_list' ) );
     }
@@ -132,7 +132,7 @@ final class UserCrudSymfonyController
     {
         $user = $this->userRepository->find( $id );
         if ( $user === null ) {
-            $this->requestStack->getSession()->getFlashBag()->add( 'danger', 'User not found.' );
+            s()->getFlashBag()->add( 'danger', 'User not found.' );
             return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_user_list' ) );
         }
 
@@ -148,7 +148,7 @@ final class UserCrudSymfonyController
     {
         $user = $this->userRepository->find( $id );
         if ( $user === null ) {
-            $this->requestStack->getSession()->getFlashBag()->add( 'danger', 'User not found.' );
+            s()->getFlashBag()->add( 'danger', 'User not found.' );
             return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_user_list' ) );
         }
 
@@ -176,7 +176,7 @@ final class UserCrudSymfonyController
         }
 
         $this->userRepository->persist( $user );
-        $this->requestStack->getSession()->getFlashBag()->add( 'success', 'User updated successfully.' );
+        s()->getFlashBag()->add( 'success', 'User updated successfully.' );
 
         return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_user_list' ) );
     }
@@ -186,17 +186,17 @@ final class UserCrudSymfonyController
     {
         $user = $this->userRepository->find( $id );
         if ( $user === null ) {
-            $this->requestStack->getSession()->getFlashBag()->add( 'danger', 'User not found.' );
+            s()->getFlashBag()->add( 'danger', 'User not found.' );
             return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_user_list' ) );
         }
 
         if ( !$this->csrfTokenManager->isTokenValid( new CsrfToken( 'submit', $request->request->get( '_token', '' ) ) ) ) {
-            $this->requestStack->getSession()->getFlashBag()->add( 'danger', 'Invalid CSRF token.' );
+            s()->getFlashBag()->add( 'danger', 'Invalid CSRF token.' );
             return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_user_list' ) );
         }
 
         $this->userRepository->remove( $user );
-        $this->requestStack->getSession()->getFlashBag()->add( 'success', 'User deleted successfully.' );
+        s()->getFlashBag()->add( 'success', 'User deleted successfully.' );
 
         return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_user_list' ) );
     }

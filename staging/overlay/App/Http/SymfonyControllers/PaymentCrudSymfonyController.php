@@ -113,7 +113,7 @@ final class PaymentCrudSymfonyController
         }
 
         $this->paymentRepository->persist( $payment );
-        $this->requestStack->getSession()->getFlashBag()->add( 'success', 'Payment created successfully.' );
+        s()->getFlashBag()->add( 'success', 'Payment created successfully.' );
 
         return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_payment_list' ) );
     }
@@ -123,7 +123,7 @@ final class PaymentCrudSymfonyController
     {
         $payment = $this->paymentRepository->find( $id );
         if ( $payment === null ) {
-            $this->requestStack->getSession()->getFlashBag()->add( 'danger', 'Payment not found.' );
+            s()->getFlashBag()->add( 'danger', 'Payment not found.' );
             return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_payment_list' ) );
         }
 
@@ -139,7 +139,7 @@ final class PaymentCrudSymfonyController
     {
         $payment = $this->paymentRepository->find( $id );
         if ( $payment === null ) {
-            $this->requestStack->getSession()->getFlashBag()->add( 'danger', 'Payment not found.' );
+            s()->getFlashBag()->add( 'danger', 'Payment not found.' );
             return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_payment_list' ) );
         }
 
@@ -162,7 +162,7 @@ final class PaymentCrudSymfonyController
         }
 
         $this->paymentRepository->persist( $payment );
-        $this->requestStack->getSession()->getFlashBag()->add( 'success', 'Payment updated successfully.' );
+        s()->getFlashBag()->add( 'success', 'Payment updated successfully.' );
 
         return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_payment_list' ) );
     }
@@ -172,17 +172,17 @@ final class PaymentCrudSymfonyController
     {
         $payment = $this->paymentRepository->find( $id );
         if ( $payment === null ) {
-            $this->requestStack->getSession()->getFlashBag()->add( 'danger', 'Payment not found.' );
+            s()->getFlashBag()->add( 'danger', 'Payment not found.' );
             return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_payment_list' ) );
         }
 
         if ( !$this->csrfTokenManager->isTokenValid( new CsrfToken( 'submit', $request->request->get( '_token', '' ) ) ) ) {
-            $this->requestStack->getSession()->getFlashBag()->add( 'danger', 'Invalid CSRF token.' );
+            s()->getFlashBag()->add( 'danger', 'Invalid CSRF token.' );
             return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_payment_list' ) );
         }
 
         $this->paymentRepository->remove( $payment );
-        $this->requestStack->getSession()->getFlashBag()->add( 'success', 'Payment deleted successfully.' );
+        s()->getFlashBag()->add( 'success', 'Payment deleted successfully.' );
 
         return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_payment_list' ) );
     }

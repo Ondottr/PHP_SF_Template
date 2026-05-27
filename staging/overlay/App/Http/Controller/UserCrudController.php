@@ -14,7 +14,6 @@ use PHP_SF\System\Attributes\Route;
 use PHP_SF\System\Classes\Abstracts\AbstractController;
 use PHP_SF\System\Core\RedirectResponse;
 use PHP_SF\System\Core\Response;
-use Symfony\Component\HttpFoundation\Request;
 
 final class UserCrudController extends AbstractController
 {
@@ -22,11 +21,8 @@ final class UserCrudController extends AbstractController
     private readonly UserRepository $userRepository;
 
 
-    public function __construct(
-        protected Request|null $request,
-    ) {
-        parent::__construct( $request );
-
+    public function __construct()
+    {
         /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $this->userRepository = User::rep();
     }
@@ -53,7 +49,7 @@ final class UserCrudController extends AbstractController
     #[Route( url: 'crud/users/create', httpMethod: 'POST', name: 'crud_user_store', middleware: [ crud::class ] )]
     public function store(): RedirectResponse
     {
-        $rawPassword = $this->request->request->get( 'password', '' );
+        $rawPassword = r()->request->get( 'password', '' );
         if ( $rawPassword === '' ) {
             return $this->redirectBack( errors: [ RedirectResponse::ALERT_DANGER => 'Password is required.' ] );
         }
@@ -90,7 +86,7 @@ final class UserCrudController extends AbstractController
             return $this->redirectTo( 'crud_user_list', errors: [ RedirectResponse::ALERT_DANGER => 'User not found.' ] );
         }
 
-        $rawPassword = $this->request->request->get( 'password', '' );
+        $rawPassword = r()->request->get( 'password', '' );
         if ( $rawPassword !== '' ) {
             $user->setPassword( $rawPassword );
         }
@@ -121,7 +117,7 @@ final class UserCrudController extends AbstractController
 
     private function fill( User $user ): void
     {
-        $r    = $this->request->request;
+        $r    = r()->request;
         $str  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? $v : null;
         $int  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (int)$v : null;
         $flt  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (float)$v : null;

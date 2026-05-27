@@ -21,7 +21,7 @@ class Post extends AbstractEntity
     #[Assert\NotBlank]
     #[Assert\Length( min: 1, max: 255 )]
     #[ORM\Column( type: 'string', unique: true )]
-    protected string $title;
+    protected ?string $title = null;
 
     #[ORM\Column( type: 'text', nullable: true )]
     protected ?string $content = null;

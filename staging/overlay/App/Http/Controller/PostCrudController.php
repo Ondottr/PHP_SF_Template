@@ -14,7 +14,6 @@ use PHP_SF\System\Attributes\Route;
 use PHP_SF\System\Classes\Abstracts\AbstractController;
 use PHP_SF\System\Core\RedirectResponse;
 use PHP_SF\System\Core\Response;
-use Symfony\Component\HttpFoundation\Request;
 
 final class PostCrudController extends AbstractController
 {
@@ -22,11 +21,8 @@ final class PostCrudController extends AbstractController
     private readonly PostRepository $postRepository;
 
 
-    public function __construct(
-        protected Request|null $request,
-    ) {
-        parent::__construct( $request );
-
+    public function __construct()
+    {
         /** @noinspection PhpFieldAssignmentTypeMismatchInspection */
         $this->postRepository = Post::rep();
     }
@@ -108,7 +104,7 @@ final class PostCrudController extends AbstractController
 
     private function fill( Post $post ): void
     {
-        $r    = $this->request->request;
+        $r    = r()->request;
         $str  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? $v : null;
         $int  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (int)$v : null;
         $flt  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (float)$v : null;

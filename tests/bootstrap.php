@@ -26,11 +26,11 @@ $kernel = (new PHP_SF\Kernel())
     ->addTranslationFiles(__DIR__ . '/../translations')
     ->addControllers(__DIR__ . '/../App/Http/Controller')
     ->addEventSubscriberDirectory(__DIR__ . '/../App/EventSubscriber')
-    ->setHeaderTemplateClassName(header::class)
-    ->setFooterTemplateClassName(footer::class)
     ->setApplicationUserClassName(User::class)
     ->addTemplatesDirectory('templates', 'App\View')
 ;
+PHP_SF\Kernel::setHeaderTemplateClassName(header::class);
+PHP_SF\Kernel::setFooterTemplateClassName(footer::class);
 
 Router::loadRoutesOnly($kernel);
 
