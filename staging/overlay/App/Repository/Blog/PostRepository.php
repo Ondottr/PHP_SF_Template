@@ -6,10 +6,11 @@ use App\Entity\Blog\Post;
 use PHP_SF\System\Classes\Abstracts\AbstractEntityRepository;
 
 /**
+ * @extends AbstractEntityRepository<Post>
  * @method Post|null find( $id, $lockMode = null, $lockVersion = null )
- * @method Post|null findOneBy( array $criteria, array $orderBy = null )
+ * @method Post|null findOneBy( array<string, mixed> $criteria, array<string, mixed>|null $orderBy = null )
  * @method Post[]    findAll()
- * @method Post[]    findBy( array $criteria, array $orderBy = null, $limit = null, $offset = null )
+ * @method Post[]    findBy( array<string, mixed> $criteria, array<string, mixed>|null $orderBy = null, $limit = null, $offset = null )
  */
 class PostRepository extends AbstractEntityRepository
 {

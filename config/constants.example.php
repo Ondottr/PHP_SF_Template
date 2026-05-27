@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 use PHP_SF\System\Classes\Helpers\TimeZone;
 
@@ -11,8 +11,8 @@ const SERVER_IP = '127.0.0.1';
 
 const APPLICATION_NAME = 'PHP SF Template';
 
-const AVAILABLE_HOSTS = [ SERVER_IP, '127.0.0.1' ];
+const AVAILABLE_HOSTS = [SERVER_IP, '127.0.0.1'];
 
 const ENTITY_DIRECTORY = __DIR__ . '/../App/Entity';
 
-const LANGUAGES_LIST = [ 'en' ];
+const LANGUAGES_LIST = ['en'];

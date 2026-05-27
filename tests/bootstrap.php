@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 use App\Entity\Main\User;
 use PHP_SF\Framework\Http\Middleware\auth;
@@ -9,33 +9,33 @@ use PHP_SF\Templates\Layout\footer;
 use PHP_SF\Templates\Layout\header;
 use Symfony\Component\Dotenv\Dotenv;
 
-
-defined( 'start_time' ) || define( 'start_time', microtime( true ) );
+defined('start_time') || define('start_time', microtime(true));
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // PHPUnit sets APP_ENV=test via phpunit.xml.dist <server> before this runs.
 // Codeception does not, so we default it here so bootEnv('.env') picks up .env.test.
 $_SERVER['APP_ENV'] ??= 'test';
-$_ENV['APP_ENV']    ??= 'test';
+$_ENV['APP_ENV'] ??= 'test';
 
 // Boot from .env (not .env.test) so all base vars (Redis, DB hosts, …) are loaded
 // first; bootEnv then also loads .env.test because APP_ENV=test.
-( new Dotenv() )->bootEnv( __DIR__ . '/../.env' );
+(new Dotenv())->bootEnv(__DIR__ . '/../.env');
 
-$kernel = ( new PHP_SF\Kernel() )
-    ->addTranslationFiles( __DIR__ . '/../translations' )
-    ->addControllers( __DIR__ . '/../App/Http/Controller' )
-    ->addEventSubscriberDirectory( __DIR__ . '/../App/EventSubscriber' )
-    ->setHeaderTemplateClassName( header::class )
-    ->setFooterTemplateClassName( footer::class )
-    ->addTemplatesDirectory( 'templates', 'App\View' )
+$kernel = (new PHP_SF\Kernel())
+    ->addTranslationFiles(__DIR__ . '/../translations')
+    ->addControllers(__DIR__ . '/../App/Http/Controller')
+    ->addEventSubscriberDirectory(__DIR__ . '/../App/EventSubscriber')
+    ->setHeaderTemplateClassName(header::class)
+    ->setFooterTemplateClassName(footer::class)
+    ->setApplicationUserClassName(User::class)
+    ->addTemplatesDirectory('templates', 'App\View')
 ;
 
-Router::loadRoutesOnly( $kernel );
+Router::loadRoutesOnly($kernel);
 
 auth::logInUser();
-Router::addGlobalMiddleware( csrf::class );
+Router::addGlobalMiddleware(csrf::class);
 
 /** @noinspection GlobalVariableUsageInspection */
 $GLOBALS['kernel'] = $kernel;

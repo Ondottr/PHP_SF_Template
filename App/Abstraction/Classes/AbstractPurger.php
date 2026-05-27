@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Abstraction\Classes;
 
@@ -9,26 +9,20 @@ use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 abstract class AbstractPurger implements ORMPurgerInterface, CustomPurgerInterface
 {
-
     private EntityManagerInterface $em;
-
 
     final public function purge(): void
     {
-        foreach ( $this->getQueries() as $q )
+        foreach ($this->getQueries() as $q) {
             $this->em
-                ->createNativeQuery( $q, new ResultSetMappingBuilder( $this->em ) )
+                ->createNativeQuery($q, new ResultSetMappingBuilder($this->em))
                 ->execute();
+        }
     }
 
-    final public function setEntityManager( EntityManagerInterface $em ): void
+    final public function setEntityManager(EntityManagerInterface $em): void
     {
         $this->em = $em;
-    }
-
-    protected function getEntityManager(): EntityManagerInterface
-    {
-        return $this->em;
     }
 
     /**
@@ -37,11 +31,15 @@ abstract class AbstractPurger implements ORMPurgerInterface, CustomPurgerInterfa
      */
     abstract public function getEntityManagerName(): string;
 
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return $this->em;
+    }
+
     /**
-     * Returns an array of queries to execute.<p>
+     * Returns an array of queries to execute.<p>.
      *
      * @return array<string>
      */
     abstract protected function getQueries(): array;
-
 }

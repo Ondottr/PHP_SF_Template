@@ -1,6 +1,5 @@
-<?php
-/** @noinspection PhpIllegalPsrClassPathInspection */
-declare( strict_types=1 );
+<?php /** @noinspection PhpIllegalPsrClassPathInspection */
+declare(strict_types=1);
 
 namespace Tests\Functional;
 
@@ -13,25 +12,23 @@ use Tests\Support\FunctionalTester;
  */
 class SecurityHeadersCest
 {
-
     /**
      * @dataProvider routeProvider
      */
-    public function testSecurityHeadersPresent( FunctionalTester $I, \Codeception\Example $example ): void
+    public function testSecurityHeadersPresent(FunctionalTester $I, \Codeception\Example $example): void
     {
-        $I->amOnPage( $example['url'] );
-        $I->seeResponseCodeIs( $example['status'] );
-        $I->assertResponseHeaderSame( 'x-frame-options', 'DENY' );
-        $I->assertResponseHeaderSame( 'x-content-type-options', 'nosniff' );
-        $I->assertResponseHeaderSame( 'referrer-policy', 'strict-origin-when-cross-origin' );
+        $I->amOnPage($example['url']);
+        $I->seeResponseCodeIs($example['status']);
+        $I->assertResponseHeaderSame('x-frame-options', 'DENY');
+        $I->assertResponseHeaderSame('x-content-type-options', 'nosniff');
+        $I->assertResponseHeaderSame('referrer-policy', 'strict-origin-when-cross-origin');
     }
 
     protected function routeProvider(): array
     {
         return [
-            'php_sf_route'     => [ 'url' => '/',                 'status' => 200 ],
-            'symfony_route'    => [ 'url' => '/example/symfony',  'status' => 200 ],
+            'php_sf_route' => ['url' => '/',                 'status' => 200],
+            'symfony_route' => ['url' => '/example/symfony',  'status' => 200],
         ];
     }
-
 }

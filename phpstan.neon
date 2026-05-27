@@ -1,0 +1,26 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 6
+
+    paths:
+        - App/
+
+    scanDirectories:
+        - Platform/src/
+
+    bootstrapFiles:
+        - config/constants.php
+        - functions/functions.php
+        - functions/view_functions.php
+
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+
+    ignoreErrors: []
+
+    treatPhpDocTypesAsCertain: false
+
+    dynamicConstantNames:
+        - DEV_MODE

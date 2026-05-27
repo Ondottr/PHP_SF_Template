@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
@@ -35,7 +35,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 final class SecurityHeadersSubscriber implements EventSubscriberInterface
 {
-
     /**
      * CSP nonce shared within the same PHP process.
      *
@@ -44,18 +43,16 @@ final class SecurityHeadersSubscriber implements EventSubscriberInterface
      * so the null guard keeps a stable nonce value per HTTP request and
      * prevents generating multiple nonces in the same request lifecycle.
      */
-//    private static ?string $nonce = null;
-
+    //    private static ?string $nonce = null;
 
     public static function getSubscribedEvents(): array
     {
-        return [ KernelEvents::RESPONSE => 'onKernelResponse' ];
+        return [KernelEvents::RESPONSE => 'onKernelResponse'];
     }
 
-
-    public function onKernelResponse( ResponseEvent $event ): void
+    public function onKernelResponse(ResponseEvent $event): void
     {
-        if ( !$event->isMainRequest() ) {
+        if (!$event->isMainRequest()) {
             return;
         }
 
@@ -67,15 +64,15 @@ final class SecurityHeadersSubscriber implements EventSubscriberInterface
          * Without this, a strict script-src policy will block that script and
          * redirect URLs will stop updating in the browser address bar.
          */
-//        if ( self::$nonce === null ) {
-//            self::$nonce = base64_encode( random_bytes( 16 ) );
-//            RedirectResponse::setCspNonce( self::$nonce );
-//        }
+        //        if ( self::$nonce === null ) {
+        //            self::$nonce = base64_encode( random_bytes( 16 ) );
+        //            RedirectResponse::setCspNonce( self::$nonce );
+        //        }
 
         $response = $event->getResponse();
-        $response->headers->set( 'X-Frame-Options', 'DENY' );
-        $response->headers->set( 'X-Content-Type-Options', 'nosniff' );
-        $response->headers->set( 'Referrer-Policy', 'strict-origin-when-cross-origin' );
+        $response->headers->set('X-Frame-Options', 'DENY');
+        $response->headers->set('X-Content-Type-Options', 'nosniff');
+        $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
 
         /**
          * HSTS tells browsers to always use HTTPS for this domain.
@@ -83,13 +80,12 @@ final class SecurityHeadersSubscriber implements EventSubscriberInterface
          * Add `preload` only after submitting the domain to the HSTS preload list.
          * Do not enable this on a domain that may need to serve plain HTTP in the future,
          * because browsers cache the policy for `max-age` seconds and it is not easily cleared.
-        */
-//        $response->headers->set( 'Strict-Transport-Security', 'max-age=31536000; includeSubDomains' );
+         */
+        //        $response->headers->set( 'Strict-Transport-Security', 'max-age=31536000; includeSubDomains' );
 
         // Uncomment once you've configured buildCsp() below.
-//        $response->headers->set( 'Content-Security-Policy', $this->buildCsp() );
+        //        $response->headers->set( 'Content-Security-Policy', $this->buildCsp() );
     }
-
 
     /**
      * Builds the Content-Security-Policy header value.
@@ -107,23 +103,22 @@ final class SecurityHeadersSubscriber implements EventSubscriberInterface
      * upgrade-insecure-requests: instructs browsers to rewrite http:// sub-resource
      * requests to https:// automatically. Safe to enable on full-HTTPS deployments.
      */
-//    private function buildCsp(): string
-//    {
-//        $directives = [
-//            "default-src 'self'",
-//            "script-src 'self' 'nonce-" . self::$nonce . "'",
-//            "style-src 'self' 'unsafe-inline'",
-//            "img-src 'self' data:",
-//            "font-src 'self'",
-//            "connect-src 'self'",
-//            "object-src 'none'",
-//            "base-uri 'self'",
-//            "form-action 'self'",
-//            "frame-ancestors 'none'",
-//            'upgrade-insecure-requests',
-//        ];
-//
-//        return implode( '; ', $directives );
-//    }
-
+    //    private function buildCsp(): string
+    //    {
+    //        $directives = [
+    //            "default-src 'self'",
+    //            "script-src 'self' 'nonce-" . self::$nonce . "'",
+    //            "style-src 'self' 'unsafe-inline'",
+    //            "img-src 'self' data:",
+    //            "font-src 'self'",
+    //            "connect-src 'self'",
+    //            "object-src 'none'",
+    //            "base-uri 'self'",
+    //            "form-action 'self'",
+    //            "frame-ancestors 'none'",
+    //            'upgrade-insecure-requests',
+    //        ];
+    //
+    //        return implode( '; ', $directives );
+    //    }
 }

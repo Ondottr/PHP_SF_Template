@@ -16,6 +16,7 @@ doctrine:
         connections:
             dummy:
                 driver_class: PHP_SF\System\Doctrine\ForbiddenDriver
+
     orm:
         default_entity_manager: dummy
         auto_generate_proxy_classes: true
@@ -31,6 +32,7 @@ doctrine:
                         dir: '%kernel.project_dir%/App/Entity/Dummy'
                         prefix: App\Entity\Dummy
                         alias: Dummy
+
 when@prod:
     doctrine:
         orm:

@@ -6,10 +6,11 @@ use App\Entity\Main\User;
 use PHP_SF\System\Classes\Abstracts\AbstractEntityRepository;
 
 /**
+ * @extends AbstractEntityRepository<User>
  * @method User|null find( $id, $lockMode = null, $lockVersion = null )
- * @method User|null findOneBy( array $criteria, array $orderBy = null )
+ * @method User|null findOneBy( array<string, mixed> $criteria, array<string, mixed>|null $orderBy = null )
  * @method User[]    findAll()
- * @method User[]    findBy( array $criteria, array $orderBy = null, $limit = null, $offset = null )
+ * @method User[]    findBy( array<string, mixed> $criteria, array<string, mixed>|null $orderBy = null, $limit = null, $offset = null )
  */
 class UserRepository extends AbstractEntityRepository
 {

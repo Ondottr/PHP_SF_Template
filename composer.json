@@ -24,7 +24,8 @@
     "allow-plugins": {
       "symfony/flex": true,
       "symfony/runtime": true,
-      "symfony/thanks": true
+      "symfony/thanks": true,
+      "phpstan/extension-installer": true
     }
   },
   "conflict": {
@@ -106,6 +107,10 @@
     "codeception/module-webdriver": "^4.0",
     "doctrine/doctrine-fixtures-bundle": "^4.3",
     "friendsofphp/php-cs-fixer": "^3.94",
+    "phpstan/extension-installer": "^1.4",
+    "phpstan/phpstan": "^2.1",
+    "phpstan/phpstan-doctrine": "^2.0",
+    "phpstan/phpstan-symfony": "^2.0",
     "phpunit/php-code-coverage": "^12",
     "phpunit/phpunit": "^12",
     "roave/security-advisories": "dev-latest",
@@ -120,6 +125,7 @@
     "zenstruck/foundry": "^2.9"
   },
   "scripts": {
+    "stan": "phpstan analyse --no-progress",
     "auto-scripts": {
       "cache:clear": "symfony-cmd",
       "assets:install %PUBLIC_DIR%": "symfony-cmd"

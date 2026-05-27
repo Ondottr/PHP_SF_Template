@@ -23,11 +23,11 @@ class User extends AbstractEntity implements UserInterface
     #[Assert\Email]
     #[Assert\Length( min: 6, max: 50 )]
     #[ORM\Column( type: 'string', unique: true )]
-    protected ?string $email = null;
+    protected string $email;
 
     #[Assert\NotBlank]
     #[ORM\Column( type: 'string' )]
-    protected ?string $password = null;
+    protected string $password;
 
     // --- PostgreSQL type coverage ---
 
@@ -72,6 +72,7 @@ class User extends AbstractEntity implements UserInterface
     #[ORM\Column( type: 'time', nullable: true )]
     protected ?DateTimeInterface $colTime = null;
 
+    /** @var array<string, mixed>|null */
     #[Assert\Type( type: 'array' )]
     #[ORM\Column( type: 'json', nullable: true )]
     protected ?array $colJson = null;
@@ -85,12 +86,12 @@ class User extends AbstractEntity implements UserInterface
     #[ORM\Column( type: 'guid', nullable: true )]
     protected ?string $colGuid = null;
 
-    /** PHP-serialized TEXT */
+    /** @var array<string, mixed>|null PHP-serialized TEXT */
     #[Assert\Type( type: 'array' )]
     #[ORM\Column( type: 'json', nullable: true )]
     protected ?array $colArray = null;
 
-    /** Comma-separated TEXT */
+    /** @var array<string>|null Comma-separated TEXT */
     #[Assert\Type( type: 'array' )]
     #[ORM\Column( type: 'simple_array', nullable: true )]
     protected ?array $colSimpleArray = null;
@@ -146,8 +147,10 @@ class User extends AbstractEntity implements UserInterface
 
     public function setColTime( ?DateTimeInterface $v ): self { $this->colTime = $v; return $this; }
 
+    /** @return array<string, mixed>|null */
     public function getColJson(): ?array { return $this->colJson; }
 
+    /** @param array<string, mixed>|null $v */
     public function setColJson( ?array $v ): self { $this->colJson = $v; return $this; }
 
     public function getColBlob(): mixed { return $this->colBlob; }
@@ -158,12 +161,16 @@ class User extends AbstractEntity implements UserInterface
 
     public function setColGuid( ?string $v ): self { $this->colGuid = $v; return $this; }
 
+    /** @return array<string, mixed>|null */
     public function getColArray(): ?array { return $this->colArray; }
 
+    /** @param array<string, mixed>|null $v */
     public function setColArray( ?array $v ): self { $this->colArray = $v; return $this; }
 
+    /** @return array<string>|null */
     public function getColSimpleArray(): ?array { return $this->colSimpleArray; }
 
+    /** @param array<string>|null $v */
     public function setColSimpleArray( ?array $v ): self { $this->colSimpleArray = $v; return $this; }
 
     public function getColBinary(): mixed { return $this->colBinary; }
