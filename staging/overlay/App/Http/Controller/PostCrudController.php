@@ -108,7 +108,7 @@ final class PostCrudController extends AbstractController
 
     private function fill( Post $post ): void
     {
-        $r    = $this->request->request;
+        $r    = r()->request;
         $str  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? $v : null;
         $int  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (int)$v : null;
         $flt  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (float)$v : null;

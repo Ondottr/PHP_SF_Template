@@ -112,7 +112,7 @@ final class PostCrudSymfonyController
         }
 
         $this->postRepository->persist( $post );
-        $this->requestStack->getSession()->getFlashBag()->add( 'success', 'Post created successfully.' );
+        s()->getFlashBag()->add( 'success', 'Post created successfully.' );
 
         return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_post_list' ) );
     }
@@ -122,7 +122,7 @@ final class PostCrudSymfonyController
     {
         $post = $this->postRepository->find( $id );
         if ( $post === null ) {
-            $this->requestStack->getSession()->getFlashBag()->add( 'danger', 'Post not found.' );
+            s()->getFlashBag()->add( 'danger', 'Post not found.' );
             return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_post_list' ) );
         }
 
@@ -138,7 +138,7 @@ final class PostCrudSymfonyController
     {
         $post = $this->postRepository->find( $id );
         if ( $post === null ) {
-            $this->requestStack->getSession()->getFlashBag()->add( 'danger', 'Post not found.' );
+            s()->getFlashBag()->add( 'danger', 'Post not found.' );
             return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_post_list' ) );
         }
 
@@ -161,7 +161,7 @@ final class PostCrudSymfonyController
         }
 
         $this->postRepository->persist( $post );
-        $this->requestStack->getSession()->getFlashBag()->add( 'success', 'Post updated successfully.' );
+        s()->getFlashBag()->add( 'success', 'Post updated successfully.' );
 
         return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_post_list' ) );
     }
@@ -171,17 +171,17 @@ final class PostCrudSymfonyController
     {
         $post = $this->postRepository->find( $id );
         if ( $post === null ) {
-            $this->requestStack->getSession()->getFlashBag()->add( 'danger', 'Post not found.' );
+            s()->getFlashBag()->add( 'danger', 'Post not found.' );
             return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_post_list' ) );
         }
 
         if ( !$this->csrfTokenManager->isTokenValid( new CsrfToken( 'submit', $request->request->get( '_token', '' ) ) ) ) {
-            $this->requestStack->getSession()->getFlashBag()->add( 'danger', 'Invalid CSRF token.' );
+            s()->getFlashBag()->add( 'danger', 'Invalid CSRF token.' );
             return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_post_list' ) );
         }
 
         $this->postRepository->remove( $post );
-        $this->requestStack->getSession()->getFlashBag()->add( 'success', 'Post deleted successfully.' );
+        s()->getFlashBag()->add( 'success', 'Post deleted successfully.' );
 
         return new RedirectResponse( $this->urlGenerator->generate( 'symfony_crud_post_list' ) );
     }

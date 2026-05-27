@@ -108,7 +108,7 @@ final class PaymentCrudController extends AbstractController
 
     private function fill( Payment $payment ): void
     {
-        $r    = $this->request->request;
+        $r    = r()->request;
         $str  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? $v : null;
         $int  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (int)$v : null;
         $flt  = static fn( string $k ) => ( $v = $r->get( $k ) ) !== '' && $v !== null ? (float)$v : null;
