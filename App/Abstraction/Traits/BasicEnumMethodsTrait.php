@@ -1,17 +1,13 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Abstraction\Traits;
 
-use ReflectionClass;
-use ReflectionClassConstant;
-
 trait BasicEnumMethodsTrait
 {
-
     /**
      * Return an instance of the enum by its ID.
      */
-    abstract public static function getById( int $id ): self;
+    abstract public static function getById(int $id): self;
 
     /**
      * Return an ID of the enum.
@@ -35,8 +31,7 @@ trait BasicEnumMethodsTrait
      */
     final public function getList(): array
     {
-        return ( new ReflectionClass( static::class ) )
-            ->getConstants( ReflectionClassConstant::IS_PUBLIC );
+        return (new \ReflectionClass(static::class))
+            ->getConstants(\ReflectionClassConstant::IS_PUBLIC);
     }
-
 }

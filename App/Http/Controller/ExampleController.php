@@ -1,5 +1,5 @@
 <?php /** @noinspection PhpUnused */
-declare( strict_types=1 );
+declare(strict_types=1);
 
 namespace App\Http\Controller;
 
@@ -21,33 +21,33 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class ExampleController extends AbstractController
 {
-
-    #[Route( url: '/', httpMethod: 'GET', middleware: [ blank::class ] )]
+    #[Route(url: '/', httpMethod: 'GET', middleware: [blank::class])]
     public function welcome_page(): Response
     {
-        return $this->render( welcome_page::class, [
-            'framework_version' => InstalledVersions::getPrettyVersion( 'nations-original/php-simple-framework' ),
-            'symfony_version' => InstalledVersions::getPrettyVersion( 'symfony/framework-bundle' ),
-        ] );
+        return $this->render(welcome_page::class, [
+            'framework_version' => InstalledVersions::getPrettyVersion('nations-original/php-simple-framework'),
+            'symfony_version' => InstalledVersions::getPrettyVersion('symfony/framework-bundle'),
+        ]);
     }
 
-    #[Route( url: 'example/page/{response_type}', httpMethod: 'GET', middleware: [ custom::class => [ any::class => [ auth::class, api_example::class, admin_example::class ] ] ] )]
-    public function example_route( string $response_type ): Response|RedirectResponse|JsonResponse
+    #[Route(url: 'example/page/{response_type}', httpMethod: 'GET', middleware: [custom::class => [any::class => [auth::class, api_example::class, admin_example::class]]])]
+    public function example_route(string $response_type): Response|RedirectResponse|JsonResponse
     {
         // Return Response
-        if ( $response_type === 'response' )
-            return $this->render( login_page::class, [
-                'user' => ( Kernel::getApplicationUserClassName() )::find( 1 ),
-            ] );
+        if ('response' === $response_type) {
+            return $this->render(login_page::class, [
+                'user' => (Kernel::getApplicationUserClassName())::find(1),
+            ]);
+        }
 
         // Returns RedirectResponse
-        if ( $response_type === 'redirect_response' )
-            return $this->redirectTo( 'example_route', withParams: [
+        if ('redirect_response' === $response_type) {
+            return $this->redirectTo('example_route', withParams: [
                 'response_type' => 'response',
-            ] );
+            ]);
+        }
 
         // if ( $responseType === 'json_response' )
-        return new JsonResponse( [ 'status' => 'ok' ] );
+        return new JsonResponse(['status' => 'ok']);
     }
-
 }

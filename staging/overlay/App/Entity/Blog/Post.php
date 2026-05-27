@@ -21,7 +21,7 @@ class Post extends AbstractEntity
     #[Assert\NotBlank]
     #[Assert\Length( min: 1, max: 255 )]
     #[ORM\Column( type: 'string', unique: true )]
-    protected ?string $title = null;
+    protected string $title;
 
     #[ORM\Column( type: 'text', nullable: true )]
     protected ?string $content = null;
@@ -66,7 +66,7 @@ class Post extends AbstractEntity
     #[ORM\Column( type: 'time', nullable: true )]
     protected ?DateTimeInterface $colTime = null;
 
-    /** MySQL 5.7.8+: native JSON column */
+    /** @var array<string, mixed>|null MySQL 5.7.8+: native JSON column */
     #[Assert\Type( type: 'array' )]
     #[ORM\Column( type: 'json', nullable: true )]
     protected ?array $colJson = null;
@@ -80,12 +80,12 @@ class Post extends AbstractEntity
     #[ORM\Column( type: 'guid', nullable: true )]
     protected ?string $colGuid = null;
 
-    /** PHP-serialized LONGTEXT */
+    /** @var array<string, mixed>|null PHP-serialized LONGTEXT */
     #[Assert\Type( type: 'array' )]
     #[ORM\Column( type: 'json', nullable: true )]
     protected ?array $colArray = null;
 
-    /** Comma-separated LONGTEXT */
+    /** @var array<string>|null Comma-separated LONGTEXT */
     #[Assert\Type( type: 'array' )]
     #[ORM\Column( type: 'simple_array', nullable: true )]
     protected ?array $colSimpleArray = null;
@@ -145,8 +145,10 @@ class Post extends AbstractEntity
 
     public function setColTime( ?DateTimeInterface $v ): self { $this->colTime = $v; return $this; }
 
+    /** @return array<string, mixed>|null */
     public function getColJson(): ?array { return $this->colJson; }
 
+    /** @param array<string, mixed>|null $v */
     public function setColJson( ?array $v ): self { $this->colJson = $v; return $this; }
 
     public function getColBlob(): mixed { return $this->colBlob; }
@@ -157,12 +159,16 @@ class Post extends AbstractEntity
 
     public function setColGuid( ?string $v ): self { $this->colGuid = $v; return $this; }
 
+    /** @return array<string, mixed>|null */
     public function getColArray(): ?array { return $this->colArray; }
 
+    /** @param array<string, mixed>|null $v */
     public function setColArray( ?array $v ): self { $this->colArray = $v; return $this; }
 
+    /** @return array<string>|null */
     public function getColSimpleArray(): ?array { return $this->colSimpleArray; }
 
+    /** @param array<string>|null $v */
     public function setColSimpleArray( ?array $v ): self { $this->colSimpleArray = $v; return $this; }
 
     public function getColBinary(): mixed { return $this->colBinary; }

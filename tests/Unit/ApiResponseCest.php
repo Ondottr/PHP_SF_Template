@@ -10,7 +10,6 @@ use Tests\Support\Uni2Tester;
 
 class ApiResponseCest
 {
-
     public function testExtendsJsonResponse(Uni2Tester $I): void
     {
         $I->assertInstanceOf(JsonResponse::class, ApiResponse::success());
@@ -18,7 +17,7 @@ class ApiResponseCest
 
     public function testSuccessBodyStructure(Uni2Tester $I): void
     {
-        $r    = ApiResponse::success(['key' => 'value']);
+        $r = ApiResponse::success(['key' => 'value']);
         $body = json_decode($r->getContent(), associative: true);
 
         $I->assertTrue($body['success']);
@@ -30,7 +29,7 @@ class ApiResponseCest
 
     public function testErrorBodyStructure(Uni2Tester $I): void
     {
-        $r    = ApiResponse::error('Oops', 422);
+        $r = ApiResponse::error('Oops', 422);
         $body = json_decode($r->getContent(), associative: true);
 
         $I->assertFalse($body['success']);
@@ -42,21 +41,28 @@ class ApiResponseCest
     public function testPaginatedResponseContainsMeta(Uni2Tester $I): void
     {
         $entity = new class {
-            public function getCreatedAt(): int { return 1700000000; }
-            public function getId(): int { return 21; }
+            public function getCreatedAt(): int
+            {
+                return 1700000000;
+            }
+
+            public function getId(): int
+            {
+                return 21;
+            }
         };
 
-        $next   = PaginationCursor::after($entity, 'createdAt');
+        $next = PaginationCursor::after($entity, 'createdAt');
         $result = new CursorPaginationResult(
-            items:      [['id' => 1], ['id' => 2]],
-            cursor:     null,
+            items: [['id' => 1], ['id' => 2]],
+            cursor: null,
             nextCursor: $next,
             prevCursor: null,
-            perPage:    20,
-            hasMore:    true,
+            perPage: 20,
+            hasMore: true,
         );
 
-        $r    = ApiResponse::success(data: [['id' => 1], ['id' => 2]], pagination: $result);
+        $r = ApiResponse::success(data: [['id' => 1], ['id' => 2]], pagination: $result);
         $body = json_decode($r->getContent(), associative: true);
 
         $I->assertNotNull($body['meta']['pagination']);
@@ -74,5 +80,4 @@ class ApiResponseCest
     {
         $I->assertSame(404, ApiResponse::notFound('Not here.')->getStatusCode());
     }
-
 }

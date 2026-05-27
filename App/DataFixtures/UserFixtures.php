@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\DataFixtures;
 
@@ -7,7 +7,6 @@ use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use PHP_SF\System\Interface\UserInterface;
 use PHP_SF\System\Kernel;
-use RuntimeException;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 /**
@@ -19,32 +18,33 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  */
 final class UserFixtures extends Fixture implements FixtureGroupInterface
 {
+    public static function getGroups(): array
+    {
+        return ['main'];
+    }
 
-    public static function getGroups(): array { return [ 'main' ]; }
-
-
-    public function load( ObjectManager $manager ): void
+    public function load(ObjectManager $manager): void
     {
         try {
             $userClass = Kernel::getApplicationUserClassName();
-        } catch ( InvalidConfigurationException $e ) {
-            throw new RuntimeException(
+        } catch (InvalidConfigurationException $e) {
+            throw new \RuntimeException(
                 'UserFixtures requires setApplicationUserClassName() to be called in bin/console. Run init.sh first.',
                 0,
-                $e
+                $e,
             );
         }
 
-        if ( $manager->getMetadataFactory()->isTransient( $userClass ) )
+        if ($manager->getMetadataFactory()->isTransient($userClass)) {
             return;
+        }
 
         /** @var UserInterface $user */
         $user = new $userClass();
-        $user->setEmail( env( 'ADMIN_EMAIL', 'admin@example.com' ) );
-        $user->setPassword( env( 'ADMIN_PASSWORD', 'admin_password' ) );
+        $user->setEmail(env('ADMIN_EMAIL', 'admin@example.com'));
+        $user->setPassword(env('ADMIN_PASSWORD', 'admin_password'));
 
-        $manager->persist( $user );
+        $manager->persist($user);
         $manager->flush();
     }
-
 }

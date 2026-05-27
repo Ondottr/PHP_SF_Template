@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Doctrine;
 
@@ -19,14 +19,13 @@ use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
  */
 final class UnqualifiedTableQuoteStrategy extends DefaultQuoteStrategy
 {
-
-    public function getTableName( ClassMetadata $class, AbstractPlatform $platform ): string
+    /** @param ClassMetadata<object> $class */
+    public function getTableName(ClassMetadata $class, AbstractPlatform $platform): string
     {
         $tableName = $class->table['name'];
 
-        return isset( $class->table['quoted'] )
-            ? $platform->quoteSingleIdentifier( $tableName )
+        return isset($class->table['quoted'])
+            ? $platform->quoteSingleIdentifier($tableName)
             : $tableName;
     }
-
 }

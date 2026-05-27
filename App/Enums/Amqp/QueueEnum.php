@@ -6,16 +6,12 @@ use PHP_SF\System\Database\RabbitMQ;
 use PHP_SF\System\Database\RabbitMQConsumer;
 
 /**
- * Class QueueEnum
- *
- * @package App\Enums\Amqp
+ * Class QueueEnum.
  */
 enum QueueEnum: string
 {
-
     case DEFAULT = 'default_queue';
     // todo: add more queues, if needed
-
 
     public function getMessageBus(): RabbitMQ
     {
@@ -26,7 +22,5 @@ enum QueueEnum: string
     {
         (new RabbitMQConsumer())
             ->consume($this, $callback);
-
     }
-
 }

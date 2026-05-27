@@ -9,3 +9,4 @@ var/cache
 var/log
 php-sf-ci-workflow
 wiki
+cache

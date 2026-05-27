@@ -13,6 +13,7 @@ CLAUDE.md
 /Platform/
 /php-sf-ci-workflow
 /wiki
+/cache
 /node_modules/
 /public/js/app.js
 /.idea

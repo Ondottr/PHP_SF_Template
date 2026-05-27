@@ -1,20 +1,22 @@
 <?php declare(strict_types=1);
 
+require_once __DIR__.'/.php-cs-fixer/DeclareStrictTypesOneLineFixer.php';
+
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
 $finder = Finder::create()
     ->in([
-        __DIR__ . '/Platform/app',
-        __DIR__ . '/Platform/src',
-        __DIR__ . '/Platform/tests',
-        __DIR__ . '/Platform/functions',
-        __DIR__ . '/App',
-        __DIR__ . '/src',
-        __DIR__ . '/config',
-        __DIR__ . '/Doctrine',
-        __DIR__ . '/functions',
-        __DIR__ . '/tests',
+        __DIR__.'/Platform/app',
+        __DIR__.'/Platform/src',
+        __DIR__.'/Platform/tests',
+        __DIR__.'/Platform/functions',
+        __DIR__.'/App',
+        __DIR__.'/src',
+        __DIR__.'/config',
+        __DIR__.'/Doctrine',
+        __DIR__.'/functions',
+        __DIR__.'/tests',
     ])
     ->exclude([
         'var',
@@ -24,20 +26,23 @@ $finder = Finder::create()
 return (new Config())
     ->setRiskyAllowed(true)
     ->setFinder($finder)
+    ->registerCustomFixers([new DeclareStrictTypesOneLineFixer()])
     ->setRules([
-        '@PSR2' => true,
+        '@PSR2'                             => true,
         // Base rule sets
-        '@Symfony' => true,
+        '@Symfony'                          => true,
 
         // --- Modern PHP / Symfony ---
-        'declare_strict_types' => true,
-        'ordered_imports' => [
+        'declare_strict_types'              => true,
+        'blank_line_after_opening_tag'      => false,   // our custom fixer handles <?php+declare layout
+        'App/declare_strict_types_one_line' => true,
+        'ordered_imports'                   => [
             'sort_algorithm' => 'alpha',
         ],
-        'no_unused_imports' => true,
+        'no_unused_imports'                 => true,
 
         // --- Arrays ---
-        'array_syntax' => ['syntax' => 'short'],
+        'array_syntax'                      => ['syntax' => 'short'],
 
         // --- Readability ---
         'not_operator_with_successor_space' => false,
@@ -47,7 +52,7 @@ return (new Config())
         'method_argument_space' => [
             'on_multiline' => 'ensure_fully_multiline',
         ],
-        'single_line_throw' => false, // keeps throw(...) multiline even if fits in one line
+        'single_line_throw'                 => false,                 // keeps throw(...) multiline even if fits in one line
 
         'method_chaining_indentation' => true,
 
@@ -64,7 +69,7 @@ return (new Config())
         ],
 
         // --- Strings ---
-        'single_quote' => true,
+        'single_quote'                      => true,
 
         // --- Control structures ---
         'control_structure_braces' => true,
@@ -73,19 +78,19 @@ return (new Config())
         ],
 
         // --- Clean code ---
-        'phpdoc_to_comment' => false, // keep /** for all multiline comments
-        'no_useless_else' => true,
-        'no_useless_return' => true,
+        'phpdoc_to_comment'                 => false,                 // keep /** for all multiline comments
+        'no_useless_else'                   => true,
+        'no_useless_return'                 => true,
 
         // --- Risky but useful ---
-        'strict_comparison' => true,
-        'strict_param' => true,
+        'strict_comparison'                 => true,
+        'strict_param'                      => true,
 
         // --- Keep your style ---
-        'binary_operator_spaces' => [
+        'binary_operator_spaces'            => [
             'default' => 'single_space',
         ],
 
         // --- Concatenation spacing ---
-        'concat_space' => ['spacing' => 'one'],
+        'concat_space'                      => ['spacing' => 'one'],
     ]);

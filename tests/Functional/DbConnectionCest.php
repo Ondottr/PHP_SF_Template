@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace Tests\Functional;
 
@@ -20,63 +20,63 @@ use Tests\Support\FunctionalTester;
  */
 class DbConnectionCest
 {
-
-    private ?int                   $createdEntityId = null;
+    private ?int $createdEntityId = null;
     private EntityManagerInterface $em;
-
 
     // ── Lifecycle ────────────────────────────────────────────────────────────
 
-    public function _before( FunctionalTester $I ): void
+    public function _before(FunctionalTester $I): void
     {
         $userClass = PhpSfKernel::getApplicationUserClassName();
 
         /** @var EntityManagerInterface|null $em */
         $em = Kernel::getInstance()
             ->getContainer()
-            ->get( 'doctrine' )
-            ->getManagerForClass( $userClass );
+            ->get('doctrine')
+            ->getManagerForClass($userClass);
 
-        if ( $em === null )
-            Assert::markTestSkipped( "No entity manager is configured for $userClass" );
+        if (null === $em) {
+            Assert::markTestSkipped("No entity manager is configured for $userClass");
+        }
 
         $this->em = $em;
 
         try {
-            $this->em->getConnection()->executeQuery( 'SELECT 1' );
-        } catch ( \Throwable $e ) {
-            Assert::markTestSkipped( 'DB not reachable (is docker-compose up?): ' . $e->getMessage() );
+            $this->em->getConnection()->executeQuery('SELECT 1');
+        } catch (\Throwable $e) {
+            Assert::markTestSkipped('DB not reachable (is docker-compose up?): ' . $e->getMessage());
         }
 
-        $tableName = $this->em->getClassMetadata( $userClass )->getTableName();
-        $tables    = $this->em->getConnection()->createSchemaManager()->listTableNames();
+        $tableName = $this->em->getClassMetadata($userClass)->getTableName();
+        $tables = $this->em->getConnection()->createSchemaManager()->listTableNames();
 
-        if ( !in_array( $tableName, $tables, true ) )
+        if (!in_array($tableName, $tables, true)) {
             Assert::markTestSkipped(
-                "Table '$tableName' not found — run: bin/console doctrine:schema:create --env=test"
+                "Table '$tableName' not found — run: bin/console doctrine:schema:create --env=test",
             );
+        }
     }
 
-    public function _after( FunctionalTester $I ): void
+    public function _after(FunctionalTester $I): void
     {
-        if ( $this->createdEntityId === null )
+        if (null === $this->createdEntityId) {
             return;
+        }
 
         $userClass = PhpSfKernel::getApplicationUserClassName();
-        $entity    = $this->em->find( $userClass, $this->createdEntityId );
+        $entity = $this->em->find($userClass, $this->createdEntityId);
 
-        if ( $entity !== null ) {
-            $this->em->remove( $entity );
+        if (null !== $entity) {
+            $this->em->remove($entity);
             $this->em->flush();
         }
 
         $this->createdEntityId = null;
     }
 
-
     // ── Connection ───────────────────────────────────────────────────────────
 
-    public function testConnectionPointsToTestDatabase( FunctionalTester $I ): void
+    public function testConnectionPointsToTestDatabase(FunctionalTester $I): void
     {
         $dbName = $this->em->getConnection()->getDatabase();
 
@@ -84,89 +84,86 @@ class DbConnectionCest
             '_test',
             $dbName,
             "Expected the test DB name to end with '_test', got: '$dbName'. " .
-            'Is when\@test in doctrine.yaml applied?'
+            'Is when\@test in doctrine.yaml applied?',
         );
     }
 
-    public function testConnectionCanExecuteRawQuery( FunctionalTester $I ): void
+    public function testConnectionCanExecuteRawQuery(FunctionalTester $I): void
     {
-        $result = $this->em->getConnection()->fetchOne( 'SELECT 1' );
+        $result = $this->em->getConnection()->fetchOne('SELECT 1');
 
-        $I->assertEquals( 1, $result );
+        $I->assertEquals(1, $result);
     }
-
 
     // ── ORM metadata ─────────────────────────────────────────────────────────
 
-    public function testEntityManagerHasMappedEntities( FunctionalTester $I ): void
+    public function testEntityManagerHasMappedEntities(FunctionalTester $I): void
     {
         $classes = $this->em->getMetadataFactory()->getAllMetadata();
 
-        $I->assertNotEmpty( $classes, 'No mapped entities found for this entity manager' );
+        $I->assertNotEmpty($classes, 'No mapped entities found for this entity manager');
     }
 
-    public function testApplicationUserClassIsMapped( FunctionalTester $I ): void
+    public function testApplicationUserClassIsMapped(FunctionalTester $I): void
     {
         $userClass = PhpSfKernel::getApplicationUserClassName();
 
         $I->assertTrue(
-            $this->em->getMetadataFactory()->hasMetadataFor( $userClass ),
-            "$userClass is not mapped to its entity manager"
+            $this->em->getMetadataFactory()->hasMetadataFor($userClass),
+            "$userClass is not mapped to its entity manager",
         );
     }
 
-
     // ── Repository / CRUD ────────────────────────────────────────────────────
 
-    public function testFindAllReturnsArray( FunctionalTester $I ): void
+    public function testFindAllReturnsArray(FunctionalTester $I): void
     {
         $userClass = PhpSfKernel::getApplicationUserClassName();
-        $result    = $this->em->getRepository( $userClass )->findAll();
+        $result = $this->em->getRepository($userClass)->findAll();
 
-        $I->assertIsArray( $result );
+        $I->assertIsArray($result);
     }
 
-    public function testPersistAndRetrieve( FunctionalTester $I ): void
+    public function testPersistAndRetrieve(FunctionalTester $I): void
     {
         $userClass = PhpSfKernel::getApplicationUserClassName();
-        $email     = 'integration-' . uniqid() . '@test.example';
+        $email = 'integration-' . uniqid() . '@test.example';
 
-        $entity = ( new $userClass() )
-            ->setEmail( $email )
-            ->setPassword( 'test-password' );
+        $entity = (new $userClass())
+            ->setEmail($email)
+            ->setPassword('test-password');
 
-        $this->em->persist( $entity );
+        $this->em->persist($entity);
         $this->em->flush();
 
         $this->createdEntityId = $entity->getId();
-        $I->assertNotNull( $this->createdEntityId );
+        $I->assertNotNull($this->createdEntityId);
 
         $this->em->clear();
 
-        $found = $this->em->find( $userClass, $this->createdEntityId );
-        $I->assertNotNull( $found );
-        $I->assertEquals( $email, $found->getEmail() );
+        $found = $this->em->find($userClass, $this->createdEntityId);
+        $I->assertNotNull($found);
+        $I->assertEquals($email, $found->getEmail());
     }
 
-    public function testRemove( FunctionalTester $I ): void
+    public function testRemove(FunctionalTester $I): void
     {
         $userClass = PhpSfKernel::getApplicationUserClassName();
-        $email     = 'integration-delete-' . uniqid() . '@test.example';
+        $email = 'integration-delete-' . uniqid() . '@test.example';
 
-        $entity = ( new $userClass() )
-            ->setEmail( $email )
-            ->setPassword( 'test-password' );
+        $entity = (new $userClass())
+            ->setEmail($email)
+            ->setPassword('test-password');
 
-        $this->em->persist( $entity );
+        $this->em->persist($entity);
         $this->em->flush();
 
         $id = $entity->getId();
 
-        $this->em->remove( $entity );
+        $this->em->remove($entity);
         $this->em->flush();
         $this->em->clear();
 
-        $I->assertNull( $this->em->find( $userClass, $id ) );
+        $I->assertNull($this->em->find($userClass, $id));
     }
-
 }

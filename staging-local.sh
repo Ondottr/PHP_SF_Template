@@ -27,27 +27,11 @@ docker exec pr-$PR_NUMBER-mysql-1 mysql -uroot -prootpassword \
 docker exec pr-$PR_NUMBER-mariadb-1 mariadb -uroot -prootpassword \
   -e "GRANT ALL PRIVILEGES ON \`staging_pr${PR_NUMBER}\\_%\`.* TO 'user'@'%'; FLUSH PRIVILEGES;"
 
-echo "==> Creating databases and schemas"
-for em in main blog payments; do
-  PR_NUMBER=$PR_NUMBER APP_IMAGE=$APP_IMAGE $COMPOSE exec -T app php bin/console doctrine:database:create --if-not-exists --connection=$em
-  PR_NUMBER=$PR_NUMBER APP_IMAGE=$APP_IMAGE $COMPOSE exec -T app php bin/console doctrine:schema:create --em=$em
-done
+echo "==> Migrating all databases and loading fixtures"
+PR_NUMBER=$PR_NUMBER APP_IMAGE=$APP_IMAGE $COMPOSE exec -T app php bin/console app:migrate-to-all
 
-echo "==> Loading fixtures"
-for em in main blog payments; do
-  PR_NUMBER=$PR_NUMBER APP_IMAGE=$APP_IMAGE $COMPOSE exec -T app \
-    php bin/console doctrine:fixtures:custom-loader --no-interaction --em=$em --group=$em
-done
-
-echo "==> Setting up test databases"
-for em in main blog payments; do
-  PR_NUMBER=$PR_NUMBER APP_IMAGE=$APP_IMAGE $COMPOSE exec -T -e APP_ENV=test app \
-    php bin/console doctrine:database:create --if-not-exists --connection=$em
-  PR_NUMBER=$PR_NUMBER APP_IMAGE=$APP_IMAGE $COMPOSE exec -T -e APP_ENV=test app \
-    php bin/console doctrine:schema:create --em=$em
-  PR_NUMBER=$PR_NUMBER APP_IMAGE=$APP_IMAGE $COMPOSE exec -T -e APP_ENV=test app \
-    php bin/console doctrine:fixtures:custom-loader --no-interaction --em=$em --group=$em
-done
+echo "==> Migrating test databases and loading fixtures"
+PR_NUMBER=$PR_NUMBER APP_IMAGE=$APP_IMAGE $COMPOSE exec -T -e APP_ENV=test app php bin/console app:migrate-to-all
 
 IP=$(docker inspect pr-$PR_NUMBER-app-1 \
   --format '{{index .NetworkSettings.Networks "nginx-proxy" "IPAddress"}}')

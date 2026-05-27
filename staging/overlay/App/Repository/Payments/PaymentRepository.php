@@ -6,10 +6,11 @@ use App\Entity\Payments\Payment;
 use PHP_SF\System\Classes\Abstracts\AbstractEntityRepository;
 
 /**
+ * @extends AbstractEntityRepository<Payment>
  * @method Payment|null find( $id, $lockMode = null, $lockVersion = null )
- * @method Payment|null findOneBy( array $criteria, array $orderBy = null )
+ * @method Payment|null findOneBy( array<string, mixed> $criteria, array<string, mixed>|null $orderBy = null )
  * @method Payment[]    findAll()
- * @method Payment[]    findBy( array $criteria, array $orderBy = null, $limit = null, $offset = null )
+ * @method Payment[]    findBy( array<string, mixed> $criteria, array<string, mixed>|null $orderBy = null, $limit = null, $offset = null )
  */
 class PaymentRepository extends AbstractEntityRepository
 {

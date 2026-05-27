@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Tests\Unit;
 
@@ -7,12 +7,10 @@ use Tests\Support\Uni2Tester;
 
 class ExampleUnitCest
 {
-
     public function _after(Uni2Tester $I): void
     {
         rca()->clear();
     }
-
 
     public function testRedisInstanceIsSingleton(Uni2Tester $I): void
     {
@@ -40,5 +38,4 @@ class ExampleUnitCest
     {
         $I->assertNull(rca()->get('non_existing_key'));
     }
-
 }

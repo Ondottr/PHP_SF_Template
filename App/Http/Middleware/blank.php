@@ -1,4 +1,4 @@
-<?php declare( strict_types=1 );
+<?php declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
@@ -9,13 +9,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 final class blank extends Middleware
 {
-
     protected function result(): bool|JsonResponse|RedirectResponse
     {
-        $this->changeFooterTemplateClassName( blank_page::class );
-        $this->changeHeaderTemplateClassName( blank_page::class );
+        $this->changeFooterTemplateClassName(blank_page::class);
+        $this->changeHeaderTemplateClassName(blank_page::class);
 
         return true;
     }
-
 }
