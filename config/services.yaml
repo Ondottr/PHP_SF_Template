@@ -34,6 +34,11 @@ services:
     exclude:
       - '../App/Http/Controller'
       - '../App/Http/Middleware'
+
+  # Controllers registered separately with public: true so Router can resolve them via container->get()
+  App\Http\Controller\:
+    resource: '../App/Http/Controller/'
+    public: true
       - '../App/DoctrineLifecycleCallbacks/'
       - '../App/DependencyInjection/'
       - '../App/Entity/'

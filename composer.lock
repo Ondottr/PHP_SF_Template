@@ -343,16 +343,16 @@
         },
         {
             "name": "nations-original/php-simple-framework",
-            "version": "3.0.0",
+            "version": "v3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ondottr/PHP_SF_Platform.git",
-                "reference": "53235f78d72762117a5bd6f845dfe804a721646b"
+                "reference": "06d660cd6e8b525e18bb3685c9111aaa815d27b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/53235f78d72762117a5bd6f845dfe804a721646b",
-                "reference": "53235f78d72762117a5bd6f845dfe804a721646b",
+                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/06d660cd6e8b525e18bb3685c9111aaa815d27b5",
+                "reference": "06d660cd6e8b525e18bb3685c9111aaa815d27b5",
                 "shasum": ""
             },
             "require": {
@@ -390,9 +390,9 @@
             "description": "A simple PHP framework for Nations Original.",
             "support": {
                 "issues": "https://github.com/Ondottr/PHP_SF_Platform/issues",
-                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/3.0.0"
+                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v3.0.1"
             },
-            "time": "2026-05-27T11:19:09+00:00"
+            "time": "2026-05-27T12:01:12+00:00"
         },
         {
             "name": "nelmio/api-doc-bundle",
@@ -9181,16 +9181,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.10.2",
+            "version": "2.10.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "a1bbdc172f32a25fe999965b65b6e71fd87da9ed"
+                "reference": "7c1472269227dc6f18930bd903d7a88fe6c52130"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/a1bbdc172f32a25fe999965b65b6e71fd87da9ed",
-                "reference": "a1bbdc172f32a25fe999965b65b6e71fd87da9ed",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/7c1472269227dc6f18930bd903d7a88fe6c52130",
+                "reference": "7c1472269227dc6f18930bd903d7a88fe6c52130",
                 "shasum": ""
             },
             "require": {
@@ -9278,7 +9278,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.10.2"
+                "source": "https://github.com/guzzle/psr7/tree/2.10.3"
             },
             "funding": [
                 {
@@ -9294,7 +9294,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-25T22:58:15+00:00"
+            "time": "2026-05-27T11:48:20+00:00"
         },
         {
             "name": "masterminds/html5",
