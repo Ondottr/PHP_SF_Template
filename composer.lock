@@ -343,16 +343,16 @@
         },
         {
             "name": "nations-original/php-simple-framework",
-            "version": "v3.0.1",
+            "version": "v3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ondottr/PHP_SF_Platform.git",
-                "reference": "06d660cd6e8b525e18bb3685c9111aaa815d27b5"
+                "reference": "d8e9165f00f0e7d4debf04a4846dd9f0a25d1d22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/06d660cd6e8b525e18bb3685c9111aaa815d27b5",
-                "reference": "06d660cd6e8b525e18bb3685c9111aaa815d27b5",
+                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/d8e9165f00f0e7d4debf04a4846dd9f0a25d1d22",
+                "reference": "d8e9165f00f0e7d4debf04a4846dd9f0a25d1d22",
                 "shasum": ""
             },
             "require": {
@@ -390,9 +390,9 @@
             "description": "A simple PHP framework for Nations Original.",
             "support": {
                 "issues": "https://github.com/Ondottr/PHP_SF_Platform/issues",
-                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v3.0.1"
+                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v3.0.2"
             },
-            "time": "2026-05-27T12:01:12+00:00"
+            "time": "2026-06-02T18:02:27+00:00"
         },
         {
             "name": "nelmio/api-doc-bundle",
@@ -1110,16 +1110,16 @@
         },
         {
             "name": "predis/predis",
-            "version": "v3.4.2",
+            "version": "v3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/predis/predis.git",
-                "reference": "2033429520d8997a7815a2485f56abe6d2d0e075"
+                "reference": "8cc4319c06924c8ff0c5c7eec4243a19e3be32f1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/predis/predis/zipball/2033429520d8997a7815a2485f56abe6d2d0e075",
-                "reference": "2033429520d8997a7815a2485f56abe6d2d0e075",
+                "url": "https://api.github.com/repos/predis/predis/zipball/8cc4319c06924c8ff0c5c7eec4243a19e3be32f1",
+                "reference": "8cc4319c06924c8ff0c5c7eec4243a19e3be32f1",
                 "shasum": ""
             },
             "require": {
@@ -1161,7 +1161,7 @@
             ],
             "support": {
                 "issues": "https://github.com/predis/predis/issues",
-                "source": "https://github.com/predis/predis/tree/v3.4.2"
+                "source": "https://github.com/predis/predis/tree/v3.5.0"
             },
             "funding": [
                 {
@@ -1169,7 +1169,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-09T20:33:04+00:00"
+            "time": "2026-06-02T19:25:56+00:00"
         },
         {
             "name": "psr/cache",
@@ -14282,6 +14282,6 @@
         "ext-zend-opcache": "*",
         "ext-zlib": "*"
     },
-    "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
 }
