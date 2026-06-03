@@ -14,7 +14,7 @@
   "dependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.20.11",
     "async": "^3.2.0",
-    "axios": "1.15.0",
+    "axios": "1.16.0",
     "bootstrap": "^5.3.2",
     "jquery": "^3.6.0"
   },
