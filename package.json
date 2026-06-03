@@ -53,5 +53,5 @@
     "dev": "webpack --watch --env mode=development --env cache=0 --progress",
     "build": "webpack --env mode=production --env cache=1 --progress",
     "test:unit": "jest --config ./jest.config.js"
-  },
+  }
 }

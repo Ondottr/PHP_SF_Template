@@ -343,16 +343,16 @@
         },
         {
             "name": "nations-original/php-simple-framework",
-            "version": "v3.0.2",
+            "version": "v3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ondottr/PHP_SF_Platform.git",
-                "reference": "d8e9165f00f0e7d4debf04a4846dd9f0a25d1d22"
+                "reference": "fab777f10e7ad2cfd20b6e468de4d2e83459246e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/d8e9165f00f0e7d4debf04a4846dd9f0a25d1d22",
-                "reference": "d8e9165f00f0e7d4debf04a4846dd9f0a25d1d22",
+                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/fab777f10e7ad2cfd20b6e468de4d2e83459246e",
+                "reference": "fab777f10e7ad2cfd20b6e468de4d2e83459246e",
                 "shasum": ""
             },
             "require": {
@@ -390,9 +390,9 @@
             "description": "A simple PHP framework for Nations Original.",
             "support": {
                 "issues": "https://github.com/Ondottr/PHP_SF_Platform/issues",
-                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v3.0.2"
+                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v3.0.3"
             },
-            "time": "2026-06-02T18:02:27+00:00"
+            "time": "2026-06-03T06:46:19+00:00"
         },
         {
             "name": "nelmio/api-doc-bundle",
@@ -14293,6 +14293,6 @@
         "ext-zend-opcache": "*",
         "ext-zlib": "*"
     },
-    "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
 }
