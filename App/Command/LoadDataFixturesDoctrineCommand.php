@@ -1,7 +1,4 @@
-<?php
-/** @noinspection PhpInternalEntityUsedInspection */
-
-/** @noinspection PhpMissingParentCallCommonInspection */ // and could be more
+<?php /** @noinspection PhpInternalEntityUsedInspection */ /** @noinspection PhpMissingParentCallCommonInspection */ // and could be more
 declare(strict_types=1);
 
 namespace App\Command;
@@ -12,6 +9,7 @@ use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\AbstractLogger;
+use Stringable;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -33,8 +31,11 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
 {
     private SymfonyFixturesLoader $fixturesLoader;
 
-    /** @var array<AbstractPurger> */
+    /**
+     * @var array<AbstractPurger>
+     */
     private array $purgers;
+
 
     /**
      * @param iterable<AbstractPurger> $purgers
@@ -51,6 +52,7 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
         $this->purgers = iterator_to_array($purgers);
     }
 
+
     protected function configure(): void
     {
         $this
@@ -60,7 +62,7 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
                 'group',
                 null,
                 InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED,
-                'Only load fixtures that belong to this group'
+                'Only load fixtures that belong to this group',
             );
     }
 
@@ -74,8 +76,8 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
                 ', ',
                 array_filter(
                     array_keys($this->getDoctrine()->getManagerNames()),
-                    static fn(string $name) => 'dummy' !== $name,
-                )
+                    static fn (string $name) => 'dummy' !== $name,
+                ),
             );
             $ui->error(sprintf('The --em option is required. Available entity managers: %s.', $available));
 
@@ -84,12 +86,13 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
 
         $em = $this->getEntityManager($emName);
 
-        if ( !$input->getOption('force')) {
-            if ( !$ui->confirm(
+        if (!$input->getOption('force')) {
+            if (!$ui->confirm(
                 sprintf(
                     'Careful, database "%s" will be purged. Do you want to continue?',
-                    $em->getConnection()->getDatabase()
-                ), !$input->isInteractive()
+                    $em->getConnection()->getDatabase(),
+                ),
+                !$input->isInteractive(),
             )) {
                 return 0;
             }
@@ -98,14 +101,14 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
         $fixtures = $this->fixturesLoader
             ->getFixtures($groups = $input->getOption('group'));
 
-        if ( !$fixtures) {
+        if (!$fixtures) {
             $message = 'Could not find any fixture services to load';
 
-            if ( !empty($groups)) {
+            if (!empty($groups)) {
                 $message .= sprintf(' in the groups (%s)', implode(', ', $groups));
             }
 
-            $ui->error($message.'.');
+            $ui->error($message . '.');
 
             return 1;
         }
@@ -113,15 +116,13 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
         $executor = new ORMExecutor($em);
         $executor->setLogger(
             new class($ui) extends AbstractLogger {
-
                 public function __construct(private readonly SymfonyStyle $ui) {}
 
-                public function log(mixed $level, string|\Stringable $message, array $context = []): void
-            {
-                $this->ui->text(sprintf('  <comment>></comment> <info>%s</info>', $message));
-            }
-
-            }
+                public function log(mixed $level, string|Stringable $message, array $context = []): void
+                {
+                    $this->ui->text(sprintf('  <comment>></comment> <info>%s</info>', $message));
+                }
+            },
         );
 
         // Purge outside the executor's transaction: TRUNCATE/DELETE causes an implicit

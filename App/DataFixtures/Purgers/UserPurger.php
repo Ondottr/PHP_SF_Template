@@ -6,6 +6,7 @@ use App\Abstraction\Classes\AbstractPurger;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use PHP_SF\System\Kernel;
+use RuntimeException;
 
 /**
  * Purges the User table before fixtures are loaded.
@@ -16,7 +17,9 @@ use PHP_SF\System\Kernel;
 final class UserPurger extends AbstractPurger
 {
     private string $emName;
+
     private string $quotedTable;
+
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -46,10 +49,11 @@ final class UserPurger extends AbstractPurger
             return;
         }
 
-        throw new \RuntimeException(
+        throw new RuntimeException(
             sprintf('No entity manager found for User class "%s".', $userClass),
         );
     }
+
 
     public function getEntityManagerName(): string
     {

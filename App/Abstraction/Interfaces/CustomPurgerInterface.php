@@ -2,6 +2,4 @@
 
 namespace App\Abstraction\Interfaces;
 
-interface CustomPurgerInterface
-{
-}
+interface CustomPurgerInterface {}

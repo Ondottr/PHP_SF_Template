@@ -7,6 +7,7 @@ use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use PHP_SF\System\Interface\UserInterface;
 use PHP_SF\System\Kernel;
+use RuntimeException;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 /**
@@ -18,17 +19,12 @@ use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
  */
 final class UserFixtures extends Fixture implements FixtureGroupInterface
 {
-    public static function getGroups(): array
-    {
-        return ['main'];
-    }
-
     public function load(ObjectManager $manager): void
     {
         try {
             $userClass = Kernel::getApplicationUserClassName();
         } catch (InvalidConfigurationException $e) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'UserFixtures requires setApplicationUserClassName() to be called in bin/console. Run init.sh first.',
                 0,
                 $e,
@@ -46,5 +42,10 @@ final class UserFixtures extends Fixture implements FixtureGroupInterface
 
         $manager->persist($user);
         $manager->flush();
+    }
+
+    public static function getGroups(): array
+    {
+        return ['main'];
     }
 }

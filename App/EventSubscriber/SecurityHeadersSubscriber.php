@@ -35,21 +35,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 final class SecurityHeadersSubscriber implements EventSubscriberInterface
 {
-    /**
-     * CSP nonce shared within the same PHP process.
-     *
-     * KernelEvents::RESPONSE can fire twice for RedirectResponse
-     * (original request and inner {@see Router::init()} re-route),
-     * so the null guard keeps a stable nonce value per HTTP request and
-     * prevents generating multiple nonces in the same request lifecycle.
-     */
-    //    private static ?string $nonce = null;
-
-    public static function getSubscribedEvents(): array
-    {
-        return [KernelEvents::RESPONSE => 'onKernelResponse'];
-    }
-
     public function onKernelResponse(ResponseEvent $event): void
     {
         if (!$event->isMainRequest()) {
@@ -85,6 +70,21 @@ final class SecurityHeadersSubscriber implements EventSubscriberInterface
 
         // Uncomment once you've configured buildCsp() below.
         //        $response->headers->set( 'Content-Security-Policy', $this->buildCsp() );
+    }
+
+    /**
+     * CSP nonce shared within the same PHP process.
+     *
+     * KernelEvents::RESPONSE can fire twice for RedirectResponse
+     * (original request and inner {@see Router::init()} re-route),
+     * so the null guard keeps a stable nonce value per HTTP request and
+     * prevents generating multiple nonces in the same request lifecycle.
+     */
+    //    private static ?string $nonce = null;
+
+    public static function getSubscribedEvents(): array
+    {
+        return [KernelEvents::RESPONSE => 'onKernelResponse'];
     }
 
     /**

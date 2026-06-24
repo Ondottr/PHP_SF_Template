@@ -19,7 +19,9 @@ use Doctrine\ORM\Mapping\DefaultQuoteStrategy;
  */
 final class UnqualifiedTableQuoteStrategy extends DefaultQuoteStrategy
 {
-    /** @param ClassMetadata<object> $class */
+    /**
+     * @param ClassMetadata<object> $class
+     */
     public function getTableName(ClassMetadata $class, AbstractPlatform $platform): string
     {
         $tableName = $class->table['name'];

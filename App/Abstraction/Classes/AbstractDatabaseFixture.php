@@ -6,9 +6,16 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\ObjectManager;
+use RuntimeException;
+use Throwable;
 
 abstract class AbstractDatabaseFixture extends Fixture
 {
+    /**
+     * @return string[]|string List of queries or one query to be executed to insert all required data to the table
+     */
+    abstract protected function loadTable(): array|string;
+
     final public function load(ObjectManager $manager): void
     {
         assert($manager instanceof EntityManagerInterface);
@@ -24,8 +31,8 @@ abstract class AbstractDatabaseFixture extends Fixture
                     ->createNativeQuery($query, new ResultSetMappingBuilder($manager))
                     ->execute();
             }
-        } catch (\Throwable $e) {
-            throw new \RuntimeException('Error while inserting data to the table: ' . $e->getMessage(), previous: $e);
+        } catch (Throwable $e) {
+            throw new RuntimeException('Error while inserting data to the table: ' . $e->getMessage(), previous: $e);
         }
 
         try {
@@ -39,8 +46,8 @@ abstract class AbstractDatabaseFixture extends Fixture
                     ->createNativeQuery($query, new ResultSetMappingBuilder($manager))
                     ->execute();
             }
-        } catch (\Throwable $e) {
-            throw new \RuntimeException('Error while creating functions: ' . $e->getMessage(), previous: $e);
+        } catch (Throwable $e) {
+            throw new RuntimeException('Error while creating functions: ' . $e->getMessage(), previous: $e);
         }
 
         try {
@@ -54,15 +61,10 @@ abstract class AbstractDatabaseFixture extends Fixture
                     ->createNativeQuery($query, new ResultSetMappingBuilder($manager))
                     ->execute();
             }
-        } catch (\Throwable $e) {
-            throw new \RuntimeException('Error while creating triggers: ' . $e->getMessage(), previous: $e);
+        } catch (Throwable $e) {
+            throw new RuntimeException('Error while creating triggers: ' . $e->getMessage(), previous: $e);
         }
     }
-
-    /**
-     * @return string[]|string List of queries or one query to be executed to insert all required data to the table
-     */
-    abstract protected function loadTable(): array|string;
 
     /**
      * @return string[]|string List of queries or one query to be executed to create all required functions

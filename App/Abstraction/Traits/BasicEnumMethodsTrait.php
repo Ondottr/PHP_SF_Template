@@ -2,6 +2,9 @@
 
 namespace App\Abstraction\Traits;
 
+use ReflectionClass;
+use ReflectionClassConstant;
+
 trait BasicEnumMethodsTrait
 {
     /**
@@ -31,7 +34,7 @@ trait BasicEnumMethodsTrait
      */
     final public function getList(): array
     {
-        return (new \ReflectionClass(static::class))
-            ->getConstants(\ReflectionClassConstant::IS_PUBLIC);
+        return (new ReflectionClass(static::class))
+            ->getConstants(ReflectionClassConstant::IS_PUBLIC);
     }
 }

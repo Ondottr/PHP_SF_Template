@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Memcached;
 use PHP_SF\System\Core\TemplatesCache;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -17,7 +18,10 @@ final class AppCacheClearCommand extends Command
 {
     private SymfonyStyle $io;
 
-    /** @noinspection MissingParentCallInspection */
+
+    /**
+     * @noinspection MissingParentCallInspection
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->io = new SymfonyStyle($input, $output);
@@ -37,7 +41,7 @@ final class AppCacheClearCommand extends Command
             aca()->clear();
         }
 
-        if (class_exists(\Memcached::class)) {
+        if (class_exists(Memcached::class)) {
             mca()->clear();
         }
 

@@ -14,9 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 final class SymfonyCacheClearCommand extends Command
 {
-    protected function configure(): void
-    {
-    }
+    protected function configure(): void {}
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
