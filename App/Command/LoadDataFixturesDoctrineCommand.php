@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpInternalEntityUsedInspection */ /** @noinspection PhpMissingParentCallCommonInspection */ // and could be more
+<?php /** @noinspection PhpInternalEntityUsedInspection */ /** @noinspection PhpMissingParentCallCommonInspection */
 declare(strict_types=1);
 
 namespace App\Command;
