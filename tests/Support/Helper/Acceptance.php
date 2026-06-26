@@ -7,6 +7,4 @@ namespace Tests\Support\Helper;
 
 use Codeception\Module;
 
-class Acceptance extends Module
-{
-}
+class Acceptance extends Module {}

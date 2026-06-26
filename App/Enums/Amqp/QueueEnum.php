@@ -11,6 +11,8 @@ use PHP_SF\System\Database\RabbitMQConsumer;
 enum QueueEnum: string
 {
     case DEFAULT = 'default_queue';
+
+
     // todo: add more queues, if needed
 
     public function getMessageBus(): RabbitMQ

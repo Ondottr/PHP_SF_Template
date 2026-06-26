@@ -6,17 +6,26 @@ parameters:
 
     paths:
         - App/
+        - tests
+
+    excludePaths:
+        - var
+        - vendor
+        - migrations
+        # Codeception scaffolding — auto-generated actor stubs, not real code
+        - tests/Support
 
     scanDirectories:
         - Platform/src/
 
     bootstrapFiles:
-        - config/constants.php
-        - functions/functions.php
-        - functions/view_functions.php
+        - phpstan-bootstrap.php
 
     symfony:
         containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+
+    doctrine:
+        objectManagerLoader: phpstan-doctrine-loader.php
 
     ignoreErrors: []
 

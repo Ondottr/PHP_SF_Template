@@ -11,6 +11,20 @@ abstract class AbstractPurger implements ORMPurgerInterface, CustomPurgerInterfa
 {
     private EntityManagerInterface $em;
 
+
+    /**
+     * Returns the name of the entity manager this purger belongs to.
+     * Must match a key under doctrine.orm.entity_managers in doctrine.yaml.
+     */
+    abstract public function getEntityManagerName(): string;
+
+    /**
+     * Returns an array of queries to execute.<p>.
+     *
+     * @return array<string>
+     */
+    abstract protected function getQueries(): array;
+
     final public function purge(): void
     {
         foreach ($this->getQueries() as $q) {
@@ -25,21 +39,8 @@ abstract class AbstractPurger implements ORMPurgerInterface, CustomPurgerInterfa
         $this->em = $em;
     }
 
-    /**
-     * Returns the name of the entity manager this purger belongs to.
-     * Must match a key under doctrine.orm.entity_managers in doctrine.yaml.
-     */
-    abstract public function getEntityManagerName(): string;
-
     protected function getEntityManager(): EntityManagerInterface
     {
         return $this->em;
     }
-
-    /**
-     * Returns an array of queries to execute.<p>.
-     *
-     * @return array<string>
-     */
-    abstract protected function getQueries(): array;
 }

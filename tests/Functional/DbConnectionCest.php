@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use PHP_SF\System\Kernel as PhpSfKernel;
 use PHPUnit\Framework\Assert;
 use Tests\Support\FunctionalTester;
+use Throwable;
 
 /**
  * Verifies that the test environment connects to the correct (_test) database
@@ -21,7 +22,9 @@ use Tests\Support\FunctionalTester;
 class DbConnectionCest
 {
     private ?int $createdEntityId = null;
+
     private EntityManagerInterface $em;
+
 
     // ── Lifecycle ────────────────────────────────────────────────────────────
 
@@ -43,7 +46,7 @@ class DbConnectionCest
 
         try {
             $this->em->getConnection()->executeQuery('SELECT 1');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Assert::markTestSkipped('DB not reachable (is docker-compose up?): ' . $e->getMessage());
         }
 

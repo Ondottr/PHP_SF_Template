@@ -5,6 +5,7 @@ namespace App;
 use OpenApi\Attributes\Response;
 use PHP_SF\System\Doctrine\ForbidDefaultDoctrinePass;
 use PHP_SF\System\Router;
+use ReflectionClass;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
@@ -14,14 +15,17 @@ final class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
+
     private static bool $isEditorActivated = false;
 
     private static self $instance;
+
 
     public function __construct(string $environment, bool $debug)
     {
         parent::__construct($environment, $debug);
     }
+
 
     public function build(ContainerBuilder $container): void
     {
@@ -57,7 +61,7 @@ final class Kernel extends BaseKernel
 
         foreach (Router::getRoutesList() as $routeName => $route) {
             if (DEV_MODE || ($OAResponseAttrs = mca()->get("cache:oa_response_attrs:$routeName")) === null) {
-                $OAResponseAttrs = (new \ReflectionClass($route['class']))
+                $OAResponseAttrs = (new ReflectionClass($route['class']))
                     ->getMethod($route['method'])
                     ->getAttributes(Response::class);
 

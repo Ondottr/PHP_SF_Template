@@ -2,6 +2,4 @@
 
 namespace App\DataFixtures\Purgers;
 
-interface CustomPurgerInterface
-{
-}
+interface CustomPurgerInterface {}
