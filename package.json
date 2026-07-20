@@ -27,7 +27,7 @@
     "dotenv": "^17.4.2",
     "dotenv-webpack": "^9.0.0",
     "glob": "^13.0.6",
-    "javascript-obfuscator": "^5.4.7",
+    "javascript-obfuscator": "^5.5.0",
     "jest": "^30.4.2",
     "mini-css-extract-plugin": "^2.10.2",
     "prettier": "3.9.5",
