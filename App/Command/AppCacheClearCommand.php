@@ -49,6 +49,17 @@ final class AppCacheClearCommand extends Command
 
         TemplatesCache::clearCompiledFiles();
 
+        $this->clearBladeCompiledFiles();
+
         s()->clear();
+    }
+
+    private function clearBladeCompiledFiles(): void
+    {
+        foreach (glob(project_dir() . '/var/cache/bladeone/*') ?: [] as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
     }
 }

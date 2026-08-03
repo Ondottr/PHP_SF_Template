@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ pageTitle() }}{% endblock %}
+
+{% block body %}
+    <h1>Standalone Twig page</h1>
+    <p>
+        This full page is rendered by {{ engine }} with <code>useLayout: false</code>,
+        so the framework header/footer layout is skipped and this template provides
+        its own document via <code>{% verbatim %}{% extends %}{% endverbatim %}</code>.
+    </p>
+{% endblock %}

@@ -159,6 +159,7 @@ scans via `scanDirectories`. When making changes to framework code (`PHP_SF\*` s
    `vendor/nations-original/php-simple-framework` becomes a symlink to `Platform/`.
 2. Test framework changes live in this project before anything is pushed.
 3. **Never** edit the `vendor/` copy directly, and **never** push untested framework changes to git.
+4. **Never** commit symlinked repositories changes in the composer.{json|lock} files.
 
 If PHPStan reports missing `PHP_SF\*` symbols, the `Platform/` checkout is absent or stale.
 

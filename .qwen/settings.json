@@ -17,6 +17,10 @@
       "Edit(./config/constants.php)",
       "Edit(./composer.lock)",
       "Edit(./package-lock.json)"
+    ],
+    "allow": [
+      "Bash(gh *)",
+      "Bash(grep *)"
     ]
   },
   "$version": 4

@@ -22,6 +22,12 @@ services:
   Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader:
     alias: 'doctrine.fixtures.loader'
 
+  # Public alias so the PHP_SF framework can fetch the Twig environment from the
+  # container when rendering *.twig templates in PHP_SF controllers.
+  Twig\Environment:
+    alias: twig
+    public: true
+
   app.cache.adapter.redis:
     parent: 'cache.adapter.redis'
     tags:
