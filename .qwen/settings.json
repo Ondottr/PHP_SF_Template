@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(./vendor/**)",
+      "Edit(./node_modules/**)",
+      "Edit(./public/build/**)",
+      "Edit(./public/bundles/**)",
+      "Edit(./public/CKEditor/build**)",
+      "Edit(./public/CKEditor/node_modules**)",
+      "Edit(./var/**)",
+      "Edit(./tests/Support/_generated/**)",
+      "Edit(./tests/Support/AcceptanceTester.php)",
+      "Edit(./tests/Support/FunctionalTester.php)",
+      "Edit(./tests/Support/UnitTester.php)",
+      "Edit(./tests/Support/Uni2Tester.php)",
+      "Edit(./tests/_output/**)",
+      "Edit(./config/constants.php)",
+      "Edit(./composer.lock)",
+      "Edit(./package-lock.json)"
+    ]
+  },
+  "$version": 4
+}

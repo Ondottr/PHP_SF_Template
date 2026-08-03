@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/vendor/**)",
+      "Write(//home/dmytro/PhpstormProjects/PHP_SF_Template/vendor/**)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/node_modules/**)",
+      "Write(//home/dmytro/PhpstormProjects/PHP_SF_Template/node_modules/**)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/public/build/**)",
+      "Write(//home/dmytro/PhpstormProjects/PHP_SF_Template/public/build/**)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/public/bundles/**)",
+      "Write(//home/dmytro/PhpstormProjects/PHP_SF_Template/public/bundles/**)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/public/CKEditor/build/**)",
+      "Write(//home/dmytro/PhpstormProjects/PHP_SF_Template/public/CKEditor/build/**)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/public/CKEditor/node_modules/**)",
+      "Write(//home/dmytro/PhpstormProjects/PHP_SF_Template/public/CKEditor/node_modules/**)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/var/**)",
+      "Write(//home/dmytro/PhpstormProjects/PHP_SF_Template/var/**)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/tests/Support/_generated/**)",
+      "Write(//home/dmytro/PhpstormProjects/PHP_SF_Template/tests/Support/_generated/**)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/tests/Support/AcceptanceTester.php)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/tests/Support/FunctionalTester.php)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/tests/Support/UnitTester.php)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/tests/Support/Uni2Tester.php)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/tests/_output/**)",
+      "Write(//home/dmytro/PhpstormProjects/PHP_SF_Template/tests/_output/**)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/config/constants.php)",
+      "Write(//home/dmytro/PhpstormProjects/PHP_SF_Template/config/constants.php)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/composer.lock)",
+      "Write(//home/dmytro/PhpstormProjects/PHP_SF_Template/composer.lock)",
+      "Edit(//home/dmytro/PhpstormProjects/PHP_SF_Template/package-lock.json)",
+      "Write(//home/dmytro/PhpstormProjects/PHP_SF_Template/package-lock.json)"
+    ]
+  }
+}
