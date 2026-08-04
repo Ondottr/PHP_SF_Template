@@ -80,9 +80,43 @@ config/
 ├── packages/                # Symfony bundle config (doctrine, messenger, cache, …)
 └── routes.yaml              # Symfony controller route import
 templates/                   # PHP view classes (App\View\ namespace)
+templates_twig/              # Twig templates
+templates_blade/             # Blade templates
 lang/                        # Translation files
 public/                      # Web root
 ```
+
+---
+
+## Template Engines
+
+PHP_SF controllers render views through three interchangeable engines — pick per route, mix freely in one app:
+
+| Engine               | Template reference               | Location         |
+|----------------------|----------------------------------|------------------|
+| Plain PHP class view | `welcome_page::class`            | `templates/`     |
+| Twig                 | `'example/page.html.twig'`       | `templates_twig/` |
+| Blade                | `'example/page.blade.php'`       | `templates_blade/` |
+
+```php
+return $this->render('example/page.html.twig', ['user' => $user]); // Twig
+return $this->render('example/page.blade.php', ['user' => $user]); // Blade
+return $this->render(welcome_page::class, ['user' => $user]);      // PHP class view
+```
+
+By default engine templates render as **fragments inside the app header/footer layout**, just like class views. When a template provides its own full-page layout (Twig `{% extends %}` / Blade `@extends`), pass `useLayout: false`:
+
+```php
+return $this->render('example/landing.html.twig', useLayout: false);
+```
+
+Class views can include engine partials via `$this->import('example/_partial.html.twig')`.
+
+Notes:
+
+- Twig templates use the Symfony-configured environment (paths and cache in `config/packages/twig.yaml`). PHP_SF helpers (`pageTitle()`, `csrf_token()`, `manifest_asset()`, `manifest_has()`, `_t()`, `route_link()`) are exposed by `App\Twig\PhpSfHelpersExtension`.
+- Blade is provided by the dependency-free [BladeOne](https://github.com/EFTEC/BladeOne) compiler: standard Blade directives work, Laravel-specific integrations (`<x-*>` components, `@props`) do not. `@csrf` and `@error` are wired to the framework's CSRF token and error bag.
+- Example routes: `/example/twig`, `/example/twig/standalone`, `/example/blade`, `/example/mixed`.
 
 ---
 

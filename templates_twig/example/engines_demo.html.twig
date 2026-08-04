@@ -1,0 +1,5 @@
+<h2>Rendered by {{ engine }}</h2>
+<p>This fragment is a Twig template rendered from a PHP_SF controller, wrapped in the app header/footer layout.</p>
+<p>Page title from <code>pageTitle()</code>: {{ pageTitle() }}</p>
+<p>CSRF token from <code>csrf_token()</code>: <span class="twig-csrf-token">{{ csrf_token() }}</span></p>
+<p>Route link from <code>route_link()</code>: <a href="{{ route_link('welcome_page') }}">welcome page</a></p>

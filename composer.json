@@ -12,7 +12,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Tests\\": "tests/"
+      "Tests\\": "tests/",
+      "PHP_SF\\Tests\\": "Platform/tests/"
     }
   },
   "config": {
@@ -64,8 +65,9 @@
     "ext-zend-opcache": "*",
     "ext-zlib": "*",
     "composer/package-versions-deprecated": "1.11.99.5",
+    "eftec/bladeone": "^4.19",
     "nations-original/php-sf-cache": "^2.0",
-    "nations-original/php-simple-framework": "^3.1.0",
+    "nations-original/php-simple-framework": "^3.2.0",
     "nelmio/api-doc-bundle": "^5.9",
     "php-amqplib/php-amqplib": "^3.6",
     "phpdocumentor/reflection-docblock": "^6.0",
