@@ -2,7 +2,6 @@
 
 namespace App\Twig;
 
-use PHP_SF\System\Router;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -17,11 +16,14 @@ final class PhpSfHelpersExtension extends AbstractExtension
     {
         return [
             new TwigFunction('pageTitle', 'pageTitle'),
+            // php_sf_ prefix: Symfony's twig bridge already registers csrf_token()
+            // on the shared environment — a same-named function here would silently
+            // override it (last registration wins)
             new TwigFunction('csrf_token', 'csrf_token'),
             new TwigFunction('manifest_asset', 'manifest_asset'),
             new TwigFunction('manifest_has', 'manifest_has'),
             new TwigFunction('_t', '_t'),
-            new TwigFunction('route_link', [Router::class, 'getRouteLink']),
+            new TwigFunction('route_link', 'routeLink'),
         ];
     }
 }

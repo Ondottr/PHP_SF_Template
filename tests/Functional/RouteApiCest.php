@@ -6,11 +6,6 @@ use Tests\Support\FunctionalTester;
 
 class RouteApiCest
 {
-    private const CHROME_HEADER_MARKER = 'header header_elements row';
-
-    private const CHROME_FOOTER_MARKER = '<div class="footer">';
-
-
     public function testRouteApiEndpointReturnsJson(FunctionalTester $I): void
     {
         $I->amOnPage('/example/api/status');
@@ -25,7 +20,7 @@ class RouteApiCest
         $I->seeInSource('plain api response without layout');
 
         // Framework chrome skipped — the route is marked #[RouteApi]
-        $I->dontSeeInSource(self::CHROME_HEADER_MARKER);
-        $I->dontSeeInSource(self::CHROME_FOOTER_MARKER);
+        $I->dontSeeInSource(ChromeMarkers::HEADER);
+        $I->dontSeeInSource(ChromeMarkers::FOOTER);
     }
 }

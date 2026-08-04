@@ -6,11 +6,6 @@ use Tests\Support\FunctionalTester;
 
 class TemplateEnginesCest
 {
-    private const CHROME_HEADER_MARKER = 'header header_elements row';
-
-    private const CHROME_FOOTER_MARKER = '<div class="footer">';
-
-
     public function testClassViewStillRenders(FunctionalTester $I): void
     {
         $I->amOnPage('/');
@@ -24,15 +19,16 @@ class TemplateEnginesCest
         $I->seeResponseCodeIs(200);
 
         // Chrome present
-        $I->seeInSource(self::CHROME_HEADER_MARKER);
-        $I->seeInSource(self::CHROME_FOOTER_MARKER);
+        $I->seeInSource(ChromeMarkers::HEADER);
+        $I->seeInSource(ChromeMarkers::FOOTER);
 
         // Engine output wrapped like class views
         $I->seeInSource('<div class="engines_demo">');
         $I->seeInSource('Rendered by Twig');
 
-        // PHP_SF helper functions exposed to Twig
+        // PHP_SF helper functions exposed to Twig — markup AND a real token value
         $I->seeInSource('twig-csrf-token');
+        $I->assertNotEmpty($I->grabTextFrom('.twig-csrf-token'));
         $I->seeInSource('href="/"');
     }
 
@@ -45,8 +41,8 @@ class TemplateEnginesCest
         $I->seeInSource('Standalone Twig page');
 
         // Framework chrome skipped — the template provides its own document
-        $I->dontSeeInSource(self::CHROME_HEADER_MARKER);
-        $I->dontSeeInSource(self::CHROME_FOOTER_MARKER);
+        $I->dontSeeInSource(ChromeMarkers::HEADER);
+        $I->dontSeeInSource(ChromeMarkers::FOOTER);
         $I->dontSeeInSource('<div class="engines_standalone">');
     }
 
@@ -56,15 +52,16 @@ class TemplateEnginesCest
         $I->seeResponseCodeIs(200);
 
         // Chrome present
-        $I->seeInSource(self::CHROME_HEADER_MARKER);
-        $I->seeInSource(self::CHROME_FOOTER_MARKER);
+        $I->seeInSource(ChromeMarkers::HEADER);
+        $I->seeInSource(ChromeMarkers::FOOTER);
 
         // Engine output wrapped like class views
         $I->seeInSource('<div class="engines_demo">');
         $I->seeInSource('Rendered by Blade');
 
-        // @csrf wired to the framework session token
+        // @csrf wired to the framework session token — input present AND filled
         $I->seeInSource("<input type='hidden' name='_token'");
+        $I->assertNotEmpty($I->grabAttributeFrom('.blade-csrf input', 'value'));
     }
 
     public function testMixedEnginesOnOnePage(FunctionalTester $I): void
