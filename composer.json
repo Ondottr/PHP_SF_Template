@@ -47,18 +47,6 @@
     "symfony/polyfill-iconv": "*",
     "symfony/polyfill-php72": "*"
   },
-  "repositories": [
-    {
-      "type": "path",
-      "url": "Platform",
-      "options": {
-        "symlink": true,
-        "versions": {
-          "nations-original/php-simple-framework": "3.2.0"
-        }
-      }
-    }
-  ],
   "require": {
     "php": "8.3.*",
     "ext-amqp": "*",
@@ -79,7 +67,7 @@
     "composer/package-versions-deprecated": "1.11.99.5",
     "eftec/bladeone": "^4.19",
     "nations-original/php-sf-cache": "^2.0",
-    "nations-original/php-simple-framework": "^3.1.0",
+    "nations-original/php-simple-framework": "^3.2.0",
     "nelmio/api-doc-bundle": "^5.9",
     "php-amqplib/php-amqplib": "^3.6",
     "phpdocumentor/reflection-docblock": "^6.0",
