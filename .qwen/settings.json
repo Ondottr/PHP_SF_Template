@@ -19,8 +19,8 @@
       "Edit(./package-lock.json)"
     ],
     "allow": [
-      "Bash(gh *)",
-      "Bash(grep *)"
+      "Bash(docker exec *)",
+      "Bash(docker run *)"
     ]
   },
   "$version": 4
