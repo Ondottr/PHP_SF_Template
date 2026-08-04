@@ -49,7 +49,7 @@
     "@ckeditor/ckeditor5-typing": "^32.0.0",
     "@ckeditor/ckeditor5-watchdog": "^32.0.0",
     "css-loader": "^6.11.0",
-    "postcss": "8.5.18",
+    "postcss": "8.5.23",
     "postcss-loader": "^7.3.4",
     "raw-loader": "^4.0.2",
     "style-loader": "^3.3.4",
