@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8982537b037f8d753d192212f1d6a4dd",
+    "content-hash": "2d9a99e23d99ea66363ecc20eb849a0e",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -403,16 +403,16 @@
         },
         {
             "name": "nations-original/php-simple-framework",
-            "version": "v3.2.0",
+            "version": "v3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ondottr/PHP_SF_Platform.git",
-                "reference": "3a76b70a2a70da60fee599336ccc9232e860ee12"
+                "reference": "8df5566246abb0daf4d7faec1800edea3ba999c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/3a76b70a2a70da60fee599336ccc9232e860ee12",
-                "reference": "3a76b70a2a70da60fee599336ccc9232e860ee12",
+                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/8df5566246abb0daf4d7faec1800edea3ba999c9",
+                "reference": "8df5566246abb0daf4d7faec1800edea3ba999c9",
                 "shasum": ""
             },
             "require": {
@@ -470,9 +470,9 @@
             "description": "A simple PHP framework for Nations Original.",
             "support": {
                 "issues": "https://github.com/Ondottr/PHP_SF_Platform/issues",
-                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v3.2.0"
+                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v3.3.0"
             },
-            "time": "2026-08-04T15:41:18+00:00"
+            "time": "2026-08-06T19:23:20+00:00"
         },
         {
             "name": "nelmio/api-doc-bundle",
