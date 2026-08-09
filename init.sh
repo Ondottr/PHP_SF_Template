@@ -352,7 +352,6 @@ use App\Repository\__PASCAL__\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use PHP_SF\Framework\Http\Middleware\auth;
 use PHP_SF\System\Attributes\Validator\Constraints as Validate;
-use PHP_SF\System\Attributes\Validator\TranslatablePropertyName;
 use PHP_SF\System\Classes\Abstracts\AbstractEntity;
 use PHP_SF\System\Interface\UserInterface;
 use PHP_SF\System\Traits\ModelProperty\ModelPropertyCreatedAtTrait;
@@ -367,11 +366,9 @@ class User extends AbstractEntity implements UserInterface
 
     #[Validate\Email]
     #[Validate\Length( min: 6, max: 50 )]
-    #[TranslatablePropertyName( 'Email' )]
     #[ORM\Column( type: 'string', unique: true )]
     protected ?string $email = null;
 
-    #[TranslatablePropertyName( 'Password' )]
     #[ORM\Column( type: 'string' )]
     protected ?string $password = null;
 

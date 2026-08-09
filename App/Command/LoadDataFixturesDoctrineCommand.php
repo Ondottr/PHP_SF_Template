@@ -7,6 +7,7 @@ use App\Abstraction\Classes\AbstractPurger;
 use Doctrine\Bundle\DoctrineBundle\Command\DoctrineCommand;
 use Doctrine\Bundle\FixturesBundle\Loader\SymfonyFixturesLoader;
 use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\AbstractLogger;
 use Stringable;
@@ -15,7 +16,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\DependencyInjection\Attribute\TaggedIterator;
+use Symfony\Component\DependencyInjection\Attribute\AutowireIterator;
 
 /**
  * Class LoadDataFixturesDoctrineCommand.
@@ -42,7 +43,7 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
      */
     public function __construct(
         SymfonyFixturesLoader $fixturesLoader,
-        #[TaggedIterator('app.fixture_purger')]
+        #[AutowireIterator('app.fixture_purger')]
         iterable $purgers,
         ?ManagerRegistry $doctrine = null,
     ) {
@@ -84,7 +85,12 @@ final class LoadDataFixturesDoctrineCommand extends DoctrineCommand
             return 1;
         }
 
-        $em = $this->getEntityManager($emName);
+        $em = $this->getDoctrine()->getManager($emName);
+        if (!$em instanceof EntityManagerInterface) {
+            $ui->error(sprintf('Entity manager "%s" is not a Doctrine ORM entity manager.', $emName));
+
+            return 1;
+        }
 
         if (!$input->getOption('force')) {
             if (!$ui->confirm(
