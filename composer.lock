@@ -648,16 +648,16 @@
         },
         {
             "name": "nations-original/php-simple-framework",
-            "version": "v4.0.0",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Ondottr/PHP_SF_Platform.git",
-                "reference": "f50c0e0d1acaf291a141211bea9d85afdfdb4d9a"
+                "reference": "7dbc4444a76f6464bad671570b9e0f83093f1350"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/f50c0e0d1acaf291a141211bea9d85afdfdb4d9a",
-                "reference": "f50c0e0d1acaf291a141211bea9d85afdfdb4d9a",
+                "url": "https://api.github.com/repos/Ondottr/PHP_SF_Platform/zipball/7dbc4444a76f6464bad671570b9e0f83093f1350",
+                "reference": "7dbc4444a76f6464bad671570b9e0f83093f1350",
                 "shasum": ""
             },
             "require": {
@@ -715,9 +715,9 @@
             "description": "A simple PHP framework for Nations Original.",
             "support": {
                 "issues": "https://github.com/Ondottr/PHP_SF_Platform/issues",
-                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v4.0.0"
+                "source": "https://github.com/Ondottr/PHP_SF_Platform/tree/v4.1.0"
             },
-            "time": "2026-08-09T09:45:51+00:00"
+            "time": "2026-08-18T09:15:26+00:00"
         },
         {
             "name": "nelmio/api-doc-bundle",
@@ -1433,16 +1433,16 @@
         },
         {
             "name": "predis/predis",
-            "version": "v3.5.1",
+            "version": "v3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/predis/predis.git",
-                "reference": "5c996db191ee2d9bafe651f454b1fca16754271b"
+                "reference": "2ff20c08bb63697245ffee3f198d1673086c302d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/predis/predis/zipball/5c996db191ee2d9bafe651f454b1fca16754271b",
-                "reference": "5c996db191ee2d9bafe651f454b1fca16754271b",
+                "url": "https://api.github.com/repos/predis/predis/zipball/2ff20c08bb63697245ffee3f198d1673086c302d",
+                "reference": "2ff20c08bb63697245ffee3f198d1673086c302d",
                 "shasum": ""
             },
             "require": {
@@ -1484,7 +1484,7 @@
             ],
             "support": {
                 "issues": "https://github.com/predis/predis/issues",
-                "source": "https://github.com/predis/predis/tree/v3.5.1"
+                "source": "https://github.com/predis/predis/tree/v3.6.0"
             },
             "funding": [
                 {
@@ -1492,7 +1492,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-06-11T16:56:53+00:00"
+            "time": "2026-08-14T23:07:56+00:00"
         },
         {
             "name": "psr/cache",
