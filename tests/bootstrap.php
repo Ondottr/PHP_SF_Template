@@ -13,6 +13,11 @@ defined('start_time') || define('start_time', microtime(true));
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+// Tests pass arbitrary/DB-derived keys to _t() (e.g. game_setting.*). DEV_MODE
+// auto-discovery would otherwise persist a {key}_not_translated placeholder into the
+// committed translation files on every run — disable it so suites never mutate YAML.
+\PHP_SF\System\Core\TranslatorV2::setAutoWriteMissingKeys(false);
+
 // PHPUnit sets APP_ENV=test via phpunit.xml.dist <server> before this runs.
 // Codeception does not, so we default it here so bootEnv('.env') picks up .env.test.
 $_SERVER['APP_ENV'] ??= 'test';
