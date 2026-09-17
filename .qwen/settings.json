@@ -19,5 +19,11 @@
       "Edit(./package-lock.json)"
     ]
   },
-  "$version": 4
+  "$version": 4,
+  "mcpServers": {
+    "youtrack": {
+      "command": "/home/dmytro/Applications/claude-playground/youtrack-mcp/.venv/bin/youtrack-mcp",
+      "timeout": 60000
+    }
+  }
 }
