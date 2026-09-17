@@ -40,11 +40,6 @@ services:
     exclude:
       - '../App/Http/Controller'
       - '../App/Http/Middleware'
-
-  # Controllers registered separately with public: true so Router can resolve them via container->get()
-  App\Http\Controller\:
-    resource: '../App/Http/Controller/'
-    public: true
       - '../App/DoctrineLifecycleCallbacks/'
       - '../App/DependencyInjection/'
       - '../App/Entity/'
@@ -54,6 +49,19 @@ services:
       - '../App/EventListeners/'
       - '../App/Enums/'
       - '../tests/'
+
+  # Controllers registered separately with public: true so Router can resolve them via container->get()
+  App\Http\Controller\:
+    resource: '../App/Http/Controller/'
+    public: true
+
+  # Framework default controllers (DefaultController / ErrorPageController / SettingsController /
+  # AuthController) live in the framework package. They must be registered as public Symfony
+  # services — Router::initializeController() resolves them via Container->get() and would
+  # otherwise throw ServiceNotFoundException.
+  PHP_SF\Framework\Http\Controller\:
+    resource: '%kernel.project_dir%/vendor/nations-original/php-simple-framework/app/Http/Controller/'
+    public: true
 
   App\Maker\:
     resource: '../App/Maker/*'
